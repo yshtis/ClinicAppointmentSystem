@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<title>予約状況確認 - ClinicApp</title>
+		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+		<link href="https://fonts.googleapis.com" rel="preconnect" />
+		<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<style type="text/tailwindcss">
+			:root {
+				--primary-color: #0c7ff2;
+				--primary-hover-color: #0a6dcf;
+				--text-primary: #111827;
+				--text-secondary: #6b7280;
+				--background-color: #f9fafb;
+				--card-background-color: #ffffff;
+				--border-color: #e5e7eb;
+			}
+			body {
+				font-family: "Work Sans", sans-serif;
+			}
+		</style>
+	</head>
+	<body class="bg-[var(--background-color)] text-[var(--text-primary)]">
+		<div class="flex flex-col min-h-screen">
+			<header
+				class="sticky top-0 z-10 w-full border-b border-[var(--border-color)] bg-white/80 backdrop-blur-md"
+			>
+				<div
+					class="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8"
+				>
+					<div class="flex items-center gap-4">
+						<svg
+							class="h-6 w-6 text-green-500"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+						>
+							<path d="M10 2h4v8h8v4h-8v8h-4v-8H2v-4h8V2z" />
+						</svg>
+						<h1 class="text-xl font-bold text-[var(--text-primary)]">
+							さわやか病院　受診予約
+						</h1>
+					</div>
+					<div class="flex items-center gap-4">
+						<nav class="hidden md:flex items-center gap-6">
+							<a
+								class="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors"
+								href="#"
+								>予約確認</a
+							>
+							<a
+								class="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors"
+								href="#"
+								>ログアウト</a
+							>
+						</nav>
+					</div>
+				</div>
+			</header>
+			<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				<div class="max-w-4xl mx-auto">
+					<h1 class="text-3xl font-bold text-[var(--text-primary)] mb-8">
+						予約確認
+					</h1>
+					<div>
+						<h2
+							class="text-xl font-semibold text-[var(--text-primary)] mb-4 border-l-4 border-[var(--primary-color)] pl-3"
+						>
+							今後の予約
+						</h2>
+						<div class="space-y-4">
+							<div
+								class="bg-[var(--card-background-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-4 flex items-center justify-between"
+							>
+								<div>
+									<p class="font-semibold text-[var(--text-primary)]">
+										定期健診
+									</p>
+									<p class="text-sm text-[var(--text-secondary)]">内科</p>
+									<p class="text-sm text-[var(--text-secondary)] mt-1">
+										<span class="font-medium text-gray-700"
+											>2024年10月20日</span
+										>
+										午後2時00分
+									</p>
+								</div>
+								<button
+									class="bg-red-100 text-red-700 hover:bg-red-200 font-medium py-2 px-4 rounded-md text-sm transition-colors"
+								>
+									キャンセル
+								</button>
+							</div>
+							<div
+								class="bg-[var(--card-background-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-4 flex items-center justify-between"
+							>
+								<div>
+									<p class="font-semibold text-[var(--text-primary)]">
+										アレルギーテスト
+									</p>
+									<p class="text-sm text-[var(--text-secondary)]">皮膚科</p>
+									<p class="text-sm text-[var(--text-secondary)] mt-1">
+										<span class="font-medium text-gray-700"
+											>2024年11月15日</span
+										>
+										午前10時30分
+									</p>
+								</div>
+								<button
+									class="bg-red-100 text-red-700 hover:bg-red-200 font-medium py-2 px-4 rounded-md text-sm transition-colors"
+								>
+									キャンセル
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="mt-12">
+						<h2
+							class="text-xl font-semibold text-[var(--text-primary)] mb-4 border-l-4 border-[var(--primary-color)] pl-3"
+						>
+							予約履歴
+						</h2>
+						<div class="space-y-4">
+							<div
+								class="bg-[var(--card-background-color)] rounded-lg border border-[var(--border-color)] p-4 opacity-70"
+							>
+								<p class="font-semibold text-[var(--text-primary)]">定期健診</p>
+								<p class="text-sm text-[var(--text-secondary)]">内科</p>
+								<p class="text-sm text-[var(--text-secondary)] mt-1">
+									2024年9月10日 午後3時00分
+								</p>
+							</div>
+							<div
+								class="bg-[var(--card-background-color)] rounded-lg border border-[var(--border-color)] p-4 opacity-70"
+							>
+								<p class="font-semibold text-[var(--text-primary)]">
+									皮膚的相談
+								</p>
+								<p class="text-sm text-[var(--text-secondary)]">皮膚科</p>
+								<p class="text-sm text-[var(--text-secondary)] mt-1">
+									2024年8月5日 午前11時00分
+								</p>
+							</div>
+							<div
+								class="bg-[var(--card-background-color)] rounded-lg border border-[var(--border-color)] p-4 opacity-70"
+							>
+								<p class="font-semibold text-[var(--text-primary)]">定期健診</p>
+								<p class="text-sm text-[var(--text-secondary)]">内科</p>
+								<p class="text-sm text-[var(--text-secondary)] mt-1">
+									2024年7月20日 午後1時30分
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+			<footer
+				class="bg-[var(--card-background-color)] mt-auto py-4 border-t border-[var(--border-color)]"
+			>
+				<div
+					class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-[var(--text-secondary)]"
+				>
+					<p>© 2024 ClinicApp. All rights reserved.</p>
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
