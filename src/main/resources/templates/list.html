@@ -1,100 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-		<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
-		<link
-			as="style"
-			href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=Work+Sans:wght@400;500;700"
-			onload="this.rel='stylesheet'"
-			rel="stylesheet"
-		/>
-		<title>予約可能枠選択</title>
-		<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
-		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-		<style type="text/tailwindcss">
-			:root {
-				--primary-color: #0c7ff2;
-				--background-color: #f8fafc;
-				--text-primary: #1e293b;
-				--text-secondary: #475569;
-				--border-color: #e2e8f0;
-			}
-			body {
-				font-family: "Work Sans", "Noto Sans JP", sans-serif;
-				background-color: var(--background-color);
-				color: var(--text-primary);
-			}
-			.btn {
-				@apply transition-colors duration-200;
-			}
-			.btn-primary {
-				@apply bg-[var(--primary-color)] text-white hover:bg-blue-600;
-			}
-			.btn-secondary {
-				@apply bg-gray-200 text-gray-800 hover:bg-gray-300;
-			}
-			.btn-ghost {
-				@apply text-gray-800 hover:bg-gray-100;
-			}
-			.date-cell {
-				@apply flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors duration-200;
-			}
-			.date-cell.selected {
-				@apply bg-[var(--primary-color)] text-white;
-			}
-			.date-cell.available {
-				@apply cursor-pointer hover:bg-gray-200;
-			}
-			.date-cell.disabled {
-				@apply cursor-not-allowed text-gray-400;
-			}
-			.time-slot {
-				@apply flex cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 hover:border-[var(--primary-color)] hover:text-[var(--primary-color)] hover:shadow-sm;
-			}
-			.time-slot.selected {
-				@apply border-[var(--primary-color)] bg-[var(--primary-color)] text-white;
-			}
-		</style>
-	</head>
-	<body class="bg-slate-50 text-slate-900">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="~{templates/parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
+	<body class="bg-[var(--background-color)] text-[var(--text-primary)]">
 		<div class="flex min-h-screen flex-col bg-[var(--background-color)]">
-			<header
-				class="sticky top-0 z-10 w-full border-b border-[var(--border-color)] bg-white/80 backdrop-blur-md"
-			>
-				<div
-					class="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8"
-				>
-					<div class="flex items-center gap-4">
-						<svg
-							class="h-6 w-6 text-green-500"
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="currentColor"
-						>
-							<path d="M10 2h4v8h8v4h-8v8h-4v-8H2v-4h8V2z" />
-						</svg>
-						<h1 class="text-xl font-bold text-[var(--text-primary)]">
-							さわやか病院　受診予約
-						</h1>
-					</div>
-					<div class="flex items-center gap-4">
-						<nav class="hidden md:flex items-center gap-6">
-							<a
-								class="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors"
-								href="#"
-								>予約確認</a
-							>
-							<a
-								class="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors"
-								href="#"
-								>ログアウト</a
-							>
-						</nav>
-					</div>
-				</div>
-			</header>
+			<div th:replace="~{templates/parts/common :: header()}"></div>
 			<main class="container mx-auto flex-grow px-4 py-8 sm:px-6 lg:px-8">
 				<div class="mx-auto max-w-4xl">
 					<div class="mb-6">
@@ -215,6 +124,7 @@
 					</div>
 				</div>
 			</main>
+			<div th:replace="~{templates/parts/common :: header()}"></div>
 		</div>
 	</body>
 </html>

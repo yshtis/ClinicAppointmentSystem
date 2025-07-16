@@ -17,4 +17,7 @@ public class User {
 	
 	@NotNull
 	private LocalDate birthDate;
+	
+	@NotNull
+	private String phoneNumber;
 }

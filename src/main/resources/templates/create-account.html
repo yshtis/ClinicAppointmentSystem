@@ -1,121 +1,105 @@
 <!DOCTYPE html>
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-		<title>アカウント作成 - HealthConnect</title>
-		<link href="https://fonts.googleapis.com" rel="preconnect" />
-		<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Work+Sans:wght@400;500;700&amp;display=swap"
-			rel="stylesheet"
-		/>
-		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-		<style type="text/tailwindcss">
-			:root {
-				--primary-color: #3b82f6;
-				--primary-hover-color: #2563eb;
-				--background-color: #f9fafb;
-				--card-background-color: #ffffff;
-				--text-primary-color: #1f2937;
-				--text-secondary-color: #6b7280;
-				--border-color: #d1d5db;
-				--focus-ring-color: #3b82f6;
-			}
-			body {
-				font-family: "Noto Sans JP", "Work Sans", sans-serif;
-				background-color: var(--background-color);
-				color: var(--text-primary-color);
-			}
-			.form-input {
-				@apply w-full rounded-lg border-[var(--border-color)] bg-white p-3 text-base text-[var(--text-primary-color)] placeholder-[var(--text-secondary-color)] transition duration-150 ease-in-out focus:border-[var(--focus-ring-color)] focus:ring focus:ring-[var(--focus-ring-color)] focus:ring-opacity-50;
-			}
-			.btn-primary {
-				@apply w-full rounded-lg bg-[var(--primary-color)] px-4 py-3 text-base font-bold text-white shadow-sm transition duration-150 ease-in-out hover:bg-[var(--primary-hover-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:ring-offset-2;
-			}
-		</style>
-	</head>
-	<body class="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="auth_common :: auth_header('アカウント作成 - さわやか医院予約システム')"></head>
+	<body class="flex min-h-screen items-center justify-center bg-[var(--background-color)] p-4">
 		<div class="w-full max-w-md space-y-8">
 			<div class="text-center">
-				<div
-					class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)]"
-				>
-					<svg
-						class="h-8 w-8 text-white"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						viewBox="0 0 24 24"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							d="M12 4.5v15m7.5-7.5h-15"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						></path>
-					</svg>
-				</div>
-				<h1 class="text-3xl font-bold tracking-tight text-gray-900">
-					アカウント作成
+				<h1 class="text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+					初診患者登録
 				</h1>
-				<p class="mt-2 text-sm text-gray-600">病院予約システムへようこそ</p>
+				<p class="mt-2 text-sm text-[var(--text-secondary)]">
+					病院予約システムへようこそ
+				</p>
 			</div>
-			<div class="rounded-xl bg-white p-8 shadow-lg">
+			<div
+				class="rounded-xl bg-[var(--card-background-color)] p-8 shadow-lg"
+			>
 				<form class="space-y-6">
 					<div>
-						<label class="block text-sm font-medium text-gray-700" for="name"
-							>氏名</label
+						<label
+							class="block text-sm font-medium text-[var(--text-primary)]"
+							for="last_name_kana"
+							>氏名（全角カタカナ）</label
 						>
-						<div class="mt-1">
+						<div class="mt-1 grid grid-cols-2 gap-3">
 							<input
-								autocomplete="name"
+								autocomplete="family-name"
 								class="form-input"
-								id="name"
-								name="name"
-								placeholder="例：山田 太郎"
+								id="last_name_kana"
+								name="last_name_kana"
+								pattern="[ァ-ヶー]+"
+								placeholder="例：ヤマダ (姓)"
 								required=""
+								title="全角カタカナで入力してください"
+								type="text"
+							/>
+							<input
+								autocomplete="given-name"
+								class="form-input"
+								id="first_name_kana"
+								name="first_name_kana"
+								pattern="[ァ-ヶー]+"
+								placeholder="例：タロウ (名)"
+								required=""
+								title="全角カタカナで入力してください"
 								type="text"
 							/>
 						</div>
 					</div>
 					<div>
-						<label class="block text-sm font-medium text-gray-700" for="email"
-							>メールアドレス</label
+						<label
+							class="block text-sm font-medium text-[var(--text-primary)]"
+							for="birth_year"
+							>生年月日</label
 						>
-						<div class="mt-1">
-							<input
-								autocomplete="email"
+						<div class="mt-1 grid grid-cols-3 gap-3">
+							<select
 								class="form-input"
-								id="email"
-								name="email"
-								placeholder="例：taro.yamada@email.com"
+								id="birth_year"
+								name="birth_year"
 								required=""
-								type="email"
-							/>
+							>
+								<option value="">年</option>
+								<script>
+									const currentYear = new Date().getFullYear();
+									for (let i = currentYear; i >= 1900; i--) {
+										document.write(`<option value="${i}">${i}</option>`);
+									}
+								</script>
+							</select>
+							<select
+								class="form-input"
+								id="birth_month"
+								name="birth_month"
+								required=""
+							>
+								<option value="">月</option>
+								<script>
+									for (let i = 1; i <= 12; i++) {
+										document.write(`<option value="${i}">${i}</option>`);
+									}
+								</script>
+							</select>
+							<select
+								class="form-input"
+								id="birth_day"
+								name="birth_day"
+								required=""
+							>
+								<option value="">日</option>
+								<script>
+									for (let i = 1; i <= 31; i++) {
+										document.write(`<option value="${i}">${i}</option>`);
+									}
+								</script>
+							</select>
 						</div>
 					</div>
 					<div>
 						<label
-							class="block text-sm font-medium text-gray-700"
-							for="password"
-							>パスワード</label
-						>
-						<div class="mt-1">
-							<input
-								autocomplete="new-password"
-								class="form-input"
-								id="password"
-								name="password"
-								placeholder="最低8文字"
-								required=""
-								type="password"
-							/>
-						</div>
-					</div>
-					<div>
-						<label class="block text-sm font-medium text-gray-700" for="phone"
-							>電話番号</label
+							class="block text-sm font-medium text-[var(--text-primary)]"
+							for="phone"
+							>電話番号（ハイフンなし）</label
 						>
 						<div class="mt-1">
 							<input
@@ -123,7 +107,7 @@
 								class="form-input"
 								id="phone"
 								name="phone"
-								placeholder="例：090-1234-5678"
+								placeholder="例：09012345678"
 								required=""
 								type="tel"
 							/>
@@ -134,8 +118,8 @@
 					</div>
 				</form>
 			</div>
-			<p class="text-center text-sm text-gray-600">
-				すでにアカウントをお持ちですか？
+			<p class="text-center text-sm text-[var(--text-secondary)]">
+				再診の方はこちらから
 				<a
 					class="font-medium text-[var(--primary-color)] hover:text-[var(--primary-hover-color)]"
 					href="#"

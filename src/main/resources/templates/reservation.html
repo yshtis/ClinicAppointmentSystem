@@ -1,219 +1,120 @@
 <!DOCTYPE html>
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-		<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
-		<link
-			as="style"
-			href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=Work+Sans:wght@400;500;700"
-			onload="this.rel='stylesheet'"
-			rel="stylesheet"
-		/>
-		<title>クリニック予約カレンダー</title>
-		<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
-		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-		<style type="text/tailwindcss">
-			:root {
-				--primary-color: #0c7ff2;
-				--background-color: #f8fafc;
-				--text-primary: #1e293b;
-				--text-secondary: #64748b;
-				--border-color: #e2e8f0;
-			}
-			body {
-				font-family: "Noto Sans JP", "Work Sans", sans-serif;
-				background-color: var(--background-color);
-				color: var(--text-primary);
-			}
-			.day-cell {
-				@apply flex h-12 w-full items-center justify-center rounded-full text-sm font-medium transition-colors;
-			}
-			.available-day {
-				@apply cursor-pointer hover:bg-blue-100;
-			}
-			.selected-day {
-				@apply bg-[var(--primary-color)] text-white;
-			}
-			.disabled-day {
-				@apply cursor-not-allowed text-slate-400 line-through;
-			}
-			.weekday-header {
-				@apply flex h-12 w-full items-center justify-center text-xs font-bold text-[var(--text-secondary)] pb-0.5;
-			}
-		</style>
-	</head>
-	<body>
-		<div
-			class="relative flex min-h-screen flex-col bg-[var(--background-color)]"
-		>
-			<header
-				class="sticky top-0 z-10 w-full border-b border-[var(--border-color)] bg-white/80 backdrop-blur-md"
-			>
-				<div
-					class="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8"
-				>
-					<div class="flex items-center gap-4">
-						<svg
-							class="h-6 w-6 text-green-500"
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="currentColor"
-						>
-							<path d="M10 2h4v8h8v4h-8v8h-4v-8H2v-4h8V2z" />
-						</svg>
-						<h1 class="text-xl font-bold text-[var(--text-primary)]">
-							さわやか病院　受診予約
-						</h1>
-					</div>
-					<div class="flex items-center gap-4">
-						<nav class="hidden md:flex items-center gap-6">
-							<a
-								class="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors"
-								href="#"
-								>予約確認</a
-							>
-							<a
-								class="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors"
-								href="#"
-								>ログアウト</a
-							>
-						</nav>
-					</div>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{templates/parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
+<body>
+	<div
+		class="relative flex min-h-screen flex-col bg-[var(--background-color)]">
+		<div th:replace="~{templates/parts/common :: header()}"></div>
+		<main
+			class="flex flex-1 flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
+			<div class="w-full max-w-4xl space-y-8">
+				<div class="text-center">
+					<h2
+						class="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
+						ご希望の予約日を選択してください</h2>
+					<p class="mt-4 text-lg text-[var(--text-secondary)]">休診日: 日曜・祝日
+						/ 営業日: 第2、第4土曜日のみ</p>
 				</div>
-			</header>
-			<main class="flex flex-1 flex-col items-center py-8 px-4 sm:px-6 lg:px-8">
-				<div class="w-full max-w-4xl space-y-8">
-					<div class="text-center">
-						<h2
-							class="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl"
-						>
-							ご希望の予約日を選択してください
-						</h2>
-						<p class="mt-4 text-lg text-[var(--text-secondary)]">
-							休診日: 日曜・祝日 / 営業日: 第2、第4土曜日のみ
-						</p>
-					</div>
+				<div
+					class="rounded-lg border border-[var(--border-color)] bg-white p-4 shadow-sm sm:p-6">
 					<div
-						class="rounded-lg border border-[var(--border-color)] bg-white p-4 shadow-sm sm:p-6"
-					>
-						<div
-							class="flex flex-col items-center gap-8 md:flex-row md:items-start"
-						>
-							<div class="flex w-full flex-col sm:w-80">
-								<div class="mb-4 flex items-center justify-between">
-									<button class="rounded-full p-2 hover:bg-slate-100">
-										<svg
-											fill="currentColor"
-											height="20"
-											viewBox="0 0 256 256"
-											width="20"
-											xmlns="http://www.w3.org/2000/svg"
-										>
+						class="flex flex-col items-center gap-8 md:flex-row md:items-start">
+						<div class="flex w-full flex-col sm:w-80">
+							<div class="mb-4 flex items-center justify-between">
+								<button class="rounded-full p-2 hover:bg-slate-100">
+									<svg fill="currentColor" height="20" viewBox="0 0 256 256"
+										width="20" xmlns="http://www.w3.org/2000/svg">
 											<path
-												d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"
-											></path>
+											d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"></path>
 										</svg>
-									</button>
-									<p class="text-lg font-bold">2024年 7月</p>
-									<button class="rounded-full p-2 hover:bg-slate-100">
-										<svg
-											fill="currentColor"
-											height="20"
-											viewBox="0 0 256 256"
-											width="20"
-											xmlns="http://www.w3.org/2000/svg"
-										>
+								</button>
+								<p class="text-lg font-bold">2024年 7月</p>
+								<button class="rounded-full p-2 hover:bg-slate-100">
+									<svg fill="currentColor" height="20" viewBox="0 0 256 256"
+										width="20" xmlns="http://www.w3.org/2000/svg">
 											<path
-												d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"
-											></path>
+											d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
 										</svg>
-									</button>
+								</button>
+							</div>
+							<div class="grid grid-cols-7">
+								<div class="weekday-header text-red-500">日</div>
+								<div class="weekday-header">月</div>
+								<div class="weekday-header">火</div>
+								<div class="weekday-header">水</div>
+								<div class="weekday-header">木</div>
+								<div class="weekday-header">金</div>
+								<div class="weekday-header text-blue-500">土</div>
+								<div class="col-start-1">
+									<div class="day-cell disabled-day">30</div>
 								</div>
-								<div class="grid grid-cols-7">
-									<div class="weekday-header text-red-500">日</div>
-									<div class="weekday-header">月</div>
-									<div class="weekday-header">火</div>
-									<div class="weekday-header">水</div>
-									<div class="weekday-header">木</div>
-									<div class="weekday-header">金</div>
-									<div class="weekday-header text-blue-500">土</div>
-									<div class="col-start-1">
-										<div class="day-cell disabled-day">30</div>
-									</div>
-									<div class="col-start-2">
-										<button class="day-cell available-day">1</button>
-									</div>
-									<button class="day-cell available-day">2</button>
-									<button class="day-cell available-day">3</button>
-									<button class="day-cell available-day">4</button>
-									<button class="day-cell available-day">5</button>
-									<div class="day-cell disabled-day">6</div>
-									<div class="day-cell disabled-day">7</div>
-									<button class="day-cell available-day">8</button>
-									<button class="day-cell available-day">9</button>
-									<button class="day-cell available-day">10</button>
-									<button class="day-cell available-day">11</button>
-									<button class="day-cell available-day">12</button>
-									<button class="day-cell available-day">13</button>
-									<div class="day-cell disabled-day">14</div>
-									<div class="day-cell disabled-day">15</div>
-									<button class="day-cell available-day">16</button>
-									<button class="day-cell available-day">17</button>
-									<button class="day-cell available-day">18</button>
-									<button class="day-cell available-day">19</button>
-									<div class="day-cell disabled-day">20</div>
-									<div class="day-cell disabled-day">21</div>
-									<button class="day-cell available-day">22</button>
-									<button class="day-cell available-day">23</button>
-									<button class="day-cell available-day">24</button>
-									<button class="day-cell available-day">25</button>
-									<button class="day-cell selected-day">26</button>
-									<button class="day-cell available-day">27</button>
-									<div class="day-cell disabled-day">28</div>
-									<button class="day-cell available-day">29</button>
-									<button class="day-cell available-day">30</button>
-									<button class="day-cell available-day">31</button>
+								<div class="col-start-2">
+									<button class="day-cell available-day">1</button>
+								</div>
+								<button class="day-cell available-day">2</button>
+								<button class="day-cell available-day">3</button>
+								<button class="day-cell available-day">4</button>
+								<button class="day-cell available-day">5</button>
+								<div class="day-cell disabled-day">6</div>
+								<div class="day-cell disabled-day">7</div>
+								<button class="day-cell available-day">8</button>
+								<button class="day-cell available-day">9</button>
+								<button class="day-cell available-day">10</button>
+								<button class="day-cell available-day">11</button>
+								<button class="day-cell available-day">12</button>
+								<button class="day-cell available-day">13</button>
+								<div class="day-cell disabled-day">14</div>
+								<div class="day-cell disabled-day">15</div>
+								<button class="day-cell available-day">16</button>
+								<button class="day-cell available-day">17</button>
+								<button class="day-cell available-day">18</button>
+								<button class="day-cell available-day">19</button>
+								<div class="day-cell disabled-day">20</div>
+								<div class="day-cell disabled-day">21</div>
+								<button class="day-cell available-day">22</button>
+								<button class="day-cell available-day">23</button>
+								<button class="day-cell available-day">24</button>
+								<button class="day-cell available-day">25</button>
+								<button class="day-cell selected-day">26</button>
+								<button class="day-cell available-day">27</button>
+								<div class="day-cell disabled-day">28</div>
+								<button class="day-cell available-day">29</button>
+								<button class="day-cell available-day">30</button>
+								<button class="day-cell available-day">31</button>
+							</div>
+						</div>
+						<div
+							class="w-full flex-1 md:border-l md:pl-8 border-[var(--border-color)]">
+							<h3 class="text-lg font-bold mb-4">選択した日時</h3>
+							<div class="space-y-4">
+								<p class="text-base">
+									<span class="font-semibold">日付:</span> 2024年7月26日 (金)
+								</p>
+								<div class="space-y-2">
+									<label class="font-semibold text-base" for="time-slot">時間:</label>
+									<select
+										class="w-full rounded-md border-[var(--border-color)] focus:border-[var(--primary-color)] focus:ring focus:ring-[var(--primary-color)] focus:ring-opacity-50"
+										id="time-slot" name="time-slot">
+										<option>10:00</option>
+										<option>10:30</option>
+										<option>11:00</option>
+										<option>14:00</option>
+										<option>14:30</option>
+										<option>15:00</option>
+									</select>
 								</div>
 							</div>
-							<div
-								class="w-full flex-1 md:border-l md:pl-8 border-[var(--border-color)]"
-							>
-								<h3 class="text-lg font-bold mb-4">選択した日時</h3>
-								<div class="space-y-4">
-									<p class="text-base">
-										<span class="font-semibold">日付:</span> 2024年7月26日 (金)
-									</p>
-									<div class="space-y-2">
-										<label class="font-semibold text-base" for="time-slot"
-											>時間:</label
-										>
-										<select
-											class="w-full rounded-md border-[var(--border-color)] focus:border-[var(--primary-color)] focus:ring focus:ring-[var(--primary-color)] focus:ring-opacity-50"
-											id="time-slot"
-											name="time-slot"
-										>
-											<option>10:00</option>
-											<option>10:30</option>
-											<option>11:00</option>
-											<option>14:00</option>
-											<option>14:30</option>
-											<option>15:00</option>
-										</select>
-									</div>
-								</div>
-								<div class="mt-8 flex justify-end">
-									<button
-										class="flex w-full items-center justify-center rounded-md bg-[var(--primary-color)] px-6 py-3 text-base font-bold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
-									>
-										予約内容を確認する
-									</button>
-								</div>
+							<div class="mt-8 flex justify-end">
+								<button
+									class="flex w-full items-center justify-center rounded-md bg-[var(--primary-color)] px-6 py-3 text-base font-bold text-white shadow-sm hover:bg-[var(--primary-hover-color)] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto">
+									予約内容を確認する</button>
 							</div>
 						</div>
 					</div>
 				</div>
-			</main>
-		</div>
-	</body>
+			</div>
+		</main>
+		<div th:replace="~{templates/parts/common :: header()}"></div>
+	</div>
+</body>
 </html>
