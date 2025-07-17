@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="auth_common :: auth_header('ログイン - さわやか医院予約システム')"></head>
+<head th:replace="~{parts/auth-common :: auth_head('ログイン - さわやか医院予約システム')}"></head>
 <body
 	class="flex min-h-screen items-center justify-center bg-[var(--background-color)]">
 	<div
@@ -10,18 +10,18 @@
 				さわやか病院 予約システム</h1>
 			<p class="mt-2 text-lg text-[var(--text-secondary)]">ログイン</p>
 		</div>
-		<form action="#" class="mt-8 space-y-6" method="POST">
+		<form th:action="@{/login}" class="mt-8 space-y-6" method="POST">
 			<input name="remember" type="hidden" value="true" />
 			<div class="rounded-md shadow-sm -space-y-px">
 				<div>
 					<label class="sr-only" for="medical-card-number">診察券番号</label>
 					<input
-						class="form-input relative rounded-none rounded-t-md focus:z-10"
-						id="medical-card-number" name="text" placeholder="診察券番号"
-						required="" type="text" autocomplete="off" />
+					  class="form-input relative rounded-md focus:z-10"
+					  id="card_number" name="cardNumber" placeholder="診察券番号"
+					  required="" type="text" autocomplete="off" />
 				</div>
 				<div>
-					<label class="block text-sm font-medium text-[var(--text-primary)]"
+					<label class="block text-lg font-medium text-[var(--text-primary)]"
 						for="birth_year">生年月日</label>
 					<div class="mt-1 grid grid-cols-3 gap-3">
 						<select class="form-input" id="birth_year" name="birth_year"
