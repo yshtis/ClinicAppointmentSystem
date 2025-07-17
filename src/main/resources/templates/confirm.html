@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-	<head th:replace="~{templates/parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
+	<head th:replace="~{parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
 	<body class="bg-[var(--background-color)] text-[var(--text-primary)]">
 		<div class="flex flex-col min-h-screen">
-			<div th:replace="~{templates/parts/common :: header()}"></div>
+			<div th:replace="~{parts/common :: header()}"></div>
 			<div class="layout-container flex h-full grow flex-col">
 				<main
 					class="flex flex-1 flex-col items-center bg-[var(--background-color)] py-12 sm:px-6"
@@ -80,7 +80,7 @@
 					</div>
 				</main>
 			</div>
-			<div th:replace="~{templates/parts/common :: footer()}"></div>
+			<div th:replace="~{parts/common :: footer()}"></div>
 		</div>
 	</body>
 </html>

@@ -1,18 +1,21 @@
 package com.unknownclinic.appointment.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotNull;
 
-public class Reservation {
+public class Booking {
 	
 	private Long id;
 	
 	@NotNull
-	private String userId;
-
+	private Long userId;
+	
 	@NotNull
-	private LocalDateTime reservedAt;
+	private LocalDate date;
+	
+	@NotNull
+	private Long timeSlotId;
 
 	@NotNull
 	private String status;

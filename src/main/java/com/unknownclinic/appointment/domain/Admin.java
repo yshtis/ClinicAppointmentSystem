@@ -10,7 +10,7 @@ public class Admin {
 	private Long id;
 	
 	@NotNull
-	private String userId;
+	private String loginId;
 
 	@NotNull
 	private String password;
