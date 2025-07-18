@@ -1,71 +1,67 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="parts/auth-common :: auth_head('ログイン - さわやか医院予約システム')"></head>
+<head th:replace="parts/auth-common :: auth_head('ログイン - さわやか医院予約システム')">
+<link rel="stylesheet" href="style.css">
+</head>
 <body
-	class="flex min-h-screen items-center justify-center bg-[var(--background-color)]">
-	<div
-		class="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg">
-		<div class="text-center">
-			<h1 class="text-3xl font-bold text-[var(--text-primary)]">
-				さわやか病院 予約システム</h1>
-			<p class="mt-2 text-lg text-[var(--text-secondary)]">ログイン</p>
+	style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--background-color);">
+	<div class="auth-card">
+		<div class="text-center mb-4">
+			<h1>さわやか病院 予約システム</h1>
+			<p class="lead">ログイン</p>
 		</div>
-		<form action="#" class="mt-8 space-y-6" method="POST">
+		<div th:if="${param.logout}"
+			class="alert alert-success mb-3 text-center">ログアウトしました</div>
+		<div th:if="${param.error}"
+			class="alert alert-danger mb-3 text-center">ログインに失敗しました</div>
+		<form th:action="@{/login}" class="mt-4" method="POST">
 			<input name="remember" type="hidden" value="true" />
-			<div class="rounded-md shadow-sm -space-y-px">
-				<div>
-					<label class="sr-only" for="medical-card-number">診察券番号</label>
-					<input
-					  class="form-input relative rounded-md focus:z-10"
-					  id="card_number" name="cardNumber" placeholder="診察券番号"
-					  required="" type="text" autocomplete="off" />
-				</div>
-				<div>
-					<label class="block text-lg font-medium text-[var(--text-primary)]"
-						for="birth_year">生年月日</label>
-					<div class="mt-1 grid grid-cols-3 gap-3">
-						<select class="form-input" id="birth_year" name="birth_year"
-							required="">
-							<option value="">年</option>
-							<script>
-								const currentYear = new Date().getFullYear();
-								for (let i = currentYear; i >= 1900; i--) {
-									document
-											.write(`<option value="${i}">${i}</option>`);
-								}
-							</script>
-						</select> <select class="form-input" id="birth_month" name="birth_month"
-							required="">
-							<option value="">月</option>
-							<script>
-								for (let i = 1; i <= 12; i++) {
-									document
-											.write(`<option value="${i}">${i}</option>`);
-								}
-							</script>
-						</select> <select class="form-input" id="birth_day" name="birth_day"
-							required="">
-							<option value="">日</option>
-							<script>
-								for (let i = 1; i <= 31; i++) {
-									document
-											.write(`<option value="${i}">${i}</option>`);
-								}
-							</script>
-						</select>
-					</div>
+			<div class="mb-3">
+				<label class="form-label" for="card_number">診察券番号</label> <input
+					class="form-control" id="card_number" name="cardNumber"
+					placeholder="診察券番号" required type="text" autocomplete="off" />
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="birth_year">生年月日</label>
+				<div style="display: flex; gap: 0.5rem;">
+					<select class="form-select" id="birth_year" name="birth_year"
+						required style="flex: 2;">
+						<option value="">年</option>
+						<script>
+							const currentYear = new Date().getFullYear();
+							for (let i = currentYear; i >= 1900; i--) {
+								document
+										.write(`<option value="${i}">${i}</option>`);
+							}
+						</script>
+					</select> <select class="form-select" id="birth_month" name="birth_month"
+						required style="flex: 1;">
+						<option value="">月</option>
+						<script>
+							for (let i = 1; i <= 12; i++) {
+								document
+										.write(`<option value="${i}">${i}</option>`);
+							}
+						</script>
+					</select> <select class="form-select" id="birth_day" name="birth_day"
+						required style="flex: 1;">
+						<option value="">日</option>
+						<script>
+							for (let i = 1; i <= 31; i++) {
+								document
+										.write(`<option value="${i}">${i}</option>`);
+							}
+						</script>
+					</select>
 				</div>
 			</div>
-			<div>
-				<button
-					class="btn-primary group relative flex w-full justify-center"
-					type="submit">ログイン</button>
+			<div class="mb-3">
+				<button class="btn btn-primary w-100" type="submit">ログイン</button>
 			</div>
 		</form>
-		<div class="text-center text-sm text-[var(--text-secondary)]">
-			はじめて当院を受診される方はこちら <a
-				class="font-medium text-[var(--primary-color)] hover:text-[var(--primary-hover-color)]"
-				href="#"> 初診予約登録 </a>
+		<div class="register-link text-center">
+			はじめて当院を受診される方はこちら<br>
+			<a href="#">初診予約登録</a>
 		</div>
 	</div>
 </body>
