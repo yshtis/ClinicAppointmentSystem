@@ -43,7 +43,6 @@
 														<span th:if="${dayNum >= 1 and dayNum <= lastDay}">
 															<th:block
 																th:with="dateStr=${year + '-' + (month < 10 ? '0' + month : month) + '-' + (dayNum < 10 ? '0' + dayNum : dayNum)}">
-																<!-- 営業日判定とボタン表示 -->
 																<button th:text="${dayNum}"
 																	th:class="${T(java.lang.Boolean).TRUE.equals(businessDayMap[dateStr])} ?
 																			'btn btn-outline-success btn-sm calendar-date-btn' :
@@ -67,6 +66,8 @@
 							</div>
 						</div>
 					</div>
+					<!-- ここに左のカレンダーで押下した日付を表示する -->
+					
 					<div class="col-md-6">
 						<div class="mb-4">
 							<h3 class="fs-5 fw-semibold text-primary mb-3">午前 (9:00 -
