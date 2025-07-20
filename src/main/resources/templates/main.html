@@ -16,7 +16,8 @@
 							<div class="card-body">
 								<div
 									class="d-flex justify-content-between align-items-center mb-3">
-									<p class="fs-1 fw-semibold mb-0">2024年7月</p>
+									<p class="fs-1 fw-semibold mb-0"
+										th:text="${year} + '年' + ${month} + '月'"></p>
 									<button
 										class="btn btn-outline-primary btn-sm rounded-pill px-3">翌月</button>
 								</div>
@@ -35,50 +36,30 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td></td>
-												<td class="text-muted">30</td>
-												<td><button class="btn btn-outline-success btn-sm">1</button></td>
-												<td><button class="btn btn-outline-success btn-sm">2</button></td>
-												<td><button class="btn btn-outline-success btn-sm">3</button></td>
-												<td><button class="btn btn-success btn-sm active">4</button></td>
-												<td><button class="btn btn-secondary btn-sm disabled">5</button></td>
-											</tr>
-											<tr>
-												<td><button class="btn btn-secondary btn-sm disabled">6</button></td>
-												<td><button class="btn btn-outline-success btn-sm">7</button></td>
-												<td><button class="btn btn-outline-success btn-sm">8</button></td>
-												<td><button class="btn btn-outline-success btn-sm">9</button></td>
-												<td><button class="btn btn-outline-success btn-sm">10</button></td>
-												<td><button class="btn btn-outline-success btn-sm">11</button></td>
-												<td><button class="btn btn-outline-success btn-sm">12</button></td>
-											</tr>
-											<tr>
-												<td><button class="btn btn-secondary btn-sm disabled">13</button></td>
-												<td><button class="btn btn-outline-success btn-sm">14</button></td>
-												<td><button class="btn btn-outline-success btn-sm">15</button></td>
-												<td><button class="btn btn-outline-success btn-sm">16</button></td>
-												<td><button class="btn btn-outline-success btn-sm">17</button></td>
-												<td><button class="btn btn-outline-success btn-sm">18</button></td>
-												<td><button class="btn btn-secondary btn-sm disabled">19</button></td>
-											</tr>
-											<tr>
-												<td><button class="btn btn-secondary btn-sm disabled">20</button></td>
-												<td><button class="btn btn-outline-success btn-sm">21</button></td>
-												<td><button class="btn btn-outline-success btn-sm">22</button></td>
-												<td><button class="btn btn-outline-success btn-sm">23</button></td>
-												<td><button class="btn btn-outline-success btn-sm">24</button></td>
-												<td><button class="btn btn-outline-success btn-sm">25</button></td>
-												<td><button class="btn btn-outline-success btn-sm">26</button></td>
-											</tr>
-											<tr>
-												<td><button class="btn btn-secondary btn-sm disabled">27</button></td>
-												<td><button class="btn btn-outline-success btn-sm">28</button></td>
-												<td><button class="btn btn-outline-success btn-sm">29</button></td>
-												<td><button class="btn btn-outline-success btn-sm">30</button></td>
-												<td><button class="btn btn-outline-success btn-sm">31</button></td>
-												<td></td>
-												<td></td>
+											<tr
+												th:each="week : ${#numbers.sequence(0, ((firstDayOfWeek + lastDay - 1) / 7))}">
+												<td th:each="dow : ${#numbers.sequence(0, 6)}"><span
+													th:with="dayNum=${week * 7 + dow - firstDayOfWeek + 1}">
+														<span th:if="${dayNum >= 1 and dayNum <= lastDay}">
+															<th:block
+																th:with="dateStr=${year + '-' + (month < 10 ? '0' + month : month) + '-' + (dayNum < 10 ? '0' + dayNum : dayNum)}">
+																<!-- 営業日判定とボタン表示 -->
+																<button th:text="${dayNum}"
+																	th:class="${T(java.lang.Boolean).TRUE.equals(businessDayMap[dateStr])} ?
+																			'btn btn-outline-success btn-sm calendar-date-btn' :
+																			'btn btn-secondary btn-sm disabled calendar-date-btn'"
+																	th:disabled="${!T(java.lang.Boolean).TRUE.equals(businessDayMap[dateStr])}">
+																</button>
+																<!-- デバッグ表示（必要なら残す） -->
+																<!--
+																<br>
+																<span style="font-size: 11px; color: #555;" th:text="'dateStr=' + dateStr"></span>
+																<br>
+																<span style="font-size: 11px; color: #555;" th:text="'Map値=' + ${businessDayMap[dateStr]}"></span>
+																-->
+															</th:block>
+													</span>
+												</span></td>
 											</tr>
 										</tbody>
 									</table>
@@ -90,7 +71,7 @@
 						<div class="mb-4">
 							<h3 class="fs-5 fw-semibold text-primary mb-3">午前 (9:00 -
 								12:00)</h3>
-							<div class="row g-2 mb-4">
+							<div class="row g-2 mb-4 time-slot-row">
 								<div class="col-6 col-sm-3">
 									<button class="btn btn-outline-primary w-100">9:00</button>
 								</div>
@@ -132,7 +113,7 @@
 						<div>
 							<h3 class="fs-5 fw-semibold text-primary mb-3">午後 (13:00 -
 								17:00)</h3>
-							<div class="row g-2">
+							<div class="row g-2 time-slot-row">
 								<div class="col-6 col-sm-3">
 									<button class="btn btn-outline-primary w-100">13:00</button>
 								</div>
