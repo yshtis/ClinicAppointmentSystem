@@ -1,0 +1,164 @@
+@charset "utf-8";
+
+/* ==========================================================
+   カラー・共通変数
+   - サイト全体の色・角丸・シャドウの定義
+========================================================== */
+:root {
+	--primary-color: #0c7ff2;
+	--primary-hover-color: #0a6dcf;
+	--text-primary: #1e293b;
+	--text-secondary: #64748b;
+	--background-color: #f8fafc;
+	--card-background-color: #ffffff;
+	--border-color: #e2e8f0;
+	--shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.06);
+	--radius: 1.5rem;
+}
+
+/* ==========================================================
+   全体・背景レイアウト
+   - ベースとなる文字・背景色など
+========================================================== */
+body {
+	font-family: "Noto Sans JP", "Work Sans", sans-serif;
+	background-color: var(--background-color);
+	color: var(--text-primary);
+}
+
+/* ==========================================================
+   ログイン/認証カード
+   - 中央に配置される白背景のパネルとその内部レイアウト
+========================================================== */
+.auth-card {
+	background: var(--card-background-color);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	max-width: 370px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 2.5rem 2rem 2rem 2rem;
+}
+
+.auth-card h1 {
+	font-weight: 700;
+	color: var(--primary-color);
+	margin-bottom: 0.5rem;
+	font-size: 1.5rem;
+	letter-spacing: 0.01em;
+}
+
+.auth-card .lead {
+	color: var(--text-secondary);
+	font-size: 1.1rem;
+	margin-bottom: 1.5rem;
+}
+
+.auth-card .register-link {
+	margin-top: 2rem;
+	font-size: 0.98rem;
+	color: var(--text-secondary);
+}
+
+.auth-card .register-link a {
+	color: var(--primary-color);
+	text-decoration: underline;
+	font-weight: 500;
+	transition: color 0.15s;
+}
+
+.auth-card .register-link a:hover {
+	color: var(--primary-hover-color);
+}
+
+@media (max-width: 480px) {
+	.auth-card {
+		padding: 1.4rem 0.5rem 1.5rem 0.5rem;
+		max-width: 98vw;
+	}
+}
+
+/* ==========================================================
+   入力フォーム（診察券番号、生年月日）
+   - ラベル、テキストボックス、セレクトボックス
+========================================================== */
+.form-label {
+	font-weight: 500;
+	color: var(--text-primary);
+	margin-bottom: 0.3rem;
+	font-size: 1rem;
+}
+
+.form-control,
+.form-select {
+	border: 1.5px solid var(--border-color);
+	border-radius: 0.7rem;
+	background: var(--card-background-color);
+	padding: 0.75rem 1rem;
+	font-size: 1rem;
+	transition: border 0.15s, box-shadow 0.15s;
+	color: var(--text-primary);
+}
+
+.form-control:focus,
+.form-select:focus {
+	border-color: var(--primary-color);
+	outline: none;
+	box-shadow: 0 0 0 0.18rem rgba(12, 127, 242, 0.09);
+}
+
+/* ==========================================================
+   ボタン（ログインボタン）
+   - 共通ボタンデザインとアクティブ・ホバー時の色
+========================================================== */
+.btn,
+.btn.active,
+.btn:active,
+.btn-primary,
+.btn-outline-primary {
+	border-width: 1.5px !important;
+	border-radius: 0.7rem !important;
+	font-size: 1.08rem;
+	padding: 0.7rem 0 !important;
+	font-weight: 600;
+	min-width: 70px;
+	transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+/* ログインボタンのアクティブ・ホバー時の色統一 */
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary.active,
+.btn-outline-primary:active,
+.btn-primary,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary:focus {
+	background-color: var(--primary-hover-color) !important;
+	color: #fff !important;
+	border-color: var(--primary-hover-color) !important;
+}
+
+/* 非アクティブ時のoutline-primaryボタン */
+.btn-outline-primary {
+	background: transparent;
+	color: var(--primary-color);
+	border-color: var(--primary-color);
+}
+
+/* ==========================================================
+   アラート（成功・エラー表示メッセージ）
+========================================================== */
+.alert {
+	border-radius: 0.7rem;
+	font-size: 1rem;
+}
+
+/* ==========================================================
+   テキストカラー
+   - サブテキストなどで使用
+========================================================== */
+.text-secondary {
+	color: var(--text-secondary) !important;
+}

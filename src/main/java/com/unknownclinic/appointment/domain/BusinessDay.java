@@ -6,20 +6,14 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
+// 営業日に必要なオブジェクト、まだ実装しないが、将来のために定義しておく
+
 @Data
-public class Booking {
-	
-	private Long id;
-	
-	@NotNull
-	private Long userId;
-	
+public class BusinessDay {
+
 	@NotNull
 	private LocalDate date;
 	
 	@NotNull
-	private Long timeSlotId;
-
-	@NotNull
-	private String status;
+	private boolean isOpen;
 }
