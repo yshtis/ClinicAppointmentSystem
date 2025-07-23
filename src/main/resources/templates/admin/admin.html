@@ -1,369 +1,49 @@
 <!DOCTYPE html>
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-		<link href="https://fonts.googleapis.com" rel="preconnect" />
-		<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Work+Sans:wght@400;500;700;900&amp;display=swap"
-			rel="stylesheet"
-		/>
-		<link
-			href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
-			rel="stylesheet"
-		/>
-		<title>病院予約システム - 管理画面</title>
-		<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
-		<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-		<style type="text/tailwindcss">
-			:root {
-				--primary-color: #dce8f3;
-				--text-primary: #111827;
-				--text-secondary: #6b7280;
-				--background-color: #f9fafb;
-				--sidebar-bg: #ffffff;
-				--border-color: #e5e7eb;
-				--danger-color: #ef4444;
-				--danger-hover-color: #dc2626;
-			}
-			body {
-				font-family: "Work Sans", "Noto Sans JP", sans-serif;
-			}
-			.sidebar-link {
-				@apply flex items-center gap-3 px-4 py-3 text-[var(--text-secondary)] hover:bg-[var(--primary-color)] hover:text-[var(--text-primary)] rounded-lg transition-colors;
-			}
-			.sidebar-link.active {
-				@apply bg-[var(--primary-color)] text-[var(--text-primary)] font-medium;
-			}
-			.sidebar-link .material-icons-outlined {
-				@apply text-2xl;
-			}
-		</style>
-	</head>
-	<body class="bg-[var(--background-color)]">
-		<div class="flex min-h-screen">
-			<aside
-				class="w-64 bg-[var(--sidebar-bg)] p-4 border-r border-[var(--border-color)] flex-shrink-0"
-			>
-				<div class="flex flex-col h-full">
-					<h1 class="text-xl font-bold text-[var(--text-primary)] px-4 mb-6">
-						クリニック名
-					</h1>
-					<nav class="flex flex-col gap-2">
-						<a class="sidebar-link" href="#">
-							<span class="material-icons-outlined">dashboard</span>
-							<span>ダッシュボード</span>
-						</a>
-						<a class="sidebar-link active" href="#">
-							<span class="material-icons-outlined">calendar_month</span>
-							<span>予約</span>
-						</a>
-						<a class="sidebar-link" href="#">
-							<span class="material-icons-outlined">group</span>
-							<span>患者</span>
-						</a>
-						<a class="sidebar-link" href="#">
-							<span class="material-icons-outlined">badge</span>
-							<span>スタッフ</span>
-						</a>
-						<a class="sidebar-link" href="#">
-							<span class="material-icons-outlined">settings</span>
-							<span>設定</span>
-						</a>
-					</nav>
-					<div class="mt-auto">
-						<a class="sidebar-link" href="#">
-							<span class="material-icons-outlined">logout</span>
-							<span>ログアウト</span>
-						</a>
-					</div>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{parts/common :: html_head('管理者トップ - さわやか医院予約システム')}"></head>
+<body class="bg-light text-dark">
+	<div class="d-flex flex-column min-vh-100 bg-light">
+		<div th:replace="~{parts/common :: header()}"></div>
+		<main class="container flex-grow-1 py-5">
+			<div class="mx-auto" style="max-width: 900px;">
+				<div class="mb-4">
+					<h2 class="mb-2 display-6 fw-bold text-primary">管理者メニュー</h2>
+					<p class="text-secondary fs-5">さわやか医院 予約システム 管理画面</p>
 				</div>
-			</aside>
-			<main class="flex-1 p-8">
-				<header class="mb-8">
-					<h1 class="text-4xl font-bold text-[var(--text-primary)]">
-						予約管理
-					</h1>
-					<p class="text-[var(--text-secondary)] mt-1">
-						予約の確認、変更、削除が行えます。
-					</p>
-				</header>
-				<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-					<div class="lg:col-span-2">
-						<div class="bg-white p-6 rounded-lg shadow-sm">
-							<div class="flex items-center justify-between mb-4">
-								<button class="p-2 rounded-full hover:bg-gray-100">
-									<span
-										class="material-icons-outlined text-[var(--text-secondary)]"
-										>chevron_left</span
-									>
-								</button>
-								<h2
-									class="text-lg font-bold text-center text-[var(--text-primary)]"
-								>
-									2024年7月
-								</h2>
-								<button class="p-2 rounded-full hover:bg-gray-100">
-									<span
-										class="material-icons-outlined text-[var(--text-secondary)]"
-										>chevron_right</span
-									>
-								</button>
-							</div>
-							<div class="grid grid-cols-7 gap-1 text-center">
-								<div
-									class="text-xs font-bold text-[var(--text-secondary)] py-2"
-								>
-									日
-								</div>
-								<div
-									class="text-xs font-bold text-[var(--text-secondary)] py-2"
-								>
-									月
-								</div>
-								<div
-									class="text-xs font-bold text-[var(--text-secondary)] py-2"
-								>
-									火
-								</div>
-								<div
-									class="text-xs font-bold text-[var(--text-secondary)] py-2"
-								>
-									水
-								</div>
-								<div
-									class="text-xs font-bold text-[var(--text-secondary)] py-2"
-								>
-									木
-								</div>
-								<div
-									class="text-xs font-bold text-[var(--text-secondary)] py-2"
-								>
-									金
-								</div>
-								<div
-									class="text-xs font-bold text-[var(--text-secondary)] py-2"
-								>
-									土
-								</div>
-								<div class="text-gray-400 py-2">30</div>
-								<div class="py-2">1</div>
-								<div class="py-2">2</div>
-								<div class="py-2">3</div>
-								<div class="py-2">4</div>
-								<div
-									class="bg-[var(--primary-color)] text-[var(--text-primary)] font-bold rounded-full py-2 cursor-pointer"
-								>
-									5
-								</div>
-								<div class="py-2">6</div>
-								<div class="py-2">7</div>
-								<div class="py-2">8</div>
-								<div class="py-2">9</div>
-								<div class="py-2">10</div>
-								<div class="py-2">11</div>
-								<div class="py-2">12</div>
-								<div class="py-2">13</div>
-								<div class="py-2">14</div>
-								<div class="py-2">15</div>
-								<div class="py-2">16</div>
-								<div class="py-2">17</div>
-								<div class="py-2">18</div>
-								<div class="py-2">19</div>
-								<div class="py-2">20</div>
-								<div class="py-2">21</div>
-								<div class="py-2">22</div>
-								<div class="py-2">23</div>
-								<div class="py-2">24</div>
-								<div class="py-2">25</div>
-								<div class="py-2">26</div>
-								<div class="py-2">27</div>
-								<div class="py-2">28</div>
-								<div class="py-2">29</div>
-								<div class="py-2">30</div>
-								<div class="py-2">31</div>
-								<div class="text-gray-400 py-2">1</div>
-							</div>
-						</div>
-						<div class="mt-8 bg-white rounded-lg shadow-sm overflow-hidden">
-							<div class="p-6">
-								<h3 class="text-xl font-bold text-[var(--text-primary)] mb-4">
-									7月5日の予約一覧
-								</h3>
-							</div>
-							<div class="overflow-x-auto">
-								<table
-									class="w-full text-sm text-left text-[var(--text-secondary)]"
-								>
-									<thead
-										class="text-xs text-[var(--text-secondary)] uppercase bg-gray-50"
-									>
-										<tr>
-											<th class="px-6 py-3" scope="col">時間</th>
-											<th class="px-6 py-3" scope="col">患者名</th>
-											<th class="px-6 py-3" scope="col">診療科</th>
-											<th class="px-6 py-3" scope="col">ステータス</th>
-											<th class="px-6 py-3" scope="col">
-												<span class="sr-only">アクション</span>
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr class="bg-white border-b">
-											<th
-												class="px-6 py-4 font-medium text-[var(--text-primary)] whitespace-nowrap"
-												scope="row"
-											>
-												9:00 AM
-											</th>
-											<td class="px-6 py-4">山田 太郎</td>
-											<td class="px-6 py-4">内科</td>
-											<td class="px-6 py-4">
-												<span
-													class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full"
-													>予約済み</span
-												>
-											</td>
-											<td class="px-6 py-4 text-right">
-												<a
-													class="font-medium text-blue-600 hover:underline"
-													href="#"
-													>詳細</a
-												>
-											</td>
-										</tr>
-										<tr class="bg-white border-b">
-											<th
-												class="px-6 py-4 font-medium text-[var(--text-primary)] whitespace-nowrap"
-												scope="row"
-											>
-												10:00 AM
-											</th>
-											<td class="px-6 py-4">佐藤 花子</td>
-											<td class="px-6 py-4">皮膚科</td>
-											<td class="px-6 py-4">
-												<span
-													class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full"
-													>予約済み</span
-												>
-											</td>
-											<td class="px-6 py-4 text-right">
-												<a
-													class="font-medium text-blue-600 hover:underline"
-													href="#"
-													>詳細</a
-												>
-											</td>
-										</tr>
-										<tr class="bg-white border-b">
-											<th
-												class="px-6 py-4 font-medium text-[var(--text-primary)] whitespace-nowrap"
-												scope="row"
-											>
-												11:00 AM
-											</th>
-											<td class="px-6 py-4">田中 一郎</td>
-											<td class="px-6 py-4">整形外科</td>
-											<td class="px-6 py-4">
-												<span
-													class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full"
-													>来院済み</span
-												>
-											</td>
-											<td class="px-6 py-4 text-right">
-												<a
-													class="font-medium text-blue-600 hover:underline"
-													href="#"
-													>詳細</a
-												>
-											</td>
-										</tr>
-										<tr class="bg-white border-b">
-											<th
-												class="px-6 py-4 font-medium text-[var(--text-primary)] whitespace-nowrap"
-												scope="row"
-											>
-												12:00 PM
-											</th>
-											<td class="px-6 py-4">鈴木 次郎</td>
-											<td class="px-6 py-4">眼科</td>
-											<td class="px-6 py-4">
-												<span
-													class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full"
-													>確認中</span
-												>
-											</td>
-											<td class="px-6 py-4 text-right">
-												<a
-													class="font-medium text-blue-600 hover:underline"
-													href="#"
-													>詳細</a
-												>
-											</td>
-										</tr>
-										<tr class="bg-white">
-											<th
-												class="px-6 py-4 font-medium text-[var(--text-primary)] whitespace-nowrap"
-												scope="row"
-											>
-												1:00 PM
-											</th>
-											<td class="px-6 py-4">高橋 三郎</td>
-											<td class="px-6 py-4">耳鼻咽喉科</td>
-											<td class="px-6 py-4">
-												<span
-													class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full"
-													>キャンセル</span
-												>
-											</td>
-											<td class="px-6 py-4 text-right">
-												<a
-													class="font-medium text-blue-600 hover:underline"
-													href="#"
-													>詳細</a
-												>
-											</td>
-										</tr>
-									</tbody>
-								</table>
+				<div class="row g-4">
+					<div class="col-12 col-md-6 mx-auto">
+						<div class="card shadow-sm">
+							<div class="card-body">
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item py-3"><a
+										th:href="@{/admin/appointments}"
+										class="fs-5 text-decoration-none text-primary"> <i
+											class="bi bi-calendar-check me-2"></i>予約一覧・管理
+									</a></li>
+									<li class="list-group-item py-3"><a
+										th:href="@{/admin/available-days}"
+										class="fs-5 text-decoration-none text-primary"> <i
+											class="bi bi-calendar-event me-2"></i>営業日設定
+									</a></li>
+									<!-- 追加メニューがあればここに -->
+								</ul>
 							</div>
 						</div>
 					</div>
-					<div class="lg:col-span-1">
-						<div class="bg-white p-6 rounded-lg shadow-sm">
-							<h3 class="text-xl font-bold text-[var(--text-primary)] mb-4">
-								予約を消去
-							</h3>
-							<p class="text-[var(--text-secondary)] mb-6 text-sm">
-								消去したい予約のIDを入力してください。この操作は取り消せません。
+					<div class="col-12 col-md-6 d-flex align-items-center">
+						<div class="w-100 text-center">
+							<!-- 管理者向けの説明やお知らせをここに表示してもよい -->
+							<p class="fs-6 text-secondary">
+								各種予約・営業日管理が行えます。<br> 必要な管理メニューを選択してください。
 							</p>
-							<form>
-								<div class="mb-4">
-									<label
-										class="block mb-2 text-sm font-medium text-[var(--text-primary)]"
-										for="reservation-id"
-										>予約ID</label
-									>
-									<input
-										class="bg-gray-50 border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-										id="reservation-id"
-										placeholder="例: 12345"
-										required=""
-										type="text"
-									/>
-								</div>
-								<button
-									class="w-full text-white bg-[var(--danger-color)] hover:bg-[var(--danger-hover-color)] focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors"
-									type="submit"
-								>
-									予約を消去する
-								</button>
-							</form>
+							<a th:href="@{/admin/logout}"
+								class="btn btn-outline-primary mt-3 px-5 fw-bold">ログアウト</a>
 						</div>
 					</div>
 				</div>
-			</main>
-		</div>
-	</body>
+			</div>
+		</main>
+		<div th:replace="~{parts/common :: footer()}"></div>
+	</div>
+</body>
 </html>
