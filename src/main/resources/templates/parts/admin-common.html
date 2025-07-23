@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="html_head(title)">
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<title th:text="${title}"></title>
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Work+Sans:wght@400;500;700&amp;display=swap"
+	rel="stylesheet" />
+<link th:href="@{/css/main.css}" rel="stylesheet" />
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"
+	th:if="${T(org.thymeleaf.util.StringUtils).isEmpty(icon)}" />
+</head>
+<body>
+	<header th:fragment="header()" class="header-sticky">
+		<div class="header-inner">
+			<div class="header-logo">
+				<svg class="clinic-logo" xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24" fill="currentColor">
+		        <path d="M10 2h4v8h8v4h-8v8h-4v-8H2v-4h8V2z" />
+		      </svg>
+				<h1 class="clinic-title">さわやか医院 受診予約</h1>
+			</div>
+			<nav class="header-nav">
+				<a class="nav-link" href="">予約確認</a>
+				<form th:action="@{/admin/logout}" method="post"
+					style="display: inline;">
+					<button type="submit" class="nav-link btn btn-link p-0"
+						style="vertical-align: baseline;">ログアウト</button>
+				</form>
+			</nav>
+		</div>
+	</header>
+	<footer th:fragment="footer()"
+		class="bg-[var(--card-background-color)] mt-auto py-4 border-t border-[var(--border-color)]">
+		<div
+			class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-[var(--text-secondary)]">
+			<p>© 2025 Sawayaka Clinic. All rights reserved.</p>
+		</div>
+	</footer>
+</body>
+</html>
