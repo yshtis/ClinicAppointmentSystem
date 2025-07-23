@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="parts/auth-common :: auth_head('管理者ログイン - さわやか医院予約システム')">
+<link rel="stylesheet" href="../css/auth.css">
+</head>
+<body
+	style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--background-color);">
+	<div class="auth-card">
+		<div class="text-center mb-4">
+			<h1>さわやか病院 予約システム</h1>
+			<p class="lead">管理者ログイン</p>
+		</div>
+		<div th:if="${param.logout}"
+			class="alert alert-success mb-3 text-center">ログアウトしました</div>
+		<div th:if="${param.error}"
+			class="alert alert-danger mb-3 text-center">ログインに失敗しました</div>
+		<form th:action="@{/admin/login}" class="mt-4" method="POST">
+			<input name="remember" type="hidden" value="true" />
+			<div class="mb-3">
+				<label class="form-label" for="login_id">管理者ID</label>
+				<input class="form-control" id="login_id" name="loginId"
+					placeholder="管理者ID" required type="text" autocomplete="off" />
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="password">パスワード</label>
+				<input class="form-control" id="password" name="password"
+					placeholder="パスワード" required type="password" autocomplete="off" />
+			</div>
+			<div class="mb-3">
+				<button class="btn btn-primary w-100" type="submit">ログイン</button>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
