@@ -1,6 +1,7 @@
 package com.unknownclinic.appointment.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -10,9 +11,11 @@ import lombok.Data;
 @Data
 public class BusinessDay {
 
-	@NotNull
-	private LocalDate date;
+	private Long id;
 	
 	@NotNull
-	private boolean isOpen;
+	private LocalDate businessDate;
+	
+	@NotNull
+	private LocalDateTime createdAt;
 }

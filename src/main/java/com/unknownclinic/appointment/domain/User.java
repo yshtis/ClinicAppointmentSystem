@@ -23,4 +23,7 @@ public class User {
 	
 	@NotNull
 	private String cardNumber;
+	
+	@NotNull
+	private boolean isTemporary;
 }

@@ -4,10 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class AdminBookingController {
+public class BookingController {
 
-	@GetMapping("/admin/main.html")
-	public String showAdminBookingList() {
-		return "admin/main";
+	@GetMapping("/main")
+	public String showBookingForm() {
+		return "main";
 	}
 }

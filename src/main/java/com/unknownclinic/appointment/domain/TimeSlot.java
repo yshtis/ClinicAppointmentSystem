@@ -1,6 +1,6 @@
 package com.unknownclinic.appointment.domain;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -12,8 +12,14 @@ public class TimeSlot {
 	private long id;
 	
     @NotNull
-    private LocalTime startTime;
-
+    private long businessDayId;
+    
     @NotNull
-    private LocalTime endTime;
+    private Integer slotType; // 0: 午前, 1: 午後
+    
+    @NotNull
+    private boolean isAvailable;
+    
+    @NotNull
+    private LocalDateTime endTime;
 }
