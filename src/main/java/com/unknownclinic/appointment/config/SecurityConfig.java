@@ -28,7 +28,7 @@ public class SecurityConfig {
 						.loginProcessingUrl("/admin/login")
 						.usernameParameter("loginId")
 						.passwordParameter("password")
-						.defaultSuccessUrl("/admin/admin.html", true)
+						.defaultSuccessUrl("/admin/main.html", true)
 						.failureUrl("/admin/login?error")
 						.permitAll())
 				.logout(logout -> logout
