@@ -1,45 +1,91 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{parts/admin-common :: html_head('管理者トップ - さわやか医院予約システム')}"></head>
+<head
+	th:replace="~{parts/admin-common :: html_head('管理者トップ - さわやか医院予約システム')}"></head>
 <body class="bg-light text-dark">
 	<div class="d-flex flex-column min-vh-100 bg-light">
 		<div th:replace="~{parts/admin-common :: header()}"></div>
 		<main class="container flex-grow-1 py-5">
-			<div class="mx-auto" style="max-width: 900px;">
-				<div class="mb-4">
-					<h2 class="mb-2 display-6 fw-bold text-primary">管理者メニュー</h2>
-					<p class="text-secondary fs-5">さわやか医院 予約システム 管理画面</p>
-				</div>
-				<div class="row g-4">
-					<div class="col-12 col-md-6 mx-auto">
-						<div class="card shadow-sm">
-							<div class="card-body">
-								<ul class="list-group list-group-flush">
-									<li class="list-group-item py-3"><a
-										th:href="@{/admin/appointments}"
-										class="fs-5 text-decoration-none text-primary"> <i
-											class="bi bi-calendar-check me-2"></i>予約一覧・管理
-									</a></li>
-									<li class="list-group-item py-3"><a
-										th:href="@{/admin/available-days}"
-										class="fs-5 text-decoration-none text-primary"> <i
-											class="bi bi-calendar-event me-2"></i>営業日設定
-									</a></li>
-									<!-- 追加メニューがあればここに -->
-								</ul>
-							</div>
-						</div>
+			<!-- カレンダー&予約一覧のみ記載 -->
+			<div class="container mt-4">
+				<div class="row">
+					<!-- カレンダー部分 -->
+					<div class="col-md-6">
+						<h5>予約カレンダー</h5>
+						<!-- inputではなくdivでカレンダーを常時表示 -->
+						<div id="calendar"></div>
 					</div>
-					<div class="col-12 col-md-6 d-flex align-items-center">
-						<div class="w-100 text-center">
-							<!-- 管理者向けの説明やお知らせをここに表示してもよい -->
-							<p class="fs-6 text-secondary">
-								各種予約・営業日管理が行えます。<br> 必要な管理メニューを選択してください。
-							</p>
-						</div>
+					<!-- 予約一覧部分 -->
+					<div class="col-md-6">
+						<h5 id="selected-date-title">選択した日付の予約一覧</h5>
+						<table class="table table-bordered" id="appointment-table">
+							<thead>
+								<tr>
+									<th>患者名</th>
+									<th>電話番号</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- 予約データをここに動的に挿入 -->
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
+			<!-- 必要なJS/CSSのみ読み込み -->
+			<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+			<link rel="stylesheet"
+				href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+			<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+			<!-- 日本語ローカライズを追加 -->
+			<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+			<script>
+				// inlineモード&日本語化でflatpickrカレンダーを常時表示
+				flatpickr("#calendar", {
+					inline : true,
+					dateFormat : "Y-m-d",
+					locale : "ja",
+					defaultDate : new Date(),
+					onChange : function(selectedDates, dateStr, instance) {
+						fetchAppointments(dateStr);
+					}
+				});
+
+				// 初期表示（本日分）
+				$(document).ready(function() {
+					const today = new Date().toISOString().slice(0, 10);
+					fetchAppointments(today);
+				});
+
+				// 日付ごとの予約一覧を取得・表示
+				function fetchAppointments(dateStr) {
+					$("#selected-date-title").text(dateStr + "の予約一覧");
+					$.ajax({
+						url : "/admin/appointments",
+						type : "GET",
+						data : {
+							date : dateStr
+						},
+						success : function(data) {
+							let tbody = "";
+							if (data.length === 0) {
+								tbody = "<tr><td colspan='2'>予約なし</td></tr>";
+							} else {
+								data.forEach(function(row) {
+									tbody += "<tr><td>" + row.patientName
+											+ "</td><td>" + row.phoneNumber
+											+ "</td></tr>";
+								});
+							}
+							$("#appointment-table tbody").html(tbody);
+						},
+						error : function() {
+							$("#appointment-table tbody").html(
+									"<tr><td colspan='2'>取得エラー</td></tr>");
+						}
+					});
+				}
+			</script>
 		</main>
 		<div th:replace="~{parts/admin-common :: footer()}"></div>
 	</div>
