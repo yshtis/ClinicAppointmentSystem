@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknownclinic.appointment.repository.BusinessDayMapper">
+
+    <!-- すべての営業日取得 -->
+    <select id="findAll" resultType="com.unknownclinic.appointment.domain.BusinessDay">
+        SELECT *
+        FROM business_days
+        ORDER BY business_date
+    </select>
+
+    <!-- 指定月の営業日取得 -->
+    <select id="findByMonth" resultType="com.unknownclinic.appointment.domain.BusinessDay">
+        SELECT *
+        FROM business_days
+        WHERE DATE_FORMAT(business_date, '%Y-%m') = #{month}
+        ORDER BY business_date
+    </select>
+
+    <!-- 新規営業日登録 -->
+    <insert id="insert" parameterType="com.unknownclinic.appointment.domain.BusinessDay" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO business_days (business_date, created_at)
+        VALUES (#{businessDate}, #{createdAt})
+    </insert>
+
+    <!-- 営業日更新 -->
+    <update id="update" parameterType="com.unknownclinic.appointment.domain.BusinessDay">
+        UPDATE business_days
+        SET business_date = #{businessDate},
+            created_at = #{createdAt}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

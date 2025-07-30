@@ -15,7 +15,7 @@ public class TimeSlot {
     private long businessDayId;
     
     @NotNull
-    private Integer slotType; // 0: 午前, 1: 午後
+    private String slotType; // nullで終日営業、amまたはpmを格納
     
     @NotNull
     private boolean isAvailable;

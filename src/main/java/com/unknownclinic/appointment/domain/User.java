@@ -26,4 +26,7 @@ public class User {
 	
 	@NotNull
 	private boolean isTemporary;
+	
+	@NotNull
+	private String password;
 }

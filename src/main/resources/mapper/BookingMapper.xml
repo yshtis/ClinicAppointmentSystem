@@ -1,26 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.unknownclinic.appointment.repository.BookingMapper">
 
-  <!-- 予約一覧を取得（ユーザー名・診察券番号・時間帯も含めて） -->
-  <select id="findAllBookingsWithUserAndTime" resultType="com.unknownclinic.appointment.dto.BookingListItem">
-    SELECT
-      b.id AS bookingId,
-      b.date AS date,
-      t.start_time AS startTime,
-      t.end_time AS endTime,
-      u.name AS userName,
-      u.card_number AS cardNumber,
-      b.status AS status
-    FROM bookings b
-    JOIN users u ON b.user_id = u.id
-    JOIN time_slots t ON b.time_slot_id = t.id
-    ORDER BY b.date DESC, t.start_time
-  </select>
+    <!-- ユーザーIDから予約履歴を取得 -->
+    <select id="findByUserId" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT *
+        FROM bookings
+        WHERE user_id = #{userId}
+        ORDER BY date DESC, time_slot_id
+    </select>
 
-  <!-- 必要に応じて他のSQLもここに追記 -->
+    <!-- 予約IDで取得 -->
+    <select id="findById" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT *
+        FROM bookings
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
+    <!-- 新規予約登録 -->
+    <insert id="insert" parameterType="com.unknownclinic.appointment.domain.Booking" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO bookings (user_id, date, time_slot_id, status)
+        VALUES (#{userId}, #{date}, #{timeSlotId}, #{status})
+    </insert>
+
+    <!-- 更新（キャンセル等） -->
+    <update id="update" parameterType="com.unknownclinic.appointment.domain.Booking">
+        UPDATE bookings
+        SET user_id = #{userId},
+            date = #{date},
+            time_slot_id = #{timeSlotId},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 指定日付の予約一覧（管理者用） -->
+    <select id="findByDate" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT *
+        FROM bookings
+        WHERE date = #{date}
+        ORDER BY time_slot_id
+    </select>
 
 </mapper>

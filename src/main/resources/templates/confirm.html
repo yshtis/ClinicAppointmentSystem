@@ -1,86 +1,35 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-	<head th:replace="~{parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
-	<body class="bg-[var(--background-color)] text-[var(--text-primary)]">
-		<div class="flex flex-col min-h-screen">
-			<div th:replace="~{parts/common :: header()}"></div>
-			<div class="layout-container flex h-full grow flex-col">
-				<main
-					class="flex flex-1 flex-col items-center bg-[var(--background-color)] py-12 sm:px-6"
-				>
-					<div class="w-full max-w-2xl">
-						<div
-							class="rounded-lg border border-[var(--border-color)] bg-[var(--card-background-color)] shadow-sm"
-						>
-							<div class="border-b border-[var(--border-color)] p-6 text-center">
-								<h2 class="text-2xl font-bold text-[var(--text-primary)]">
-									予約内容の確認
-								</h2>
-								<p class="mt-2 text-sm text-[var(--text-secondary)]">
-									ご予約内容に間違いがないかご確認ください。
-								</p>
-							</div>
-							<div class="p-8">
-								<div class="space-y-6">
-									<div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-										<p
-											class="w-32 shrink-0 text-sm font-medium text-[var(--text-secondary)]"
-										>
-											予約日
-										</p>
-										<p
-											class="flex-1 text-base font-medium text-[var(--text-primary)]"
-										>
-											2024年11月15日
-										</p>
-									</div>
-									<hr class="border-[var(--border-color)]" />
-									<div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-										<p
-											class="w-32 shrink-0 text-sm font-medium text-[var(--text-secondary)]"
-										>
-											時間
-										</p>
-										<p
-											class="flex-1 text-base font-medium text-[var(--text-primary)]"
-										>
-											14:00
-										</p>
-									</div>
-									<hr class="border-[var(--border-color)]" />
-									<div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-										<p
-											class="w-32 shrink-0 text-sm font-medium text-[var(--text-secondary)]"
-										>
-											予約内容
-										</p>
-										<p
-											class="flex-1 text-base font-medium text-[var(--text-primary)]"
-										>
-											一般診療
-										</p>
-									</div>
-								</div>
-							</div>
-							<div
-								class="flex flex-col-reverse gap-4 border-t border-[var(--border-color)] p-6 sm:flex-row sm:justify-end"
-							>
-								<button
-									class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-md border border-[var(--border-color)] bg-[var(--card-background-color)] px-6 py-2.5 text-sm font-bold text-[var(--text-secondary)] transition-colors hover:bg-slate-50 sm:w-auto"
-								>
-									<span class="truncate">修正する</span>
-								</button>
-								<button
-									class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-md bg-[var(--primary-color)] px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[var(--primary-hover-color)] sm:w-auto"
-								>
-									<span class="truncate">予約を確定する</span>
-								</button>
-							</div>
-						</div>
-					</div>
-				</main>
+<head th:replace="~{parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
+<body>
+	<div class="container py-4">
+		<h2>予約内容の確認</h2>
+		<div th:if="${completed}">
+			<div class="alert alert-success mb-4">予約が完了しました。</div>
+			<div class="d-flex gap-3">
+				<a th:href="@{/main}" class="btn btn-secondary">戻る</a> <a
+					th:href="@{/mypage}" class="btn btn-primary">予約を確認</a>
 			</div>
-			<div th:replace="~{parts/common :: footer()}"></div>
 		</div>
-	</body>
+		<div th:if="${!completed}">
+			<div>
+				<p>
+					営業日: <span
+						th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'ja')}"></span>
+				</p>
+				<p>
+					時間枠: <span
+						th:text="${#dates.format(slot.endTime.minusMinutes(30), 'HH:mm')} + '-' + ${#dates.format(slot.endTime, 'HH:mm')}"></span>
+				</p>
+			</div>
+			<form th:action="@{/confirm}" method="post">
+				<input type="hidden" name="businessDayId" th:value="${day.id}">
+				<input type="hidden" name="timeSlotId" th:value="${slot.id}">
+				<input type="hidden" name="confirmed" value="true">
+				<button type="submit" class="btn btn-success">この内容で予約</button>
+				<a th:href="@{/main}" class="btn btn-secondary ms-2">戻る</a>
+			</form>
+		</div>
+	</div>
+</body>
 </html>

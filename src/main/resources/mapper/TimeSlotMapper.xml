@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknownclinic.appointment.repository.TimeSlotMapper">
+
+    <!-- 営業日IDに対応する時間枠一覧を取得 -->
+    <select id="findByBusinessDayId" resultType="com.unknownclinic.appointment.domain.TimeSlot">
+        SELECT *
+        FROM time_slots
+        WHERE business_day_id = #{businessDayId}
+        ORDER BY slot_type
+    </select>
+
+    <!-- 新規時間枠登録 -->
+    <insert id="insert" parameterType="com.unknownclinic.appointment.domain.TimeSlot" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO time_slots (business_day_id, slot_type, is_available, created_at)
+        VALUES (#{businessDayId}, #{slotType}, #{isAvailable}, #{createdAt})
+    </insert>
+
+    <!-- 時間枠の更新 -->
+    <update id="update" parameterType="com.unknownclinic.appointment.domain.TimeSlot">
+        UPDATE time_slots
+        SET slot_type = #{slotType},
+            is_available = #{isAvailable}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 指定営業日の時間枠を全削除 -->
+    <delete id="deleteByBusinessDayId">
+        DELETE FROM time_slots
+        WHERE business_day_id = #{businessDayId}
+    </delete>
+
+</mapper>

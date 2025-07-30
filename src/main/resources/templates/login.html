@@ -22,38 +22,9 @@
 					placeholder="診察券番号" required type="text" autocomplete="off" />
 			</div>
 			<div class="mb-3">
-				<label class="form-label" for="birth_year">生年月日</label>
-				<div style="display: flex; gap: 0.5rem;">
-					<select class="form-select" id="birth_year" name="birth_year"
-						required style="flex: 2;">
-						<option value="">年</option>
-						<script>
-							const currentYear = new Date().getFullYear();
-							for (let i = currentYear; i >= 1900; i--) {
-								document
-										.write(`<option value="${i}">${i}</option>`);
-							}
-						</script>
-					</select> <select class="form-select" id="birth_month" name="birth_month"
-						required style="flex: 1;">
-						<option value="">月</option>
-						<script>
-							for (let i = 1; i <= 12; i++) {
-								document
-										.write(`<option value="${i}">${i}</option>`);
-							}
-						</script>
-					</select> <select class="form-select" id="birth_day" name="birth_day"
-						required style="flex: 1;">
-						<option value="">日</option>
-						<script>
-							for (let i = 1; i <= 31; i++) {
-								document
-										.write(`<option value="${i}">${i}</option>`);
-							}
-						</script>
-					</select>
-				</div>
+				<label class="form-label" for="password">パスワード</label>
+				<input class="form-control" id="password" name="password"
+					placeholder="パスワード" required type="password" autocomplete="off" />
 			</div>
 			<div class="mb-3">
 				<button class="btn btn-primary w-100" type="submit">ログイン</button>
