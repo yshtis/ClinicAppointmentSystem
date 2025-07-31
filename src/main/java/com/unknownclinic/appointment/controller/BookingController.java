@@ -3,7 +3,6 @@ package com.unknownclinic.appointment.controller;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +21,6 @@ import com.unknownclinic.appointment.domain.TimeSlot;
 import com.unknownclinic.appointment.domain.User;
 import com.unknownclinic.appointment.repository.UserMapper;
 import com.unknownclinic.appointment.service.BookingService;
-import com.unknownclinic.appointment.service.BookingServiceImpl;
 
 @Controller
 public class BookingController {
@@ -47,42 +45,35 @@ public class BookingController {
 			return "error";
 		}
 
-		Long userId = user.getId();
-
 		List<BusinessDay> businessDays = bookingService.getBusinessDays();
 
-		// 全枠ID（1〜14）
-		List<Long> allTimeSlotIds = Arrays.asList(
-				1L, 2L, 3L, 4L, 5L, 6L, 7L,
-				8L, 9L, 10L, 11L, 12L, 13L, 14L);
+		// 時間枠ID
+		List<String> allTimeSlotIds = Arrays.asList(
+				"1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "10", "11", "12", "13", "14");
 		model.addAttribute("allTimeSlotIds", allTimeSlotIds);
 
-		// 選択営業日の予約済み枠ID一覧を取得
-		Set<Long> bookedSlotIds = new HashSet<>();
+		// 予約済み枠ID
+		Set<String> bookedSlotIds = new HashSet<>();
 		if (selectedBusinessDayId != null) {
 			List<Booking> bookings = bookingService
 					.getBookingsForBusinessDay(selectedBusinessDayId);
 			bookedSlotIds = bookings.stream()
 					.filter(b -> "reserved".equals(b.getStatus()))
-					.map(Booking::getTimeSlotId)
+					.map(b -> String.valueOf(b.getTimeSlotId()))
 					.collect(Collectors.toSet());
 		}
 		model.addAttribute("bookedSlotIds", bookedSlotIds);
-
-		// 時間枠ID→ラベル
-		Map<Long, String> slotTimeLabels = ((BookingServiceImpl) bookingService)
-				.getSlotTimeLabels();
-		model.addAttribute("slotTimeLabels", slotTimeLabels);
-
 		model.addAttribute("businessDays", businessDays);
 		model.addAttribute("selectedBusinessDayId", selectedBusinessDayId);
+
 		return "main";
 	}
 
 	@PostMapping("/confirm")
 	public String confirmBooking(
 			@RequestParam Long businessDayId,
-			@RequestParam Long timeSlotId,
+			@RequestParam String timeSlotId,
 			@AuthenticationPrincipal UserDetails userDetails,
 			Model model,
 			@RequestParam(required = false) String confirmed) {
@@ -95,16 +86,16 @@ public class BookingController {
 			return "error";
 		}
 
-		Long userId = user.getId();
-
 		BusinessDay day = bookingService.getBusinessDayById(businessDayId);
-		TimeSlot slot = bookingService.getTimeSlotById(timeSlotId);
+		TimeSlot slot = bookingService
+				.getTimeSlotById(Long.parseLong(timeSlotId));
 
 		model.addAttribute("day", day);
 		model.addAttribute("slot", slot);
 
 		if ("true".equals(confirmed)) {
-			bookingService.createBooking(userId, businessDayId, timeSlotId);
+			bookingService.createBooking(user.getId(), businessDayId,
+					Long.parseLong(timeSlotId));
 			model.addAttribute("completed", true);
 		}
 
