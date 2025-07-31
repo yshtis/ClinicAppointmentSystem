@@ -1,6 +1,7 @@
 package com.unknownclinic.appointment.service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,7 +23,6 @@ import com.unknownclinic.appointment.repository.TimeSlotMapper;
 @Service
 public class BookingServiceImpl implements BookingService {
 
-	/** 時間枠ID→時間帯ラベルのマッピング */
 	public static final Map<Long, String> SLOT_TIME_LABELS = Map.ofEntries(
 			Map.entry(1L, "09:00-09:30"),
 			Map.entry(2L, "09:30-10:00"),
@@ -66,6 +66,11 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+	public List<TimeSlot> getTimeSlotsForBusinessDay(Long businessDayId) {
+		return timeSlotMapper.findByBusinessDayId(businessDayId);
+	}
+
+	@Override
 	public Map<Long, Booking> getBookingsForBusinessDays(
 			List<BusinessDay> businessDays) {
 		Map<Long, Booking> bookingMap = new HashMap<>();
@@ -96,7 +101,6 @@ public class BookingServiceImpl implements BookingService {
 		return bookingMap;
 	}
 
-	// 補助: 日付からBusinessDayId取得
 	private Long getBusinessDayIdByDate(List<BusinessDay> businessDays,
 			LocalDate date) {
 		return businessDays.stream()
@@ -116,7 +120,6 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public TimeSlot getTimeSlotById(Long timeSlotId) {
-		// TimeSlotMapperに個別取得メソッドがなければ全日分から線形探索
 		List<BusinessDay> days = businessDayRepository.findAll();
 		for (BusinessDay day : days) {
 			List<TimeSlot> slots = timeSlotMapper
@@ -134,7 +137,6 @@ public class BookingServiceImpl implements BookingService {
 	@Transactional
 	public void createBooking(Long userId, Long businessDayId,
 			Long timeSlotId) {
-		// 予約枠が空いているかをチェック
 		List<Booking> bookings = bookingMapper.findByDate(
 				businessDayRepository.findAll().stream()
 						.filter(day -> day.getId().equals(businessDayId))
@@ -149,7 +151,6 @@ public class BookingServiceImpl implements BookingService {
 			}
 		}
 
-		// 予約登録
 		Booking booking = new Booking();
 		booking.setUserId(userId);
 		booking.setDate(
@@ -163,8 +164,16 @@ public class BookingServiceImpl implements BookingService {
 		bookingMapper.insert(booking);
 	}
 
-	/** 時間枠ID→ラベルMapを返す（コントローラ用） */
 	public Map<Long, String> getSlotTimeLabels() {
 		return SLOT_TIME_LABELS;
+	}
+	
+	public List<Booking> getBookingsForBusinessDay(Long businessDayId) {
+	    BusinessDay day = businessDayRepository.findAll().stream()
+	        .filter(d -> d.getId().equals(businessDayId))
+	        .findFirst()
+	        .orElse(null);
+	    if (day == null) return Collections.emptyList();
+	    return bookingMapper.findByDate(day.getBusinessDate());
 	}
 }

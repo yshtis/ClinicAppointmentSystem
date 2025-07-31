@@ -9,17 +9,23 @@ import com.unknownclinic.appointment.domain.TimeSlot;
 
 public interface BookingService {
 
-    List<BusinessDay> getBusinessDays();
+	List<BusinessDay> getBusinessDays();
 
-    Map<Long, List<TimeSlot>> getAllTimeSlotsGroupedByBusinessDay();
+	Map<Long, List<TimeSlot>> getAllTimeSlotsGroupedByBusinessDay();
 
-    Map<Long, Booking> getBookingsForBusinessDays(List<BusinessDay> businessDays);
+	Map<Long, Booking> getBookingsForBusinessDays(
+			List<BusinessDay> businessDays);
 
-    BusinessDay getBusinessDayById(Long businessDayId);
+	BusinessDay getBusinessDayById(Long businessDayId);
 
-    TimeSlot getTimeSlotById(Long timeSlotId);
+	TimeSlot getTimeSlotById(Long timeSlotId);
 
-    void createBooking(Long userId, Long businessDayId, Long timeSlotId);
+	void createBooking(Long userId, Long businessDayId, Long timeSlotId);
 
-    Map<Long, Booking> getUserBookingsForBusinessDays(Long userId, List<BusinessDay> businessDays);
+	Map<Long, Booking> getUserBookingsForBusinessDays(Long userId,
+			List<BusinessDay> businessDays);
+
+	List<TimeSlot> getTimeSlotsForBusinessDay(Long businessDayId);
+	
+	List<Booking> getBookingsForBusinessDay(Long businessDayId);
 }

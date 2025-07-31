@@ -12,7 +12,7 @@
 				name="businessDayId" id="businessDayId" class="form-select"
 				onchange="document.getElementById('daySelectForm').submit()">
 				<option th:each="day : ${businessDays}" th:value="${day.id}"
-					th:selected="${day.id} == ${selectedBusinessDayId}"
+					th:selected="${day.id eq selectedBusinessDayId}"
 					th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}">
 				</option>
 			</select>
@@ -22,18 +22,17 @@
 		<div th:if="${selectedBusinessDayId != null}">
 			<form th:action="@{/confirm}" method="post" id="slotForm">
 				<div class="d-flex flex-wrap gap-2 mb-4">
-					<button type="button"
-						th:each="slot : ${timeSlotsMap[T(java.lang.Long).valueOf(selectedBusinessDayId)]}"
-						th:data-slot-id="${slot.id}" th:text="${slotTimeLabels[slot.id]}"
-						th:classappend="${!slot.isAvailable or bookedSlotIds.contains(slot.id) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
-						th:disabled="${!slot.isAvailable or bookedSlotIds.contains(slot.id)}"
-						onclick="selectSlot(this)"></button>
+					<th:block th:each="slotId : ${allTimeSlotIds}">
+						<button type="button" th:data-slot-id="${slotId}"
+							th:text="${slotTimeLabels[slotId]}"
+							th:classappend="${bookedSlotIds.contains(slotId) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
+							th:disabled="${bookedSlotIds.contains(slotId)}"
+							onclick="selectSlot(this)"></button>
+					</th:block>
 				</div>
-				<input type="hidden" name="businessDayId"
-					th:value="${selectedBusinessDayId}" id="selectedBusinessDayId">
-				<input type="hidden" name="timeSlotId" id="selectedTimeSlotId">
-				<div class="mt-4" id="reserveBtnArea" style="display: none;">
-					<button class="btn btn-success btn-lg" type="submit">予約内容を確認</button>
+				<input type="hidden" id="selectedTimeSlotId" name="timeSlotId" />
+				<div id="reserveBtnArea" style="display: none;">
+					<button type="submit" class="btn btn-primary">予約する</button>
 				</div>
 			</form>
 		</div>
@@ -41,12 +40,12 @@
 	<footer th:replace="~{parts/common :: footer()}"></footer>
 
 	<script>
-function selectSlot(btn) {
-    document.querySelectorAll('#slotForm button[type=button]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('selectedTimeSlotId').value = btn.getAttribute('data-slot-id');
-    document.getElementById('reserveBtnArea').style.display = '';
-}
-</script>
+		function selectSlot(btn) {
+			document.querySelectorAll('#slotForm button[type=button]').forEach(b => b.classList.remove('active'));
+			btn.classList.add('active');
+			document.getElementById('selectedTimeSlotId').value = btn.getAttribute('data-slot-id');
+			document.getElementById('reserveBtnArea').style.display = '';
+		}
+	</script>
 </body>
 </html>

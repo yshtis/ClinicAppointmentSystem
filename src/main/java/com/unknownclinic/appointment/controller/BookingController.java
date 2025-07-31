@@ -1,5 +1,7 @@
 package com.unknownclinic.appointment.controller;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +39,6 @@ public class BookingController {
 			@AuthenticationPrincipal UserDetails userDetails,
 			@RequestParam(name = "businessDayId", required = false) Long selectedBusinessDayId) {
 
-		// 診察券番号（ユーザー名）でユーザー情報を取得
 		String cardNumber = userDetails.getUsername();
 		User user = userMapper.findByCardNumber(cardNumber);
 
@@ -49,32 +50,32 @@ public class BookingController {
 		Long userId = user.getId();
 
 		List<BusinessDay> businessDays = bookingService.getBusinessDays();
-		Map<Long, List<TimeSlot>> timeSlotsMap = bookingService
-				.getAllTimeSlotsGroupedByBusinessDay();
-		Map<Long, Booking> userBookings = bookingService
-				.getUserBookingsForBusinessDays(userId, businessDays);
 
-		// デバッグ用
-		System.out.println("=== DEBUG ===");
-		System.out.println("selectedBusinessDayId = " + selectedBusinessDayId);
-		System.out.println("timeSlotsMap keys = " + timeSlotsMap.keySet());
-		System.out.println("timeSlotsMap = " + timeSlotsMap);
-		
-		// 予約済み枠ID一覧
-		Set<Long> bookedSlotIds = userBookings.values().stream()
-				.filter(b -> "reserved".equals(b.getStatus()))
-				.map(Booking::getTimeSlotId)
-				.collect(Collectors.toSet());
+		// 全枠ID（1〜14）
+		List<Long> allTimeSlotIds = Arrays.asList(
+				1L, 2L, 3L, 4L, 5L, 6L, 7L,
+				8L, 9L, 10L, 11L, 12L, 13L, 14L);
+		model.addAttribute("allTimeSlotIds", allTimeSlotIds);
 
-		// 時間枠ID→ラベルも渡す
+		// 選択営業日の予約済み枠ID一覧を取得
+		Set<Long> bookedSlotIds = new HashSet<>();
+		if (selectedBusinessDayId != null) {
+			List<Booking> bookings = bookingService
+					.getBookingsForBusinessDay(selectedBusinessDayId);
+			bookedSlotIds = bookings.stream()
+					.filter(b -> "reserved".equals(b.getStatus()))
+					.map(Booking::getTimeSlotId)
+					.collect(Collectors.toSet());
+		}
+		model.addAttribute("bookedSlotIds", bookedSlotIds);
+
+		// 時間枠ID→ラベル
 		Map<Long, String> slotTimeLabels = ((BookingServiceImpl) bookingService)
 				.getSlotTimeLabels();
+		model.addAttribute("slotTimeLabels", slotTimeLabels);
 
 		model.addAttribute("businessDays", businessDays);
-		model.addAttribute("timeSlotsMap", timeSlotsMap);
-		model.addAttribute("slotTimeLabels", slotTimeLabels);
 		model.addAttribute("selectedBusinessDayId", selectedBusinessDayId);
-		model.addAttribute("bookedSlotIds", bookedSlotIds);
 		return "main";
 	}
 
