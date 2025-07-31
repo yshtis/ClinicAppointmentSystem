@@ -21,5 +21,5 @@ public class TimeSlot {
     private boolean isAvailable;
     
     @NotNull
-    private LocalDateTime endTime;
+    private LocalDateTime createdAt;
 }
