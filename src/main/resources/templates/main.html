@@ -5,45 +5,45 @@
 	<header th:replace="~{parts/common :: header()}"></header>
 	<div class="container py-4">
 		<h2>予約時間を選択</h2>
-		<form th:action="@{/confirm}" method="post" id="slotForm">
-			<table class="table table-bordered bg-white">
-				<thead>
-					<tr>
-						<th>営業日</th>
-						<th>時間枠</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="day : ${businessDays}">
-						<td
-							th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
-						<td>
-							<div class="d-flex flex-wrap gap-2">
-								<button type="button" th:each="slot : ${timeSlotsMap[day.id]}"
-									th:data-business-day-id="${day.id}"
-									th:data-slot-id="${slot.id}"
-									th:text="${slotTimeLabels[slot.id]}"
-									th:classappend="${slot.isAvailable ? 'btn btn-primary' : 'btn btn-secondary disabled'}"
-									th:disabled="${!slot.isAvailable}" onclick="selectSlot(this)">
-								</button>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<input type="hidden" name="businessDayId" id="selectedBusinessDayId">
-			<input type="hidden" name="timeSlotId" id="selectedTimeSlotId">
-			<div class="mt-4" id="reserveBtnArea" style="display: none;">
-				<button class="btn btn-success btn-lg" type="submit">予約内容を確認</button>
-			</div>
+		<!-- 営業日選択フォーム -->
+		<form th:action="@{/main}" method="get" id="daySelectForm"
+			class="mb-4">
+			<label for="businessDayId" class="form-label">営業日を選択：</label> <select
+				name="businessDayId" id="businessDayId" class="form-select"
+				onchange="document.getElementById('daySelectForm').submit()">
+				<option th:each="day : ${businessDays}" th:value="${day.id}"
+					th:selected="${day.id} == ${selectedBusinessDayId}"
+					th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}">
+				</option>
+			</select>
 		</form>
+
+		<!-- 時間枠選択フォーム -->
+		<div th:if="${selectedBusinessDayId != null}">
+			<form th:action="@{/confirm}" method="post" id="slotForm">
+				<div class="d-flex flex-wrap gap-2 mb-4">
+					<button type="button"
+						th:each="slot : ${timeSlotsMap[T(java.lang.Long).valueOf(selectedBusinessDayId)]}"
+						th:data-slot-id="${slot.id}" th:text="${slotTimeLabels[slot.id]}"
+						th:classappend="${!slot.isAvailable or bookedSlotIds.contains(slot.id) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
+						th:disabled="${!slot.isAvailable or bookedSlotIds.contains(slot.id)}"
+						onclick="selectSlot(this)"></button>
+				</div>
+				<input type="hidden" name="businessDayId"
+					th:value="${selectedBusinessDayId}" id="selectedBusinessDayId">
+				<input type="hidden" name="timeSlotId" id="selectedTimeSlotId">
+				<div class="mt-4" id="reserveBtnArea" style="display: none;">
+					<button class="btn btn-success btn-lg" type="submit">予約内容を確認</button>
+				</div>
+			</form>
+		</div>
 	</div>
 	<footer th:replace="~{parts/common :: footer()}"></footer>
+
 	<script>
 function selectSlot(btn) {
-    document.querySelectorAll('button[onclick="selectSlot(this)"]').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#slotForm button[type=button]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('selectedBusinessDayId').value = btn.getAttribute('data-business-day-id');
     document.getElementById('selectedTimeSlotId').value = btn.getAttribute('data-slot-id');
     document.getElementById('reserveBtnArea').style.display = '';
 }

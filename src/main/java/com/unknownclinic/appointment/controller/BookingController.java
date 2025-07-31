@@ -2,6 +2,8 @@ package com.unknownclinic.appointment.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,7 +34,8 @@ public class BookingController {
 	@GetMapping("/main")
 	public String showBookingForm(
 			Model model,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@AuthenticationPrincipal UserDetails userDetails,
+			@RequestParam(name = "businessDayId", required = false) Long selectedBusinessDayId) {
 
 		// 診察券番号（ユーザー名）でユーザー情報を取得
 		String cardNumber = userDetails.getUsername();
@@ -51,14 +54,27 @@ public class BookingController {
 		Map<Long, Booking> userBookings = bookingService
 				.getUserBookingsForBusinessDays(userId, businessDays);
 
+		// デバッグ用
+		System.out.println("=== DEBUG ===");
+		System.out.println("selectedBusinessDayId = " + selectedBusinessDayId);
+		System.out.println("timeSlotsMap keys = " + timeSlotsMap.keySet());
+		System.out.println("timeSlotsMap = " + timeSlotsMap);
+		
+		// 予約済み枠ID一覧
+		Set<Long> bookedSlotIds = userBookings.values().stream()
+				.filter(b -> "reserved".equals(b.getStatus()))
+				.map(Booking::getTimeSlotId)
+				.collect(Collectors.toSet());
+
 		// 時間枠ID→ラベルも渡す
 		Map<Long, String> slotTimeLabels = ((BookingServiceImpl) bookingService)
 				.getSlotTimeLabels();
 
 		model.addAttribute("businessDays", businessDays);
 		model.addAttribute("timeSlotsMap", timeSlotsMap);
-		model.addAttribute("userBookings", userBookings);
 		model.addAttribute("slotTimeLabels", slotTimeLabels);
+		model.addAttribute("selectedBusinessDayId", selectedBusinessDayId);
+		model.addAttribute("bookedSlotIds", bookedSlotIds);
 		return "main";
 	}
 
