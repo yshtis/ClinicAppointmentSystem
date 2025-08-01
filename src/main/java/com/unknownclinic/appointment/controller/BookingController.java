@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.unknownclinic.appointment.domain.Booking;
 import com.unknownclinic.appointment.domain.BusinessDay;
-import com.unknownclinic.appointment.domain.TimeSlot;
 import com.unknownclinic.appointment.domain.User;
 import com.unknownclinic.appointment.repository.UserMapper;
 import com.unknownclinic.appointment.service.BookingService;
+import com.unknownclinic.appointment.service.BookingServiceImpl;
 
 @Controller
 public class BookingController {
@@ -31,6 +31,7 @@ public class BookingController {
 	@Autowired
 	private UserMapper userMapper;
 
+	// メイン画面: 営業日・時間枠選択
 	@GetMapping("/main")
 	public String showBookingForm(
 			Model model,
@@ -47,13 +48,13 @@ public class BookingController {
 
 		List<BusinessDay> businessDays = bookingService.getBusinessDays();
 
-		// 時間枠ID
+		// 時間枠IDリスト
 		List<String> allTimeSlotIds = Arrays.asList(
 				"1", "2", "3", "4", "5", "6", "7",
 				"8", "9", "10", "11", "12", "13", "14");
 		model.addAttribute("allTimeSlotIds", allTimeSlotIds);
 
-		// 予約済み枠ID
+		// 予約済み時間枠ID
 		Set<String> bookedSlotIds = new HashSet<>();
 		if (selectedBusinessDayId != null) {
 			List<Booking> bookings = bookingService
@@ -70,6 +71,7 @@ public class BookingController {
 		return "main";
 	}
 
+	// 予約内容確認画面
 	@PostMapping("/confirm")
 	public String confirmBooking(
 			@RequestParam Long businessDayId,
@@ -86,12 +88,17 @@ public class BookingController {
 			return "error";
 		}
 
-		BusinessDay day = bookingService.getBusinessDayById(businessDayId);
-		TimeSlot slot = bookingService
-				.getTimeSlotById(Long.parseLong(timeSlotId));
+		BusinessDay businessDay = bookingService
+				.getBusinessDayById(businessDayId);
 
-		model.addAttribute("day", day);
-		model.addAttribute("slot", slot);
+		Long timeSlotIdLong = Long.parseLong(timeSlotId);
+		String slotLabel = BookingServiceImpl.SLOT_TIME_LABELS
+				.get(timeSlotIdLong);
+
+		model.addAttribute("businessDay", businessDay);
+		model.addAttribute("timeSlotId", timeSlotIdLong);
+		model.addAttribute("slotLabel", slotLabel);
+		model.addAttribute("cardNumber", cardNumber);
 
 		if ("true".equals(confirmed)) {
 			bookingService.createBooking(user.getId(), businessDayId,

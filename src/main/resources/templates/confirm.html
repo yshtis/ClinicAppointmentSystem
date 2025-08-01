@@ -2,34 +2,31 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
 <body>
+	<header th:replace="~{parts/common :: header()}"></header>
 	<div class="container py-4">
-		<h2>予約内容の確認</h2>
-		<div th:if="${completed}">
-			<div class="alert alert-success mb-4">予約が完了しました。</div>
-			<div class="d-flex gap-3">
-				<a th:href="@{/main}" class="btn btn-secondary">戻る</a> <a
-					th:href="@{/mypage}" class="btn btn-primary">予約を確認</a>
-			</div>
-		</div>
-		<div th:if="${!completed}">
-			<div>
-				<p>
-					営業日: <span
-						th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'ja')}"></span>
-				</p>
-				<p>
-					時間枠: <span
-						th:text="${#dates.format(slot.endTime.minusMinutes(30), 'HH:mm')} + '-' + ${#dates.format(slot.endTime, 'HH:mm')}"></span>
-				</p>
-			</div>
+		<h2 class="mb-4">予約内容確認</h2>
+		<div class="card p-4">
+			<dl class="row">
+				<dt class="col-sm-3">予約日</dt>
+				<dd class="col-sm-9"
+					th:text="${businessDay != null ? #temporals.format(businessDay.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo') : '未選択'}"></dd>
+				<dt class="col-sm-3">時間枠</dt>
+				<dd class="col-sm-9" th:text="${slotLabel}"></dd>
+			</dl>
 			<form th:action="@{/confirm}" method="post">
-				<input type="hidden" name="businessDayId" th:value="${day.id}">
-				<input type="hidden" name="timeSlotId" th:value="${slot.id}">
-				<input type="hidden" name="confirmed" value="true">
-				<button type="submit" class="btn btn-success">この内容で予約</button>
-				<a th:href="@{/main}" class="btn btn-secondary ms-2">戻る</a>
+				<input type="hidden" name="businessDayId"
+					th:value="${businessDay != null ? businessDay.id : ''}" /> <input
+					type="hidden" name="timeSlotId"
+					th:value="${timeSlot != null ? timeSlot.id : ''}" /> <input
+					type="hidden" name="confirmed" value="true" />
+				<button type="submit" class="btn btn-primary">この内容で予約確定</button>
+				<a href="/main" class="btn btn-outline-secondary ms-2">戻る</a>
 			</form>
+			<div th:if="${completed}">
+				<div class="alert alert-success mt-3">予約が完了しました。</div>
+			</div>
 		</div>
 	</div>
+	<footer th:replace="~{parts/common :: footer()}"></footer>
 </body>
 </html>

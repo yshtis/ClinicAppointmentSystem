@@ -34,6 +34,8 @@
 						<div th:if="${selectedBusinessDayId != null}">
 							<form th:action="@{/confirm}" method="post" id="slotForm"
 								class="h-100">
+								<input type="hidden" name="businessDayId"
+									th:value="${selectedBusinessDayId}" />
 								<div class="p-4">
 									<label class="form-label mb-3">時間枠を選択：</label>
 									<div class="d-flex flex-column gap-3 mb-4"
