@@ -17,4 +17,9 @@ public interface BookingService {
 	void createBooking(Long userId, Long businessDayId, Long timeSlotId);
 	
 	List<Booking> getBookingsForBusinessDay(Long businessDayId);
+	
+	// mypage用
+    List<Booking> getBookingsByUser(Long userId);
+    
+    void cancelBooking(Long bookingId, Long userId);
 }

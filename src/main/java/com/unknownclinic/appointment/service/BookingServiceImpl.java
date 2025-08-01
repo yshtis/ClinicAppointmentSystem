@@ -121,4 +121,21 @@ public class BookingServiceImpl implements BookingService {
 			return Collections.emptyList();
 		return bookingMapper.findByDate(day.getBusinessDate());
 	}
+
+	// mypage用
+	@Override
+	public List<Booking> getBookingsByUser(Long userId) {
+		return bookingMapper.findByUserId(userId);
+	}
+
+	@Override
+	@Transactional
+	public void cancelBooking(Long bookingId, Long userId) {
+		Booking booking = bookingMapper.findById(bookingId);
+		if (booking == null || !booking.getUserId().equals(userId)) {
+			throw new IllegalArgumentException("予約が存在しないか、権限がありません");
+		}
+		booking.setStatus("cancelled");
+		bookingMapper.update(booking);
+	}
 }

@@ -1,80 +1,91 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{parts/common :: html_head('予約内容確認 - さわやか医院予約システム')}"></head>
-<body class="bg-[var(--background-color)] text-[var(--text-primary)]">
-	<div class="flex flex-col min-h-screen">
-		<div th:replace="~{parts/common :: header()}"></div>
-		<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-			<div class="max-w-4xl mx-auto">
-				<h1 class="text-3xl font-bold text-[var(--text-primary)] mb-8">
-					予約確認</h1>
-				<div>
-					<h2
-						class="text-xl font-semibold text-[var(--text-primary)] mb-4 border-l-4 border-[var(--primary-color)] pl-3">
-						今後の予約</h2>
-					<div class="space-y-4">
-						<div
-							class="bg-[var(--card-background-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-4 flex items-center justify-between">
-							<div>
-								<p class="font-semibold text-[var(--text-primary)]">定期健診</p>
-								<p class="text-sm text-[var(--text-secondary)]">内科</p>
-								<p class="text-sm text-[var(--text-secondary)] mt-1">
-									<span class="font-medium text-gray-700">2024年10月20日</span>
-									午後2時00分
-								</p>
-							</div>
-							<button
-								class="bg-red-100 text-red-700 hover:bg-red-200 font-medium py-2 px-4 rounded-md text-sm transition-colors">
-								キャンセル</button>
+<head th:replace="~{parts/common :: html_head('マイページ - さわやか医院予約システム')}"></head>
+<body>
+	<header th:replace="~{parts/common :: header()}"></header>
+	<div class="container py-4">
+		<h2 class="mb-4" th:text="'マイページ - ' + ${user.name} + ' さん'"></h2>
+
+		<!-- 予約画面（main）へのリンク -->
+		<div class="mb-4 text-end">
+			<a href="/main" class="btn btn-outline-primary"> <i
+				class="bi bi-arrow-left"></i> 予約画面に戻る
+			</a>
+		</div>
+
+		<div class="row g-4">
+			<!-- 未来の予約 -->
+			<div class="col-12 col-lg-6">
+				<div class="card shadow-sm">
+					<div class="card-header bg-primary text-white">現在の予約</div>
+					<div class="card-body">
+						<div th:if="${#lists.isEmpty(futureBookings)}">
+							<p class="text-secondary">現在の予約はありません。</p>
 						</div>
-						<div
-							class="bg-[var(--card-background-color)] rounded-lg shadow-sm border border-[var(--border-color)] p-4 flex items-center justify-between">
-							<div>
-								<p class="font-semibold text-[var(--text-primary)]">
-									アレルギーテスト</p>
-								<p class="text-sm text-[var(--text-secondary)]">皮膚科</p>
-								<p class="text-sm text-[var(--text-secondary)] mt-1">
-									<span class="font-medium text-gray-700">2024年11月15日</span>
-									午前10時30分
-								</p>
-							</div>
-							<button
-								class="bg-red-100 text-red-700 hover:bg-red-200 font-medium py-2 px-4 rounded-md text-sm transition-colors">
-								キャンセル</button>
-						</div>
-					</div>
-				</div>
-				<div class="mt-12">
-					<h2
-						class="text-xl font-semibold text-[var(--text-primary)] mb-4 border-l-4 border-[var(--primary-color)] pl-3">
-						予約履歴</h2>
-					<div class="space-y-4">
-						<div
-							class="bg-[var(--card-background-color)] rounded-lg border border-[var(--border-color)] p-4 opacity-70">
-							<p class="font-semibold text-[var(--text-primary)]">定期健診</p>
-							<p class="text-sm text-[var(--text-secondary)]">内科</p>
-							<p class="text-sm text-[var(--text-secondary)] mt-1">
-								2024年9月10日 午後3時00分</p>
-						</div>
-						<div
-							class="bg-[var(--card-background-color)] rounded-lg border border-[var(--border-color)] p-4 opacity-70">
-							<p class="font-semibold text-[var(--text-primary)]">皮膚的相談</p>
-							<p class="text-sm text-[var(--text-secondary)]">皮膚科</p>
-							<p class="text-sm text-[var(--text-secondary)] mt-1">
-								2024年8月5日 午前11時00分</p>
-						</div>
-						<div
-							class="bg-[var(--card-background-color)] rounded-lg border border-[var(--border-color)] p-4 opacity-70">
-							<p class="font-semibold text-[var(--text-primary)]">定期健診</p>
-							<p class="text-sm text-[var(--text-secondary)]">内科</p>
-							<p class="text-sm text-[var(--text-secondary)] mt-1">
-								2024年7月20日 午後1時30分</p>
-						</div>
+						<table class="table" th:if="${!#lists.isEmpty(futureBookings)}">
+							<thead>
+								<tr>
+									<th>日付</th>
+									<th>時間</th>
+									<th>状態</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="booking : ${futureBookings}">
+									<td
+										th:text="${#temporals.format(booking.date, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
+									<td
+										th:text="${@bookingServiceImpl.SLOT_TIME_LABELS[booking.timeSlotId]}"></td>
+									<td
+										th:text="${booking.status == null or booking.status == 'reserved' ? '予約済み' : (booking.status == 'canceled' ? 'キャンセル済み' : booking.status)}"></td>
+									<td>
+										<form th:action="@{/mypage/cancel}" method="post"
+											th:if="${booking.status == null or booking.status == 'reserved'}">
+											<input type="hidden" name="bookingId"
+												th:value="${booking.id}" />
+											<button type="submit" class="btn btn-danger btn-sm"
+												onclick="return confirm('本当にキャンセルしますか？');">キャンセル</button>
+										</form>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
-		</main>
-		<div th:replace="~{parts/common :: header()}"></div>
+			<!-- 過去の予約 -->
+			<div class="col-12 col-lg-6">
+				<div class="card shadow-sm">
+					<div class="card-header bg-secondary text-white">予約履歴</div>
+					<div class="card-body">
+						<div th:if="${#lists.isEmpty(pastBookings)}">
+							<p class="text-secondary">過去の予約履歴はありません。</p>
+						</div>
+						<table class="table" th:if="${!#lists.isEmpty(pastBookings)}">
+							<thead>
+								<tr>
+									<th>日付</th>
+									<th>時間</th>
+									<th>状態</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="booking : ${pastBookings}">
+									<td
+										th:text="${#temporals.format(booking.date, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
+									<td
+										th:text="${@bookingServiceImpl.SLOT_TIME_LABELS[booking.timeSlotId]}"></td>
+									<td
+										th:text="${booking.status == null or booking.status == 'reserved' ? '予約済み' : (booking.status == 'canceled' ? 'キャンセル済み' : booking.status)}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+	<footer th:replace="~{parts/common :: footer()}"></footer>
 </body>
 </html>
