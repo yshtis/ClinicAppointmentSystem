@@ -9,7 +9,7 @@ public class ConfirmController {
 
     @GetMapping("/confirm")
     public String showConfirm(Model model) {
-        return "confirm";  // templates/confirm.html をレンダリング
+        return "confirm";
     }
 }
 

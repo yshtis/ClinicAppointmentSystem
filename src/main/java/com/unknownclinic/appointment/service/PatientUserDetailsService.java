@@ -24,7 +24,6 @@ public class PatientUserDetailsService implements UserDetailsService {
 					"User not found: " + cardNumber);
 		}
 
-		// パスワードはDB格納のハッシュ値
 		String password = user.getPassword();
 
 		return org.springframework.security.core.userdetails.User
