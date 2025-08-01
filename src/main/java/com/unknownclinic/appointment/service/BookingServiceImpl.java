@@ -2,12 +2,8 @@ package com.unknownclinic.appointment.service;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,54 +47,6 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public List<BusinessDay> getBusinessDays() {
 		return businessDayRepository.findAll();
-	}
-
-	@Override
-	public Map<Long, List<TimeSlot>> getAllTimeSlotsGroupedByBusinessDay() {
-		List<BusinessDay> days = businessDayRepository.findAll();
-		Map<Long, List<TimeSlot>> result = new LinkedHashMap<>();
-		for (BusinessDay day : days) {
-			List<TimeSlot> slots = timeSlotMapper
-					.findByBusinessDayId(day.getId());
-			result.put(day.getId(), slots);
-		}
-		return result;
-	}
-
-	@Override
-	public List<TimeSlot> getTimeSlotsForBusinessDay(Long businessDayId) {
-		return timeSlotMapper.findByBusinessDayId(businessDayId);
-	}
-
-	@Override
-	public Map<Long, Booking> getBookingsForBusinessDays(
-			List<BusinessDay> businessDays) {
-		Map<Long, Booking> bookingMap = new HashMap<>();
-		for (BusinessDay day : businessDays) {
-			List<Booking> bookings = bookingMapper
-					.findByDate(day.getBusinessDate());
-			for (Booking booking : bookings) {
-				bookingMap.put(booking.getTimeSlotId(), booking);
-			}
-		}
-		return bookingMap;
-	}
-
-	@Override
-	public Map<Long, Booking> getUserBookingsForBusinessDays(Long userId,
-			List<BusinessDay> businessDays) {
-		Map<Long, Booking> bookingMap = new HashMap<>();
-		List<Booking> userBookings = bookingMapper.findByUserId(userId);
-		Set<Long> availableDayIds = businessDays.stream()
-				.map(BusinessDay::getId).collect(Collectors.toSet());
-		for (Booking booking : userBookings) {
-			if (availableDayIds.contains(booking.getDate() != null
-					? getBusinessDayIdByDate(businessDays, booking.getDate())
-					: null)) {
-				bookingMap.put(booking.getTimeSlotId(), booking);
-			}
-		}
-		return bookingMap;
 	}
 
 	private Long getBusinessDayIdByDate(List<BusinessDay> businessDays,
@@ -164,16 +112,13 @@ public class BookingServiceImpl implements BookingService {
 		bookingMapper.insert(booking);
 	}
 
-	public Map<Long, String> getSlotTimeLabels() {
-		return SLOT_TIME_LABELS;
-	}
-	
 	public List<Booking> getBookingsForBusinessDay(Long businessDayId) {
-	    BusinessDay day = businessDayRepository.findAll().stream()
-	        .filter(d -> d.getId().equals(businessDayId))
-	        .findFirst()
-	        .orElse(null);
-	    if (day == null) return Collections.emptyList();
-	    return bookingMapper.findByDate(day.getBusinessDate());
+		BusinessDay day = businessDayRepository.findAll().stream()
+				.filter(d -> d.getId().equals(businessDayId))
+				.findFirst()
+				.orElse(null);
+		if (day == null)
+			return Collections.emptyList();
+		return bookingMapper.findByDate(day.getBusinessDate());
 	}
 }
