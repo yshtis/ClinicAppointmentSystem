@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.unknownclinic.appointment.domain.Booking;
 import com.unknownclinic.appointment.domain.BusinessDay;
@@ -71,15 +72,14 @@ public class BookingController {
 		return "main";
 	}
 
-	// 予約内容確認画面
-	@PostMapping("/confirm")
-	public String confirmBooking(
-			@RequestParam Long businessDayId,
+	// 予約内容確認画面（GET: PRGパターンで予約完了メッセージ表示にも使う）
+	@GetMapping("/confirm")
+	public String showConfirm(@RequestParam Long businessDayId,
 			@RequestParam String timeSlotId,
+			@RequestParam(required = false) String completed,
+			@RequestParam(required = false) String error,
 			@AuthenticationPrincipal UserDetails userDetails,
-			Model model,
-			@RequestParam(required = false) String confirmed) {
-
+			Model model) {
 		String cardNumber = userDetails.getUsername();
 		User user = userMapper.findByCardNumber(cardNumber);
 
@@ -90,7 +90,6 @@ public class BookingController {
 
 		BusinessDay businessDay = bookingService
 				.getBusinessDayById(businessDayId);
-
 		Long timeSlotIdLong = Long.parseLong(timeSlotId);
 		String slotLabel = BookingServiceImpl.SLOT_TIME_LABELS
 				.get(timeSlotIdLong);
@@ -99,13 +98,45 @@ public class BookingController {
 		model.addAttribute("timeSlotId", timeSlotIdLong);
 		model.addAttribute("slotLabel", slotLabel);
 		model.addAttribute("cardNumber", cardNumber);
-
-		if ("true".equals(confirmed)) {
-			bookingService.createBooking(user.getId(), businessDayId,
-					Long.parseLong(timeSlotId));
+		if (completed != null)
 			model.addAttribute("completed", true);
-		}
+		if (error != null)
+			model.addAttribute("errorMessage", error);
 
 		return "confirm";
+	}
+
+	// 予約確定処理（POST: 予約登録 & PRGリダイレクト）
+	@PostMapping("/confirm")
+	public String confirmBooking(
+			@RequestParam Long businessDayId,
+			@RequestParam String timeSlotId,
+			@AuthenticationPrincipal UserDetails userDetails,
+			Model model,
+			RedirectAttributes redirectAttributes) {
+
+		String cardNumber = userDetails.getUsername();
+		User user = userMapper.findByCardNumber(cardNumber);
+
+		if (user == null) {
+			model.addAttribute("error", "ユーザー情報が取得できません。再ログインしてください。");
+			return "error";
+		}
+
+		try {
+			bookingService.createBooking(user.getId(), businessDayId,
+					Long.parseLong(timeSlotId));
+			// 予約完了後はGET /confirm?completed=true にリダイレクト
+			redirectAttributes.addAttribute("businessDayId", businessDayId);
+			redirectAttributes.addAttribute("timeSlotId", timeSlotId);
+			redirectAttributes.addAttribute("completed", "true");
+			return "redirect:/confirm";
+		} catch (IllegalStateException e) {
+			// 二重予約などのエラー時もリダイレクト
+			redirectAttributes.addAttribute("businessDayId", businessDayId);
+			redirectAttributes.addAttribute("timeSlotId", timeSlotId);
+			redirectAttributes.addAttribute("error", e.getMessage());
+			return "redirect:/confirm";
+		}
 	}
 }

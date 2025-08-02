@@ -115,7 +115,7 @@ body {
 	border-width: 1.5px !important;
 	border-radius: 0.7rem !important;
 	font-size: 1.08rem;
-	padding: 0.7rem 0 !important;
+	padding: 0.7rem 1.6rem !important;
 	font-weight: 600;
 	min-width: 70px;
 	transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -140,6 +140,11 @@ body {
 	background: transparent;
 	color: var(--primary-color);
 	border-color: var(--primary-color);
+}
+
+/* ボタン2個が並ぶとき強制的に間隔を空ける */
+.button-row > * + * {
+  margin-left: 1.5rem !important;
 }
 
 /* ==========================================================
