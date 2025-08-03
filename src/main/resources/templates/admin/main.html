@@ -2,64 +2,79 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head
 	th:replace="~{parts/admin-common :: html_head('管理者トップ - さわやか医院予約システム')}"></head>
+<link rel="stylesheet" th:href="@{/css/parts/main.css}">
 <body class="bg-light text-dark">
 	<div class="d-flex flex-column min-vh-100 bg-light">
 		<div th:replace="~{parts/admin-common :: header()}"></div>
 		<main class="container flex-grow-1 py-5">
-			<!-- カレンダー&予約一覧のみ記載 -->
-			<div class="container mt-4">
-				<div class="row">
-					<!-- カレンダー部分 -->
-					<div class="col-md-6">
-						<h5>予約カレンダー</h5>
-						<!-- inputではなくdivでカレンダーを常時表示 -->
-						<div id="calendar"></div>
-					</div>
-					<!-- 予約一覧部分 -->
-					<div class="col-md-6">
-						<h5 id="selected-date-title">選択した日付の予約一覧</h5>
-						<table class="table table-bordered" id="appointment-table">
-							<thead>
-								<tr>
-									<th>患者名</th>
-									<th>電話番号</th>
-								</tr>
-							</thead>
-							<tbody>
-								<!-- 予約データをここに動的に挿入 -->
-							</tbody>
-						</table>
+			<div class="row justify-content-center">
+				<div class="admin-card">
+					<div class="row g-0">
+						<!-- カレンダー -->
+						<div class="col-md-6 border-end">
+							<div class="p-4 h-100">
+								<h5 class="card-title">予約カレンダー</h5>
+								<div id="calendar"></div>
+							</div>
+						</div>
+						<!-- タイムテーブル -->
+						<div
+							class="col-md-6 d-flex align-items-center justify-content-center"
+							style="padding: 2rem;">
+							<div class="w-100">
+								<h5 id="selected-date-title" class="card-title">選択した日付の予約タイムテーブル</h5>
+								<table class="table table-bordered" id="timetable">
+									<thead></thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<!-- 必要なJS/CSSのみ読み込み -->
+			<!-- JS/CSSリソース -->
 			<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 			<link rel="stylesheet"
 				href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 			<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-			<!-- 日本語ローカライズを追加 -->
 			<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 			<script>
-				// inlineモード&日本語化でflatpickrカレンダーを常時表示
 				flatpickr("#calendar", {
 					inline : true,
 					dateFormat : "Y-m-d",
 					locale : "ja",
 					defaultDate : new Date(),
-					onChange : function(selectedDates, dateStr, instance) {
+					onChange : function(selectedDates, dateStr) {
 						fetchAppointments(dateStr);
 					}
 				});
 
-				// 初期表示（本日分）
 				$(document).ready(function() {
 					const today = new Date().toISOString().slice(0, 10);
 					fetchAppointments(today);
 				});
 
-				// 日付ごとの予約一覧を取得・表示
+				// 縦並びでタイムテーブルを描画
+				function renderTimetable(data) {
+					let thead = "<tr><th>時間枠</th><th>予約情報</th></tr>";
+					let tbody = "";
+					data
+							.forEach(function(slot) {
+								tbody += "<tr>";
+								tbody += `<td>${slot.timeLabel}</td>`;
+								if (slot.patientName) {
+									tbody += `<td>${slot.patientName} (${slot.cardNumber})<br>${slot.phoneNumber}</td>`;
+								} else {
+									tbody += "<td></td>";
+								}
+								tbody += "</tr>";
+							});
+					$("#timetable thead").html(thead);
+					$("#timetable tbody").html(tbody);
+				}
+
 				function fetchAppointments(dateStr) {
-					$("#selected-date-title").text(dateStr + "の予約一覧");
+					$("#selected-date-title").text(dateStr + "の予約タイムテーブル");
 					$.ajax({
 						url : "/admin/appointments",
 						type : "GET",
@@ -67,20 +82,11 @@
 							date : dateStr
 						},
 						success : function(data) {
-							let tbody = "";
-							if (data.length === 0) {
-								tbody = "<tr><td colspan='2'>予約なし</td></tr>";
-							} else {
-								data.forEach(function(row) {
-									tbody += "<tr><td>" + row.patientName
-											+ "</td><td>" + row.phoneNumber
-											+ "</td></tr>";
-								});
-							}
-							$("#appointment-table tbody").html(tbody);
+							renderTimetable(data);
 						},
 						error : function() {
-							$("#appointment-table tbody").html(
+							$("#timetable thead").html("");
+							$("#timetable tbody").html(
 									"<tr><td colspan='2'>取得エラー</td></tr>");
 						}
 					});

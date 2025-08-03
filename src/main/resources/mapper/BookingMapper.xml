@@ -54,5 +54,26 @@
           AND status = 'reserved'
         LIMIT 1
     </select>
+    
+        <!-- 管理者タイムテーブル用：指定日付の全時間枠＋各枠ごとの予約情報 -->
+    <select id="findAdminTimeSlotBookingsByDate" resultType="com.unknownclinic.appointment.dto.AdminBookingView">
+        SELECT
+            tsm.id AS timeSlotId,
+            tsm.label AS timeLabel,
+            u.name AS patientName,
+            u.card_number AS cardNumber,
+            u.phone_number AS phoneNumber
+        FROM business_days bd
+        INNER JOIN business_day_slots bds
+            ON bd.id = bds.business_day_id
+        INNER JOIN time_slot_master tsm
+            ON bds.time_slot_master_id = tsm.id
+        LEFT JOIN bookings b
+            ON b.business_day_slot_id = bds.id AND b.status = 'reserved'
+        LEFT JOIN users u
+            ON b.user_id = u.id
+        WHERE bd.business_date = #{date}
+        ORDER BY tsm.id
+    </select>
 
 </mapper>

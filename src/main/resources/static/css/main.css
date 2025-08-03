@@ -302,3 +302,52 @@ body {
 		padding-bottom: 0.2rem;
 	}
 }
+
+/* ==========================================================
+   管理者画面用カードパネル
+========================================================== */
+
+.admin-card {
+	background: var(--card-background-color);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	width: 100%;
+	max-width: 950px;
+	margin: 0 auto 2.5rem auto;
+	padding: 2.5rem 2rem 2rem 2rem;
+	overflow: hidden;
+}
+
+/* モバイル向けパディング調整 */
+@media (max-width: 600px) {
+	.admin-card {
+		padding: 1.2rem 0.4rem 1.2rem 0.4rem;
+		max-width: 99vw;
+	}
+}
+
+/* カード内タイトルの太字・中央寄せ */
+.admin-card .card-title {
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 1.2rem;
+	font-size: 1.2rem;
+}
+
+/* カード内区切り線スタイル例 */
+.admin-card hr {
+	margin-top: 0;
+	margin-bottom: 1.2rem;
+	border-top: 1.5px solid var(--border-color);
+}
+
+/* カレンダーとタイムテーブルの区切り線 */
+.admin-card .border-end {
+	border-right: 1.5px solid var(--border-color) !important;
+}
+
+/* 表内テキスト折り返し許可（予約情報が長い場合） */
+#timetable td, #timetable th {
+	white-space: normal !important;
+}
