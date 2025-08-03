@@ -41,10 +41,10 @@
 									th:value="${selectedBusinessDayId}" />
 								<div th:each="slot : ${allTimeSlots}">
 									<span th:text="${slot.label}"></span>
-									<button type="submit" name="timeSlotId"
-										th:value="${slot.number}" th:text="'選択'"
-										th:classappend="${bookedSlotNumbers.contains(slot.number.toString()) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
-										th:disabled="${bookedSlotNumbers.contains(slot.number.toString())}"
+									<button type="submit" name="businessDaySlotId"
+										th:value="${slot.id}" th:text="'選択'"
+										th:classappend="${bookedSlotIds.contains(slot.id) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
+										th:disabled="${bookedSlotIds.contains(slot.id)}"
 										style="margin-bottom: 3px;"></button>
 								</div>
 							</form>

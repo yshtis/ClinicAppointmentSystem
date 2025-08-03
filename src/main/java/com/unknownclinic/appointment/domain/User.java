@@ -8,25 +8,23 @@ import lombok.Data;
 
 @Data
 public class User {
+    private Long id;
 
-	
-	private Long id;
-	
-	@NotNull
-	private String name;
-	
-	@NotNull
-	private LocalDate birthday;
-	
-	@NotNull
-	private String phoneNumber;
-	
-	@NotNull
-	private String cardNumber;
-	
-	@NotNull
-	private boolean isTemporary;
-	
-	@NotNull
-	private String password;
+    @NotNull
+    private String cardNumber;
+
+    @NotNull
+    private LocalDate birthday;
+
+    @NotNull
+    private String name;
+
+    @NotNull
+    private String password;
+
+    @NotNull
+    private String phoneNumber;
+
+    @NotNull
+    private boolean isTemporary;
 }

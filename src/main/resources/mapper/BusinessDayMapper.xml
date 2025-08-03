@@ -10,12 +10,12 @@
         ORDER BY business_date
     </select>
 
-    <!-- 指定月の営業日取得 -->
-    <select id="findByMonth" resultType="com.unknownclinic.appointment.domain.BusinessDay">
+    <!-- IDで営業日取得 -->
+    <select id="findById" resultType="com.unknownclinic.appointment.domain.BusinessDay">
         SELECT *
         FROM business_days
-        WHERE DATE_FORMAT(business_date, '%Y-%m') = #{month}
-        ORDER BY business_date
+        WHERE id = #{id}
+        LIMIT 1
     </select>
 
     <!-- 新規営業日登録 -->
@@ -24,7 +24,7 @@
         VALUES (#{businessDate}, #{createdAt})
     </insert>
 
-    <!-- 営業日更新 -->
+    <!-- 更新 -->
     <update id="update" parameterType="com.unknownclinic.appointment.domain.BusinessDay">
         UPDATE business_days
         SET business_date = #{businessDate},

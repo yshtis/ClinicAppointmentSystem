@@ -1,6 +1,6 @@
 package com.unknownclinic.appointment.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -8,18 +8,16 @@ import lombok.Data;
 
 @Data
 public class Booking {
-	
 	private Long id;
-	
+
 	@NotNull
 	private Long userId;
-	
+
 	@NotNull
-	private LocalDate date;
-	
+	private Long businessDaySlotId;
+
 	@NotNull
-	private Long timeSlotId;
-	
-	@NotNull
-	private String status; // reservedまたはcancelledが格納
+	private String status; // "reserved", "canceled" etc.
+
+	private LocalDateTime createdAt;
 }

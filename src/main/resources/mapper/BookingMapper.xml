@@ -8,7 +8,7 @@
         SELECT *
         FROM bookings
         WHERE user_id = #{userId}
-        ORDER BY date DESC, time_slot_id
+        ORDER BY id DESC
     </select>
 
     <!-- 予約IDで取得 -->
@@ -21,26 +21,38 @@
 
     <!-- 新規予約登録 -->
     <insert id="insert" parameterType="com.unknownclinic.appointment.domain.Booking" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO bookings (user_id, date, time_slot_id, status)
-        VALUES (#{userId}, #{date}, #{timeSlotId}, #{status})
+        INSERT INTO bookings (user_id, business_day_slot_id, status, created_at)
+        VALUES (#{userId}, #{businessDaySlotId}, #{status}, NOW())
     </insert>
 
     <!-- 更新（キャンセル等） -->
     <update id="update" parameterType="com.unknownclinic.appointment.domain.Booking">
         UPDATE bookings
         SET user_id = #{userId},
-            date = #{date},
-            time_slot_id = #{timeSlotId},
+            business_day_slot_id = #{businessDaySlotId},
             status = #{status}
         WHERE id = #{id}
     </update>
 
-    <!-- 指定日付の予約一覧（管理者用） -->
-    <select id="findByDate" resultType="com.unknownclinic.appointment.domain.Booking">
+    <!-- 指定business_day_slot_id群の予約一覧 -->
+    <select id="findByBusinessDaySlotIds" resultType="com.unknownclinic.appointment.domain.Booking">
         SELECT *
         FROM bookings
-        WHERE date = #{date}
-        ORDER BY time_slot_id
+        WHERE business_day_slot_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY business_day_slot_id
+    </select>
+
+    <!-- ユーザー×枠で予約済み取得 -->
+    <select id="findReservedByUserAndSlot" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT *
+        FROM bookings
+        WHERE user_id = #{userId}
+          AND business_day_slot_id = #{businessDaySlotId}
+          AND status = 'reserved'
+        LIMIT 1
     </select>
 
 </mapper>

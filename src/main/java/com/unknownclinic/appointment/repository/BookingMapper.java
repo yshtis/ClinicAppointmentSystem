@@ -20,4 +20,12 @@ public interface BookingMapper {
 	void update(Booking booking);
 
 	List<Booking> findByDate(@Param("date") LocalDate date);
+
+	// 新スキーマ：business_day_slot_idで複数取得
+	List<Booking> findByBusinessDaySlotIds(
+			@Param("list") List<Long> businessDaySlotIds);
+
+	// 新スキーマ：ユーザーと枠で予約取得（予約済みのみ）
+	Booking findReservedByUserAndSlot(@Param("userId") Long userId,
+			@Param("businessDaySlotId") Long businessDaySlotId);
 }

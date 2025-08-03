@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.unknownclinic.appointment.repository.UserMapper">
 
-    <!-- 診察券番号でユーザー取得（Spring Security認証用） -->
+    <!-- 診察券番号でユーザー取得 -->
     <select id="findByCardNumber" resultType="com.unknownclinic.appointment.domain.User">
         SELECT *
         FROM users
@@ -11,7 +11,7 @@
         LIMIT 1
     </select>
 
-    <!-- IDでユーザー取得（必要に応じて） -->
+    <!-- IDでユーザー取得 -->
     <select id="findById" resultType="com.unknownclinic.appointment.domain.User">
         SELECT *
         FROM users
@@ -21,8 +21,8 @@
 
     <!-- 新規登録 -->
     <insert id="insert" parameterType="com.unknownclinic.appointment.domain.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO users (card_number, birthday, name, password)
-        VALUES (#{cardNumber}, #{birthday}, #{name}, #{password})
+        INSERT INTO users (card_number, birthday, name, password, phone_number, is_temporary)
+        VALUES (#{cardNumber}, #{birthday}, #{name}, #{password}, #{phoneNumber}, #{isTemporary})
     </insert>
 
     <!-- 管理用：全ユーザー一覧 -->

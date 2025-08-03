@@ -1,20 +1,23 @@
 package com.unknownclinic.appointment.dto;
 
+import java.time.LocalDate;
+
+import lombok.Data;
+
+@Data
 public class TimeSlotView {
+	private Long id;
+	private String label;
+	private LocalDate businessDate;
 
-	private Long number; // 1～14の枠番号
-	private String label; // 例："09:00-09:30"
-
-	public TimeSlotView(Long number, String label) {
-		this.number = number;
+	public TimeSlotView(Long id, String label) {
+		this.id = id;
 		this.label = label;
 	}
 
-	public Long getNumber() {
-		return number;
-	}
-
-	public String getLabel() {
-		return label;
+	public TimeSlotView(Long id, String label, LocalDate businessDate) {
+		this.id = id;
+		this.label = label;
+		this.businessDate = businessDate;
 	}
 }

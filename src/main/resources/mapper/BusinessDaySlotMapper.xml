@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknownclinic.appointment.repository.BusinessDaySlotMapper">
+
+    <!-- 営業日IDで有効な枠一覧取得 -->
+    <select id="findAvailableByBusinessDayId" resultType="com.unknownclinic.appointment.domain.BusinessDaySlot">
+        SELECT *
+        FROM business_day_slots
+        WHERE business_day_id = #{businessDayId}
+          AND is_available = 1
+        ORDER BY time_slot_master_id
+    </select>
+
+    <!-- IDで営業日枠取得 -->
+    <select id="findById" resultType="com.unknownclinic.appointment.domain.BusinessDaySlot">
+        SELECT *
+        FROM business_day_slots
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+    
+    <!-- 複数IDで営業日枠取得 -->
+    <select id="findByIds" resultType="com.unknownclinic.appointment.domain.BusinessDaySlot">
+        SELECT *
+        FROM business_day_slots
+        WHERE id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY id
+    </select>
+
+</mapper>
