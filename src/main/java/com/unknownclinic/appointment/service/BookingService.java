@@ -18,6 +18,8 @@ public interface BookingService {
 	
 	List<Booking> getBookingsForBusinessDay(Long businessDayId);
 	
+	List<TimeSlot> getTimeSlotsByBusinessDayId(Long businessDayId);
+	
 	// mypage用
     List<Booking> getBookingsByUser(Long userId);
     

@@ -16,56 +16,36 @@
 						<hr class="my-0">
 					</div>
 					<!-- 営業日選択フォーム -->
-					<div class="col-md-5 border-end" style="background: #f9fbfe;">
-						<div class="p-4 h-100 d-flex flex-column">
+					<div class="col-md-6 border-end" style="background: #f9fbfe;">
+						<div
+							class="p-4 h-100 d-flex flex-column gap-3 flex-grow-1 text-center">
 							<label class="form-label mb-3">営業日を選択：</label>
 							<div class="d-flex flex-column gap-3 flex-grow-1">
 								<a th:each="day, iter : ${businessDays}"
 									th:href="@{/main(businessDayId=${day.id})}"
 									th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"
 									th:classappend="${day.id == selectedBusinessDayId} ? 'btn btn-primary' : 'btn btn-outline-primary'"
-									class="btn w-100 py-2" style="margin-bottom: 6px;"
+									class="btn w-75 py-2 mx-auto" style="margin-bottom: 6px;"
 									th:styleappend="${iter.last} ? 'margin-bottom:0;' : ''"> </a>
 							</div>
 						</div>
 					</div>
 					<!-- 時間枠選択フォーム -->
-					<div class="col-md-7">
+					<div
+						class="col-md-6 d-flex align-items-center justify-content-center"
+						style="padding: 2rem;">
 						<div th:if="${selectedBusinessDayId != null}">
-							<form th:action="@{/confirm}" method="post" id="slotForm"
-								class="h-100">
+							<label class="form-label mb-3">予約時間を選択：</label>
+							<form th:action="@{/confirm}" method="get">
 								<input type="hidden" name="businessDayId"
 									th:value="${selectedBusinessDayId}" />
-								<div class="p-4">
-									<label class="form-label mb-3">時間枠を選択：</label>
-									<div class="d-flex flex-column gap-3 mb-4"
-										style="max-height: 800px; overflow-y: auto;">
-										<div th:each="slotId, iter : ${allTimeSlotIds}"
-											class="d-flex align-items-center gap-3"
-											style="margin-bottom: 4px;"
-											th:styleappend="${iter.last} ? 'margin-bottom:0;' : ''">
-											<span th:switch="${slotId}"
-												style="min-width: 70px; text-align: right;"> <span
-												th:case="'1'">9:00~</span> <span th:case="'2'">9:30~</span>
-												<span th:case="'3'">10:00~</span> <span th:case="'4'">10:30~</span>
-												<span th:case="'5'">11:00~</span> <span th:case="'6'">11:30~</span>
-												<span th:case="'7'">13:00~</span> <span th:case="'8'">13:30~</span>
-												<span th:case="'9'">14:00~</span> <span th:case="'10'">14:30~</span>
-												<span th:case="'11'">15:00~</span> <span th:case="'12'">15:30~</span>
-												<span th:case="'13'">16:00~</span> <span th:case="'14'">16:30~</span>
-												<span th:case="*">?</span>
-											</span>
-											<button type="button" th:data-slot-id="${slotId}"
-												th:text="'選択'"
-												th:classappend="${bookedSlotIds.contains(slotId) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
-												th:disabled="${bookedSlotIds.contains(slotId)}"
-												onclick="selectSlot(this)"></button>
-										</div>
-									</div>
-									<input type="hidden" id="selectedTimeSlotId" name="timeSlotId" />
-									<div id="reserveBtnArea" style="display: none;">
-										<button type="submit" class="btn btn-primary">予約する</button>
-									</div>
+								<div th:each="slot : ${allTimeSlots}">
+									<span th:text="${slot.label}"></span>
+									<button type="submit" name="timeSlotId"
+										th:value="${slot.number}" th:text="'選択'"
+										th:classappend="${bookedSlotNumbers.contains(slot.number.toString()) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
+										th:disabled="${bookedSlotNumbers.contains(slot.number.toString())}"
+										style="margin-bottom: 3px;"></button>
 								</div>
 							</form>
 						</div>
@@ -82,13 +62,5 @@
 		<!-- /row -->
 	</div>
 	<footer th:replace="~{parts/common :: footer()}"></footer>
-	<script>
-		function selectSlot(btn) {
-			document.querySelectorAll('#slotForm button[type=button]').forEach(b => b.classList.remove('active'));
-			btn.classList.add('active');
-			document.getElementById('selectedTimeSlotId').value = btn.getAttribute('data-slot-id');
-			document.getElementById('reserveBtnArea').style.display = '';
-		}
-	</script>
 </body>
 </html>

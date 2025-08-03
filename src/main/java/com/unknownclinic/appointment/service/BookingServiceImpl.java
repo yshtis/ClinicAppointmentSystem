@@ -121,6 +121,11 @@ public class BookingServiceImpl implements BookingService {
 			return Collections.emptyList();
 		return bookingMapper.findByDate(day.getBusinessDate());
 	}
+	
+	@Override
+	public List<TimeSlot> getTimeSlotsByBusinessDayId(Long businessDayId) {
+	    return timeSlotMapper.findByBusinessDayId(businessDayId);
+	}
 
 	// mypage用
 	@Override
