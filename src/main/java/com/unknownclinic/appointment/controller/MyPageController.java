@@ -59,6 +59,10 @@ public class MyPageController {
 	@PostMapping("/cancel")
 	public String cancelBooking(@RequestParam("bookingId") Long bookingId,
 			Authentication authentication) {
+		if (authentication == null) {
+			// 認証切れの場合はログイン画面にリダイレクト
+			return "redirect:/login?timeout";
+		}
 		String cardNumber = authentication.getName();
 		User user = userService.findByCardNumber(cardNumber);
 

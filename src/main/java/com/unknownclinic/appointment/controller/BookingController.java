@@ -76,12 +76,14 @@ public class BookingController {
 			return "error";
 		}
 
-		// 枠情報の取得
+		// 枠情報の取得（営業日・時間枠ラベルなどを含むDTO）
 		TimeSlotView slotView = bookingService
 				.getTimeSlotViewByBusinessDaySlotId(businessDaySlotId);
 
 		model.addAttribute("slotView", slotView);
 		model.addAttribute("cardNumber", cardNumber);
+		model.addAttribute("businessDaySlotId", businessDaySlotId); // hidden用
+
 		if (completed != null)
 			model.addAttribute("completed", true);
 		if (error != null)

@@ -34,9 +34,8 @@
 							<tbody>
 								<tr th:each="booking : ${futureBookings}">
 									<td
-										th:text="${#temporals.format(booking.date, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
-									<td
-										th:text="${@bookingServiceImpl.SLOT_TIME_LABELS[booking.timeSlotId]}"></td>
+										th:text="${#temporals.format(booking.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
+									<td th:text="${booking.slotLabel}"></td>
 									<td
 										th:text="${booking.status == null or booking.status == 'reserved' ? '予約済み' : (booking.status == 'canceled' ? 'キャンセル済み' : booking.status)}"></td>
 									<td>
@@ -73,9 +72,8 @@
 							<tbody>
 								<tr th:each="booking : ${pastBookings}">
 									<td
-										th:text="${#temporals.format(booking.date, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
-									<td
-										th:text="${@bookingServiceImpl.SLOT_TIME_LABELS[booking.timeSlotId]}"></td>
+										th:text="${#temporals.format(booking.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
+									<td th:text="${booking.slotLabel}"></td>
 									<td
 										th:text="${booking.status == null or booking.status == 'reserved' ? '予約済み' : (booking.status == 'canceled' ? 'キャンセル済み' : booking.status)}"></td>
 								</tr>

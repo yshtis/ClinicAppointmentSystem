@@ -141,7 +141,7 @@ public class BookingServiceImpl implements BookingService {
 		if (booking == null || !booking.getUserId().equals(userId)) {
 			throw new IllegalArgumentException("予約が存在しないか、権限がありません");
 		}
-		booking.setStatus("cancelled");
+		booking.setStatus("canceled");
 		bookingMapper.update(booking);
 	}
 }

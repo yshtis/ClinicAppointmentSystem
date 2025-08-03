@@ -36,18 +36,29 @@
 						style="padding: 2rem;">
 						<div th:if="${selectedBusinessDayId != null}">
 							<label class="form-label mb-3">予約時間を選択：</label>
-							<form th:action="@{/confirm}" method="get">
+							<form th:action="@{/confirm}" method="get" id="timeSlotForm">
 								<input type="hidden" name="businessDayId"
 									th:value="${selectedBusinessDayId}" />
-								<div th:each="slot : ${allTimeSlots}">
-									<span th:text="${slot.label}"></span>
-									<button type="submit" name="businessDaySlotId"
-										th:value="${slot.id}" th:text="'選択'"
-										th:classappend="${bookedSlotIds.contains(slot.id) ? 'btn btn-secondary disabled' : 'btn btn-primary'}"
+								<div th:each="slot : ${allTimeSlots}" class="mb-2">
+									<label th:for="'slot_' + ${slot.id}" class="me-2"> <input
+										type="radio" name="businessDaySlotId"
+										th:id="'slot_' + ${slot.id}" th:value="${slot.id}"
 										th:disabled="${bookedSlotIds.contains(slot.id)}"
-										style="margin-bottom: 3px;"></button>
+										onclick="onSlotSelect()" /> <span th:text="${slot.label}"></span>
+									</label> <span th:if="${bookedSlotIds.contains(slot.id)}"
+										class="badge bg-secondary">予約済</span>
+								</div>
+								<div class="d-flex w-100 justify-content-center button-row mt-3">
+									<button type="submit" class="btn btn-primary" id="reserveBtn"
+										disabled>予約を登録する</button>
+									<a href="/main" class="btn btn-outline-secondary ms-2">戻る</a>
 								</div>
 							</form>
+							<script>
+								function onSlotSelect() {
+									document.getElementById('reserveBtn').disabled = false;
+								}
+							</script>
 						</div>
 						<div th:unless="${selectedBusinessDayId != null}"
 							class="h-100 d-flex align-items-center justify-content-center"

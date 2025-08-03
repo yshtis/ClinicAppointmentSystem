@@ -26,6 +26,11 @@ public class SecurityConfig {
 		http
 				.securityMatcher("/admin/**")
 				.authorizeHttpRequests(authz -> authz
+						.requestMatchers("/admin/login", "/admin/logout",
+								"/css/**", "/js/**", "/images/**",
+								"/admin/css/**", "/admin/js/**",
+								"/admin/images/**")
+						.permitAll()
 						.anyRequest().hasRole("ADMIN"))
 				.formLogin(form -> form
 						.loginPage("/admin/login")
@@ -48,10 +53,11 @@ public class SecurityConfig {
 	public SecurityFilterChain userSecurityFilterChain(HttpSecurity http)
 			throws Exception {
 		http
-				.securityMatcher("/login", "/main", "/mypage", "/confirm",
-						"/logout")
+				.securityMatcher("/**")
 				.authorizeHttpRequests(authz -> authz
-						.requestMatchers("/login", "/logout").permitAll()
+						.requestMatchers("/login", "/logout", "/css/**",
+								"/js/**", "/images/**")
+						.permitAll()
 						.anyRequest().hasRole("USER"))
 				.formLogin(form -> form
 						.loginPage("/login")
