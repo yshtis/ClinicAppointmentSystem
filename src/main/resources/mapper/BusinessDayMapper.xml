@@ -31,5 +31,11 @@
             created_at = #{createdAt}
         WHERE id = #{id}
     </update>
+    
+     <!-- 追加: 日付指定で物理削除 -->
+    <delete id="deleteByBusinessDate" parameterType="java.time.LocalDate">
+        DELETE FROM business_days
+        WHERE business_date = #{businessDate}
+    </delete>
 
 </mapper>

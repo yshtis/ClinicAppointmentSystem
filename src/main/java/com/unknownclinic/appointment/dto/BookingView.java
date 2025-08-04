@@ -8,6 +8,7 @@ import lombok.Data;
 
 @Data
 public class BookingView {
+	
 	private Long id;
 	private LocalDate businessDate;
 	private String slotLabel;

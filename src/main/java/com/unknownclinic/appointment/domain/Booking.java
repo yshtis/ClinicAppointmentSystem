@@ -17,7 +17,7 @@ public class Booking {
 	private Long businessDaySlotId;
 
 	@NotNull
-	private String status; // "reserved", "canceled" etc.
+	private String status; // "reserved"または"canceled"を格納
 
 	private LocalDateTime createdAt;
 }

@@ -16,5 +16,5 @@ public class BusinessDaySlot {
 	private Long timeSlotMasterId;
 
 	@NotNull
-	private boolean isAvailable;
+	private boolean available;
 }

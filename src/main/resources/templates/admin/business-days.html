@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head
+	th:replace="~{parts/admin-common :: html_head('営業日設定 - さわやか医院予約システム')}"></head>
+<link rel="stylesheet" th:href="@{/css/main.css}">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<body class="bg-light text-dark">
+	<div class="d-flex flex-column min-vh-100 bg-light">
+		<div th:replace="~{parts/admin-common :: header()}"></div>
+		<main class="container flex-grow-1 py-5">
+			<div class="row justify-content-center">
+				<div class="admin-card">
+					<h5 class="card-title">営業日設定</h5>
+					<div class="row g-4">
+						<div class="col-md-6 border-end">
+							<!-- 日付選択 -->
+							<div class="p-3">
+								<label for="businessDayInput" class="form-label">営業日を追加</label>
+								<input type="text" id="businessDayInput"
+									class="form-control mb-2" placeholder="日付を選択"
+									autocomplete="off" readonly>
+								<div id="slotOptions" style="display: none;">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="allday"
+											checked> <label class="form-check-label" for="allday">終日営業</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="am">
+										<label class="form-check-label" for="am">午前のみ営業</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="pm">
+										<label class="form-check-label" for="pm">午後のみ営業</label>
+									</div>
+									<button id="addBusinessDayBtn" class="btn btn-primary mt-2">営業日として追加</button>
+								</div>
+								<div id="addDayAlert" style="display: none;" class="alert mt-2"></div>
+							</div>
+							<div class="mt-4">
+								<label class="form-label">営業日一覧</label>
+								<ul id="businessDayList" class="list-group"></ul>
+							</div>
+						</div>
+						<div class="col-md-6 d-flex align-items-center">
+							<div>
+								<p class="text-secondary">
+									・営業日として追加したい日付を選択し、営業種別を選んでください。<br>（終日、午前のみ、午後のみ）
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+			<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+			<script>
+        // flatpickr
+        flatpickr("#businessDayInput", {
+            dateFormat: "Y-m-d",
+            locale: "ja",
+            allowInput: false,
+            onChange: function(selectedDates, dateStr) {
+                if(dateStr){
+                    document.getElementById("slotOptions").style.display = "";
+                    document.getElementById("allday").checked = true;
+                    document.getElementById("am").checked = false;
+                    document.getElementById("pm").checked = false;
+                }else{
+                    document.getElementById("slotOptions").style.display = "none";
+                }
+            }
+        });
+
+        // チェックボックス動作
+        document.getElementById("allday").addEventListener("change", function(){
+            if(this.checked){
+                document.getElementById("am").checked = false;
+                document.getElementById("pm").checked = false;
+            }
+        });
+        document.getElementById("am").addEventListener("change", function(){
+            if(this.checked){
+                document.getElementById("allday").checked = false;
+            }
+        });
+        document.getElementById("pm").addEventListener("change", function(){
+            if(this.checked){
+                document.getElementById("allday").checked = false;
+            }
+        });
+
+        // CSRF
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        // 追加ボタン
+        document.getElementById("addBusinessDayBtn").addEventListener("click", function(){
+            const date = document.getElementById("businessDayInput").value;
+            let type = "";
+            if(document.getElementById("allday").checked) type = "allday";
+            else if(document.getElementById("am").checked && !document.getElementById("pm").checked) type = "am";
+            else if(document.getElementById("pm").checked && !document.getElementById("am").checked) type = "pm";
+            else if(document.getElementById("am").checked && document.getElementById("pm").checked) type = "allday";
+
+            console.log("csrfHeader:", csrfHeader);
+            console.log("csrfToken:", csrfToken);
+            
+            fetch("/admin/business-days/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRF-TOKEN": csrfToken
+                },
+                body: "date=" + encodeURIComponent(date) + "&type=" + encodeURIComponent(type)
+            })
+            .then(res => {
+                if (res.ok) return res.text();
+                return res.text().then(text => { throw new Error(text); });
+            })
+            .then(msg => {
+                showAlert("addDayAlert", msg, "alert-success");
+                loadBusinessDays();
+            })
+            .catch(err => {
+                showAlert("addDayAlert", err.message, "alert-danger");
+            });
+        });
+
+        function showAlert(id, msg, clazz) {
+            const alert = document.getElementById(id);
+            alert.className = "alert " + clazz;
+            alert.textContent = msg;
+            alert.style.display = "block";
+            setTimeout(() => { alert.style.display = "none"; }, 2200);
+        }
+
+        // 営業日リスト取得・削除（前回答参照・省略）
+
+        // ...loadBusinessDays()等の既存実装...
+
+        document.addEventListener("DOMContentLoaded", loadBusinessDays);
+    </script>
+		</main>
+		<div th:replace="~{parts/admin-common :: footer()}"></div>
+	</div>
+</body>
+</html>

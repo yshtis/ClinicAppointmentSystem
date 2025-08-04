@@ -9,7 +9,11 @@ import com.unknownclinic.appointment.domain.TimeSlotMaster;
 
 @Mapper
 public interface TimeSlotMasterMapper {
+
 	List<TimeSlotMaster> findAll();
 
 	TimeSlotMaster findById(@Param("id") Long id);
+
+	// am/pm区分で全件取得を追加
+	List<TimeSlotMaster> findByAmPm(@Param("amPm") String amPm);
 }

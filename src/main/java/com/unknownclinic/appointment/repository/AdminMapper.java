@@ -7,6 +7,7 @@ import com.unknownclinic.appointment.domain.Admin;
 
 @Mapper
 public interface AdminMapper {
+	
 	@Select("SELECT * FROM admins WHERE login_id = #{loginId}")
 	Admin findByLoginId(String loginId);
 }

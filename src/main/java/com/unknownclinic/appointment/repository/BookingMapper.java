@@ -28,11 +28,11 @@ public interface BookingMapper {
 	Booking findReservedByUserAndSlot(@Param("userId") Long userId,
 			@Param("businessDaySlotId") Long businessDaySlotId);
 
-	// 管理者画面用（日付指定で患者情報も取得）
+	// 管理者画面用
 	List<AdminBookingView> findAdminBookingsByDate(
 			@Param("date") LocalDate date);
 
-	// 管理者タイムテーブル用：全時間枠＋各枠ごとの予約情報（予約がなければnull）
+	// 管理者タイムテーブル用
 	List<AdminBookingView> findAdminTimeSlotBookingsByDate(
 			@Param("date") LocalDate date);
 }

@@ -9,6 +9,7 @@ import com.unknownclinic.appointment.domain.User;
 
 @Mapper
 public interface UserMapper {
+	
 	User findByCardNumber(@Param("cardNumber") String cardNumber);
 
 	User findById(@Param("id") Long id);

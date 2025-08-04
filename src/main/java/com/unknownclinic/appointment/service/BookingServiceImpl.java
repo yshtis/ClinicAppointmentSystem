@@ -47,7 +47,6 @@ public class BookingServiceImpl implements BookingService {
 	public List<TimeSlotView> getTimeSlotsForView(Long businessDayId) {
 		if (businessDayId == null)
 			return List.of();
-		// 営業日ごとの有効な枠一覧
 		List<BusinessDaySlot> slots = businessDaySlotMapper
 				.findAvailableByBusinessDayId(businessDayId);
 		List<TimeSlotMaster> masters = timeSlotMasterMapper.findAll();
@@ -93,7 +92,6 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	@Transactional
 	public void createBooking(Long userId, Long businessDaySlotId) {
-		// 二重予約チェック
 		Booking existing = bookingMapper.findReservedByUserAndSlot(userId,
 				businessDaySlotId);
 		if (existing != null) {

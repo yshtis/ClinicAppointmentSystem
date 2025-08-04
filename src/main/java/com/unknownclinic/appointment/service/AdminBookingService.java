@@ -25,7 +25,12 @@ public class AdminBookingService {
         return bookingMapper.findAdminTimeSlotBookingsByDate(date);
     }
 
-    // 既存の「日付単位の予約一覧」も残す場合
+    /**
+	 * 指定日の予約情報を返す
+	 * 各予約ごとに、患者情報（予約がなければ空）を含む
+	 * @param date 予約日
+	 * @return AdminBookingViewリスト（時間枠順）
+	 */
     public List<AdminBookingView> getBookingsByDate(LocalDate date) {
         return bookingMapper.findAdminBookingsByDate(date);
     }

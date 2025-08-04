@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class TimeSlotView {
+	
 	private Long id;
 	private String label;
 	private LocalDate businessDate;

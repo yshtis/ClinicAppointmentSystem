@@ -31,4 +31,10 @@
         ORDER BY id
     </select>
 
+    <!-- 新規営業日枠登録 -->
+    <insert id="insert" parameterType="map">
+    	INSERT INTO business_day_slots (business_day_id, time_slot_master_id, is_available)
+    	VALUES (#{businessDayId}, #{timeSlotMasterId}, 1)
+	</insert>
+
 </mapper>

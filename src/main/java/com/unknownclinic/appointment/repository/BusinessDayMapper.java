@@ -9,6 +9,7 @@ import com.unknownclinic.appointment.domain.BusinessDay;
 
 @Mapper
 public interface BusinessDayMapper {
+
 	List<BusinessDay> findAll();
 
 	BusinessDay findById(@Param("id") Long id);
@@ -16,4 +17,7 @@ public interface BusinessDayMapper {
 	void insert(BusinessDay day);
 
 	void update(BusinessDay day);
+
+	void deleteByBusinessDate(
+			@Param("businessDate") java.time.LocalDate businessDate);
 }
