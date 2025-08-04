@@ -5,95 +5,92 @@
 <link rel="stylesheet" th:href="@{/css/parts/main.css}">
 <body class="bg-light text-dark">
 	<div class="d-flex flex-column min-vh-100 bg-light">
-		<div th:replace="~{parts/admin-common :: header()}"></div>
-		<main class="container flex-grow-1 py-5">
+		<header th:replace="~{parts/admin-common :: header()}"></header>
+		<main class="container flex-grow-1 py-4">
 			<div class="row justify-content-center">
-				<div class="admin-card">
-					<div class="row g-0">
-						<!-- カレンダー -->
-						<div class="col-md-6 border-end">
-							<div class="p-4 h-100">
-								<h5 class="card-title">予約カレンダー</h5>
-								<div id="calendar"></div>
+				<!-- パネル：2カラム用 -->
+				<div class="col-12 col-md-10 col-lg-8">
+					<div class="shadow-sm"
+						style="border-radius: 1.5rem; overflow: hidden; background: #fff;">
+						<!-- タイトル行 -->
+						<div class="row g-0">
+							<div class="col-12">
+								<h2 class="mb-0 py-3 text-center" style="font-weight: bold;">
+									予約タイムテーブル</h2>
+								<hr class="my-0">
 							</div>
 						</div>
-						<!-- タイムテーブル -->
-						<div
-							class="col-md-6 d-flex align-items-center justify-content-center"
-							style="padding: 2rem;">
-							<div class="w-100">
-								<h5 id="selected-date-title" class="card-title">選択した日付の予約タイムテーブル</h5>
-								<table class="table table-bordered" id="timetable">
-									<thead></thead>
-									<tbody></tbody>
-								</table>
+						<!-- 2カラム -->
+						<div class="row g-0">
+							<!-- 営業日選択フォーム -->
+							<div class="col-md-6 border-end" style="background: #f9fbfe;">
+								<div
+									class="p-4 h-100 d-flex flex-column gap-3 flex-grow-1 text-center">
+									<label class="form-label mb-3">営業日を選択：</label>
+									<div class="d-flex flex-column gap-3 flex-grow-1">
+										<a th:each="day, iter : ${businessDays}"
+											th:href="@{/admin/main(businessDayId=${day.id})}"
+											th:text="${day.businessDayLabel}"
+											th:classappend="${selectedBusinessDayId != null and day.id == selectedBusinessDayId} ? 'btn btn-primary business-day-btn' : 'btn btn-outline-primary business-day-btn'"
+											class="btn business-day-btn py-2" > </a>
+									</div>
+									<div
+										th:if="${businessDays == null or #lists.isEmpty(businessDays)}">
+										<span class="text-secondary">営業日が登録されていません</span>
+									</div>
+								</div>
 							</div>
+							<!-- タイムテーブル -->
+							<div
+								class="col-md-6 d-flex align-items-center justify-content-center"
+								style="padding: 2rem;">
+								<div class="w-100">
+									<div th:if="${selectedBusinessDayId != null}">
+										<label class="form-label mb-3"
+											th:text="${selectedBusinessDayLabel != null && selectedBusinessDayLabel != '' ? selectedBusinessDayLabel + 'の予約タイムテーブル' : '選択した日付の予約タイムテーブル'}"></label>
+										<table class="table table-bordered" id="timetable">
+											<thead>
+												<tr>
+													<th>時間枠</th>
+													<th>予約情報</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr
+													th:if="${timeTable == null or #lists.isEmpty(timeTable)}">
+													<td colspan="2" class="text-center">予約情報はありません</td>
+												</tr>
+												<tr th:each="slot : ${timeTable}"
+													th:if="${timeTable != null}"
+													th:classappend="${slot != null and slot.patientName != null} ? 'reserved-row'">
+													<td th:text="${slot != null ? slot.timeLabel : ''}"></td>
+													<td><span
+														th:if="${slot != null and slot.patientName != null}">
+															<span th:text="${slot.patientName}"></span> (<span
+															th:text="${slot.cardNumber}"></span>)<br> <span
+															th:text="${slot.phoneNumber}"></span>
+													</span> <span th:if="${slot == null or slot.patientName == null}"></span>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div th:unless="${selectedBusinessDayId != null}"
+										class="h-100 d-flex align-items-center justify-content-center"
+										style="min-height: 200px;">
+										<span class="text-secondary">営業日を選択してください</span>
+									</div>
+								</div>
+							</div>
+							<!-- /タイムテーブル -->
 						</div>
 					</div>
 				</div>
+				<!-- /col -->
 			</div>
-			<!-- JS/CSSリソース -->
-			<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-			<link rel="stylesheet"
-				href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-			<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-			<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
-			<script>
-				flatpickr("#calendar", {
-					inline : true,
-					dateFormat : "Y-m-d",
-					locale : "ja",
-					defaultDate : new Date(),
-					onChange : function(selectedDates, dateStr) {
-						fetchAppointments(dateStr);
-					}
-				});
-
-				$(document).ready(function() {
-					const today = new Date().toISOString().slice(0, 10);
-					fetchAppointments(today);
-				});
-
-				// 縦並びでタイムテーブルを描画
-				function renderTimetable(data) {
-					let thead = "<tr><th>時間枠</th><th>予約情報</th></tr>";
-					let tbody = "";
-					data
-							.forEach(function(slot) {
-								tbody += "<tr>";
-								tbody += `<td>${slot.timeLabel}</td>`;
-								if (slot.patientName) {
-									tbody += `<td>${slot.patientName} (${slot.cardNumber})<br>${slot.phoneNumber}</td>`;
-								} else {
-									tbody += "<td></td>";
-								}
-								tbody += "</tr>";
-							});
-					$("#timetable thead").html(thead);
-					$("#timetable tbody").html(tbody);
-				}
-
-				function fetchAppointments(dateStr) {
-					$("#selected-date-title").text(dateStr + "の予約タイムテーブル");
-					$.ajax({
-						url : "/admin/appointments",
-						type : "GET",
-						data : {
-							date : dateStr
-						},
-						success : function(data) {
-							renderTimetable(data);
-						},
-						error : function() {
-							$("#timetable thead").html("");
-							$("#timetable tbody").html(
-									"<tr><td colspan='2'>取得エラー</td></tr>");
-						}
-					});
-				}
-			</script>
+			<!-- /row -->
 		</main>
-		<div th:replace="~{parts/admin-common :: footer()}"></div>
+		<footer th:replace="~{parts/admin-common :: footer()}"></footer>
 	</div>
 </body>
 </html>

@@ -25,7 +25,7 @@
 									th:href="@{/main(businessDayId=${day.id})}"
 									th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"
 									th:classappend="${day.id == selectedBusinessDayId} ? 'btn btn-primary' : 'btn btn-outline-primary'"
-									class="btn w-75 py-2 mx-auto" style="margin-bottom: 6px;"
+									class="btn business-day-btn py-2" style="margin-bottom: 6px;"
 									th:styleappend="${iter.last} ? 'margin-bottom:0;' : ''"> </a>
 							</div>
 						</div>

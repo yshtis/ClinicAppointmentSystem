@@ -13,6 +13,7 @@
 	--border-color: #e2e8f0;
 	--shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.06);
 	--radius: 1.5rem;
+	--reserved-bg: #e6f3ff; /* 予約あり行の背景色（目立つ青系） */
 }
 
 /* ==========================================================
@@ -22,6 +23,102 @@ body {
 	font-family: "Noto Sans JP", "Work Sans", sans-serif;
 	background-color: var(--background-color);
 	color: var(--text-primary);
+}
+
+/* ==========================================================
+   管理者画面用カードパネル
+========================================================== */
+.admin-card {
+	background: var(--card-background-color);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	width: 100%;
+	max-width: 950px;
+	margin: 0 auto 2.5rem auto;
+	padding: 2.5rem 2rem 2rem 2rem;
+	overflow: hidden;
+}
+
+@media ( max-width : 600px) {
+	.admin-card {
+		padding: 1.2rem 0.4rem 1.2rem 0.4rem;
+		max-width: 99vw;
+	}
+}
+
+.admin-card .card-title {
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 1.2rem;
+	font-size: 1.2rem;
+}
+
+.admin-card hr {
+	margin-top: 0;
+	margin-bottom: 1.2rem;
+	border-top: 1.5px solid var(--border-color);
+}
+
+.admin-card .border-end {
+	border-right: 1.5px solid var(--border-color) !important;
+}
+
+/* ==========================================================
+   タイムテーブル カラム幅・行高・予約あり背景色
+========================================================== */
+#timetable {
+	table-layout: fixed;
+	width: 100%;
+}
+
+#timetable th:first-child, #timetable td:first-child {
+	width: 35%;
+}
+
+#timetable th:last-child, #timetable td:last-child {
+	width: 65%;
+}
+
+#timetable th, #timetable td {
+	vertical-align: middle;
+	height: 3.2rem;
+	min-height: 3.2rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	white-space: normal !important;
+	text-align: center;
+}
+
+/* 予約が入っている枠の行（tr）に適用するクラス */
+.reserved-row {
+	background-color: var(--reserved-bg) !important;
+}
+/* 予約情報セル内のテキストを中央寄せ */
+#timetable td {
+	text-align: center;
+}
+
+/* ==========================================================
+   営業日ボタン行（横スクロール・折り返し防止）
+========================================================== */
+.business-days-row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	gap: 0.75rem;
+	justify-content: center;
+	align-items: flex-start;
+	padding-bottom: 8px;
+	margin-bottom: 0.5rem;
+	width: 100%;
+}
+
+.business-day-btn {
+	min-width: 120px;
+	flex: 0 0 auto;
+	margin-bottom: 6px !important;
 }
 
 /* ==========================================================
@@ -114,7 +211,6 @@ body {
 	min-width: 70px;
 	transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
-
 /* 時刻ボタン：アクティブ・ホバー状態の色統一 */
 .btn-outline-primary:hover, .btn-outline-primary:focus,
 	.btn-outline-primary.active, .btn-outline-primary:active, .btn-primary,
@@ -123,45 +219,80 @@ body {
 	color: #fff !important;
 	border-color: var(--primary-hover-color) !important;
 }
-
 /* 非アクティブ時のoutline-primaryボタン */
 .btn-outline-primary {
 	background: transparent;
 	color: var(--primary-color);
 	border-color: var(--primary-color);
 }
-
 /* ボタン2個が並ぶとき強制的に間隔を空ける */
 .button-row>*+* {
 	margin-left: 1.5rem !important;
 }
-
-/* キャンセルボタンの折り返し防止＆小型化調整
-   - .btn-sm: パディング・フォントサイズ・min-widthでボタンを1行に収める
-   - .table td, .table th: テーブル内の改行を防ぎ、各セル内容を1行表示 */
+/* キャンセルボタンの折り返し防止＆小型化調整 */
 .btn-sm, .btn-sm:active, .btn-sm.active, .btn-sm:focus {
 	padding: 0.25rem 0.7rem !important;
 	font-size: 0.92rem !important;
 	min-width: 0 !important;
 }
 
-.table td, .table th {
-	white-space: nowrap;
+/* ==========================================================
+   カレンダーテーブル
+========================================================== */
+.table-responsive>.calendar-table {
+	min-width: 100%;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.calendar-table td {
+	text-align: center;
+	vertical-align: middle;
+	padding: 0.5rem;
+	height: 4.8rem;
+	min-width: 3rem;
+}
+/* カレンダーの日付ボタン（セル内で大きさ統一、中央配置、はみ出し防止） */
+.calendar-table .calendar-date-btn {
+	width: 2.4rem;
+	height: 2.4rem;
+	padding: 0;
+	font-size: 1.1rem;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	min-width: 0;
+	min-height: 0;
+	margin: 0 auto;
+}
+
+@media ( max-width : 600px) {
+	.calendar-table .calendar-date-btn {
+		width: 1.8rem;
+		height: 1.8rem;
+		font-size: 0.95rem;
+	}
 }
 
 /* ==========================================================
-   アラート
+   時刻選択ボタン行のカラム間隔
 ========================================================== */
-.alert {
-	border-radius: 0.7rem;
-	font-size: 1rem;
+.time-slot-row .col-6, .time-slot-row .col-sm-3 {
+	padding-left: 0.35rem;
+	padding-right: 0.35rem;
+	padding-top: 0.35rem;
+	padding-bottom: 0.35rem;
 }
 
-/* ==========================================================
-   テキストカラー
-========================================================== */
-.text-secondary {
-	color: var(--text-secondary) !important;
+@media ( max-width : 600px) {
+	.time-slot-row .col-6, .time-slot-row .col-sm-3 {
+		padding-left: 0.2rem;
+		padding-right: 0.2rem;
+		padding-top: 0.2rem;
+		padding-bottom: 0.2rem;
+	}
 }
 
 /* ==========================================================
@@ -243,111 +374,23 @@ body {
 }
 
 /* ==========================================================
-   カレンダーテーブル
+   アラート
 ========================================================== */
-.table-responsive>.calendar-table {
-	min-width: 100%;
-	width: 100%;
-	table-layout: fixed;
-}
-
-/* カレンダーセル */
-.calendar-table td {
-	text-align: center;
-	vertical-align: middle;
-	padding: 0.5rem;
-	height: 4.8rem;
-	min-width: 3rem;
-}
-
-/* カレンダーの日付ボタン（セル内で大きさ統一、中央配置、はみ出し防止） */
-.calendar-table .calendar-date-btn {
-	width: 2.4rem;
-	height: 2.4rem;
-	padding: 0;
-	font-size: 1.1rem;
-	border-radius: 50%;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	box-sizing: border-box;
-	min-width: 0;
-	min-height: 0;
-	margin: 0 auto;
-}
-
-@media ( max-width : 600px) {
-	.calendar-table .calendar-date-btn {
-		width: 1.8rem;
-		height: 1.8rem;
-		font-size: 0.95rem;
-	}
+.alert {
+	border-radius: 0.7rem;
+	font-size: 1rem;
 }
 
 /* ==========================================================
-   時刻選択ボタン行のカラム間隔
+   テキストカラー
 ========================================================== */
-.time-slot-row .col-6, .time-slot-row .col-sm-3 {
-	padding-left: 0.35rem;
-	padding-right: 0.35rem;
-	padding-top: 0.35rem;
-	padding-bottom: 0.35rem;
-}
-
-@media ( max-width : 600px) {
-	.time-slot-row .col-6, .time-slot-row .col-sm-3 {
-		padding-left: 0.2rem;
-		padding-right: 0.2rem;
-		padding-top: 0.2rem;
-		padding-bottom: 0.2rem;
-	}
+.text-secondary {
+	color: var(--text-secondary) !important;
 }
 
 /* ==========================================================
-   管理者画面用カードパネル
+   テーブル内折り返し防止
 ========================================================== */
-
-.admin-card {
-	background: var(--card-background-color);
-	border: 1px solid var(--border-color);
-	border-radius: var(--radius);
-	box-shadow: var(--shadow);
-	width: 100%;
-	max-width: 950px;
-	margin: 0 auto 2.5rem auto;
-	padding: 2.5rem 2rem 2rem 2rem;
-	overflow: hidden;
-}
-
-/* モバイル向けパディング調整 */
-@media (max-width: 600px) {
-	.admin-card {
-		padding: 1.2rem 0.4rem 1.2rem 0.4rem;
-		max-width: 99vw;
-	}
-}
-
-/* カード内タイトルの太字・中央寄せ */
-.admin-card .card-title {
-	font-weight: bold;
-	text-align: center;
-	margin-bottom: 1.2rem;
-	font-size: 1.2rem;
-}
-
-/* カード内区切り線スタイル例 */
-.admin-card hr {
-	margin-top: 0;
-	margin-bottom: 1.2rem;
-	border-top: 1.5px solid var(--border-color);
-}
-
-/* カレンダーとタイムテーブルの区切り線 */
-.admin-card .border-end {
-	border-right: 1.5px solid var(--border-color) !important;
-}
-
-/* 表内テキスト折り返し許可（予約情報が長い場合） */
-#timetable td, #timetable th {
-	white-space: normal !important;
+.table td, .table th {
+	white-space: nowrap;
 }
