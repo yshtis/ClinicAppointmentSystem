@@ -20,4 +20,6 @@ public interface BusinessDayMapper {
 
 	void deleteByBusinessDate(
 			@Param("businessDate") java.time.LocalDate businessDate);
+	
+	void deleteById(@Param("id") Long id);
 }

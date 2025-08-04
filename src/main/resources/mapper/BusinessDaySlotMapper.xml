@@ -3,6 +3,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.unknownclinic.appointment.repository.BusinessDaySlotMapper">
 
+    <!-- 追加: 営業日IDで全枠取得 -->
+    <select id="findByBusinessDayId" resultType="com.unknownclinic.appointment.domain.BusinessDaySlot">
+        SELECT *
+        FROM business_day_slots
+        WHERE business_day_id = #{businessDayId}
+        ORDER BY time_slot_master_id
+    </select>
+
     <!-- 営業日IDで有効な枠一覧取得 -->
     <select id="findAvailableByBusinessDayId" resultType="com.unknownclinic.appointment.domain.BusinessDaySlot">
         SELECT *
@@ -33,8 +41,8 @@
 
     <!-- 新規営業日枠登録 -->
     <insert id="insert" parameterType="map">
-    	INSERT INTO business_day_slots (business_day_id, time_slot_master_id, is_available)
-    	VALUES (#{businessDayId}, #{timeSlotMasterId}, 1)
-	</insert>
+        INSERT INTO business_day_slots (business_day_id, time_slot_master_id, is_available)
+        VALUES (#{businessDayId}, #{timeSlotMasterId}, 1)
+    </insert>
 
 </mapper>

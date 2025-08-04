@@ -3,14 +3,15 @@ package com.unknownclinic.appointment.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.unknownclinic.appointment.dto.AdminBusinessDayView;
 import com.unknownclinic.appointment.service.BusinessDayService;
 
 @Controller
@@ -21,43 +22,37 @@ public class AdminBusinessDayController {
 	private BusinessDayService businessDayService;
 
 	@GetMapping
-	public String businessDaysPage() {
+	public String businessDaysPage(Model model) {
+		List<AdminBusinessDayView> businessDays = businessDayService
+				.getAllAdminBusinessDayViews();
+		model.addAttribute("businessDays", businessDays);
 		return "admin/business-days";
 	}
 
-	@GetMapping("/list")
-	@ResponseBody
-	public List<String> getBusinessDays() {
-		return businessDayService.getAllBusinessDayStrings();
-	}
-
 	@PostMapping("/add")
-	@ResponseBody
-	public ResponseEntity<String> addBusinessDay(
-			@RequestParam("date") String date,
-			@RequestParam("type") String type) {
-		if (!businessDayService.isValidDate(date)) {
-			return ResponseEntity.badRequest().body("不正な日付形式です。");
-		}
+	public String addBusinessDay(
+			@RequestParam String date,
+			@RequestParam String type,
+			RedirectAttributes ra) {
 		boolean added = businessDayService.addBusinessDayWithSlots(date, type);
 		if (!added) {
-			return ResponseEntity.badRequest().body("既に営業日です。");
+			ra.addFlashAttribute("error", "既に営業日です。");
+		} else {
+			ra.addFlashAttribute("message", "営業日と枠を追加しました。");
 		}
-		return ResponseEntity.ok("営業日と枠を追加しました。");
+		return "redirect:/admin/business-days";
 	}
 
 	@PostMapping("/delete")
-	@ResponseBody
-	public ResponseEntity<String> deleteBusinessDay(
-			@RequestParam("date") String date) {
-		if (!businessDayService.isValidDate(date)) {
-			return ResponseEntity.badRequest().body("不正な日付形式です。");
-		}
-		boolean deleted = businessDayService.deleteBusinessDay(date);
+	public String deleteBusinessDay(
+			@RequestParam("id") Long id,
+			RedirectAttributes ra) {
+		boolean deleted = businessDayService.deleteBusinessDayById(id);
 		if (!deleted) {
-			return ResponseEntity.badRequest()
-					.body("営業日が見つかりません（削除未実装の可能性あり）。");
+			ra.addFlashAttribute("error", "営業日が見つかりません。");
+		} else {
+			ra.addFlashAttribute("message", "営業日を削除しました。");
 		}
-		return ResponseEntity.ok("営業日を削除しました。");
+		return "redirect:/admin/business-days";
 	}
 }

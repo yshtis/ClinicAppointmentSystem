@@ -32,10 +32,16 @@
         WHERE id = #{id}
     </update>
     
-     <!-- 追加: 日付指定で物理削除 -->
+     <!-- 日付指定で物理削除 -->
     <delete id="deleteByBusinessDate" parameterType="java.time.LocalDate">
         DELETE FROM business_days
         WHERE business_date = #{businessDate}
+    </delete>
+    
+     <!-- ID指定で物理削除 -->
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM business_days
+        WHERE id = #{id}
     </delete>
 
 </mapper>

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.unknownclinic.appointment.domain.BusinessDay;
 import com.unknownclinic.appointment.domain.BusinessDaySlot;
 import com.unknownclinic.appointment.domain.TimeSlotMaster;
+import com.unknownclinic.appointment.dto.AdminBusinessDayView;
 import com.unknownclinic.appointment.repository.BusinessDayMapper;
 import com.unknownclinic.appointment.repository.BusinessDaySlotMapper;
 import com.unknownclinic.appointment.repository.TimeSlotMasterMapper;
@@ -101,5 +103,46 @@ public class BusinessDayService {
 		} catch (DateTimeParseException e) {
 			return null;
 		}
+	}
+
+	public List<AdminBusinessDayView> getAllAdminBusinessDayViews() {
+		List<BusinessDay> days = businessDayMapper.findAll();
+		List<TimeSlotMaster> timeSlots = timeSlotMasterMapper.findAll();
+
+		List<AdminBusinessDayView> result = new ArrayList<>();
+		for (BusinessDay day : days) {
+			List<BusinessDaySlot> slots = businessDaySlotMapper
+					.findByBusinessDayId(day.getId());
+			boolean hasAm = false, hasPm = false;
+			for (BusinessDaySlot slot : slots) {
+				TimeSlotMaster tsm = timeSlots.stream()
+						.filter(ts -> ts.getId()
+								.equals(slot.getTimeSlotMasterId()))
+						.findFirst().orElse(null);
+				if (tsm == null)
+					continue;
+				if ("am".equals(tsm.getAmPm()))
+					hasAm = true;
+				if ("pm".equals(tsm.getAmPm()))
+					hasPm = true;
+			}
+			String type = (hasAm && hasPm) ? "allday"
+					: (hasAm ? "am" : (hasPm ? "pm" : "unknown"));
+			AdminBusinessDayView view = new AdminBusinessDayView();
+			view.setId(day.getId());
+			view.setBusinessDate(day.getBusinessDate().format(DATE_FORMAT));
+			view.setType(type);
+			result.add(view);
+		}
+		result.sort(
+				Comparator.comparing(AdminBusinessDayView::getBusinessDate));
+		return result;
+	}
+	
+	public boolean deleteBusinessDayById(Long id) {
+	    BusinessDay day = businessDayMapper.findById(id);
+	    if (day == null) return false;
+	    businessDayMapper.deleteById(id);
+	    return true;
 	}
 }

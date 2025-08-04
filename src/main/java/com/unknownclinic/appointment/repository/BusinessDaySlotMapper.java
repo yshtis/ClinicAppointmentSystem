@@ -10,6 +10,9 @@ import com.unknownclinic.appointment.domain.BusinessDaySlot;
 @Mapper
 public interface BusinessDaySlotMapper {
 
+	List<BusinessDaySlot> findByBusinessDayId(
+			@Param("businessDayId") Long businessDayId);
+
 	List<BusinessDaySlot> findAvailableByBusinessDayId(
 			@Param("businessDayId") Long businessDayId);
 
