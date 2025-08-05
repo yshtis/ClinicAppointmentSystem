@@ -28,7 +28,6 @@ public class BookingController {
 	@Autowired
 	private UserMapper userMapper;
 
-	// メイン画面: 営業日・時間枠選択
 	@GetMapping("/main")
 	public String showBookingForm(
 			Model model,
@@ -47,12 +46,10 @@ public class BookingController {
 		model.addAttribute("businessDays", businessDays);
 		model.addAttribute("selectedBusinessDayId", selectedBusinessDayId);
 
-		// 1. 営業日枠リスト
 		List<TimeSlotView> slotViews = bookingService
 				.getTimeSlotsForView(selectedBusinessDayId);
 		model.addAttribute("allTimeSlots", slotViews);
 
-		// 2. 予約済み枠（businessDaySlotIdセット）
 		Set<Long> bookedSlotIds = bookingService
 				.getBookedSlotIdsForBusinessDay(selectedBusinessDayId);
 		model.addAttribute("bookedSlotIds", bookedSlotIds);
@@ -60,7 +57,6 @@ public class BookingController {
 		return "main";
 	}
 
-	// 予約内容確認画面
 	@GetMapping("/confirm")
 	public String showConfirm(
 			@RequestParam Long businessDaySlotId,
@@ -76,7 +72,6 @@ public class BookingController {
 			return "error";
 		}
 
-		// 枠情報の取得（営業日・時間枠ラベルなどを含むDTO）
 		TimeSlotView slotView = bookingService
 				.getTimeSlotViewByBusinessDaySlotId(businessDaySlotId);
 
@@ -92,7 +87,6 @@ public class BookingController {
 		return "confirm";
 	}
 
-	// 予約確定処理
 	@PostMapping("/confirm")
 	public String confirmBooking(
 			@RequestParam Long businessDaySlotId,

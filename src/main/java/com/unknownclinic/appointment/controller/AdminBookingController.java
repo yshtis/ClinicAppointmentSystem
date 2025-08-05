@@ -39,7 +39,7 @@ public class AdminBookingController {
 					.filter(d -> d.getId().equals(selectedBusinessDayId))
 					.findFirst();
 			if (selected.isPresent()) {
-				selectedBusinessDayLabel = selected.get().getBusinessDate(); // yyyy-MM-dd
+				selectedBusinessDayLabel = selected.get().getBusinessDate();
 				if (selectedBusinessDayLabel != null
 						&& !selectedBusinessDayLabel.isEmpty()) {
 					timeTable = adminBookingService.getTimeSlotBookingsByDate(
