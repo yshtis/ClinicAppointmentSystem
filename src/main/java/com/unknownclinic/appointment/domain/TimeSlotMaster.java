@@ -10,7 +10,7 @@ public class TimeSlotMaster {
 	private Long id;
 
 	@NotNull
-	private String label; // "09:00-09:30" など
+	private String label;
 
 	@NotNull
 	private java.time.LocalTime startTime;
@@ -19,5 +19,5 @@ public class TimeSlotMaster {
 	private java.time.LocalTime endTime;
 
 	@NotNull
-	private String amPm; // "am" or "pm"
+	private String amPm;
 }

@@ -9,11 +9,10 @@ import lombok.Data;
 @Data
 public class AdminBusinessDayView {
 	private Long id;
-	private String businessDate; // yyyy-MM-dd
-	private String type; // allday, am, pm
+	private String businessDate;
+	private String type;
 
 	public String getBusinessDayLabel() {
-		// 日付ラベル生成
 		String typeLabel = "【不明】";
 		if ("allday".equals(type))
 			typeLabel = "【全日】";

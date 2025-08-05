@@ -2,7 +2,6 @@
 
 /* ==========================================================
    カラー・共通変数
-   - サイト全体の色・角丸・シャドウの定義
 ========================================================== */
 :root {
 	--primary-color: #0c7ff2;
@@ -18,7 +17,6 @@
 
 /* ==========================================================
    全体・背景レイアウト
-   - ベースとなる文字・背景色など
 ========================================================== */
 body {
 	font-family: "Noto Sans JP", "Work Sans", sans-serif;
@@ -28,7 +26,6 @@ body {
 
 /* ==========================================================
    ログイン/認証カード
-   - 中央に配置される白背景のパネルとその内部レイアウト
 ========================================================== */
 .auth-card {
 	background: var(--card-background-color);
@@ -80,8 +77,7 @@ body {
 }
 
 /* ==========================================================
-   入力フォーム（診察券番号、生年月日）
-   - ラベル、テキストボックス、セレクトボックス
+   入力フォーム
 ========================================================== */
 .form-label {
 	font-weight: 500;
@@ -90,8 +86,7 @@ body {
 	font-size: 1rem;
 }
 
-.form-control,
-.form-select {
+.form-control {
 	border: 1.5px solid var(--border-color);
 	border-radius: 0.7rem;
 	background: var(--card-background-color);
@@ -101,8 +96,7 @@ body {
 	color: var(--text-primary);
 }
 
-.form-control:focus,
-.form-select:focus {
+.form-control:focus {
 	border-color: var(--primary-color);
 	outline: none;
 	box-shadow: 0 0 0 0.18rem rgba(12, 127, 242, 0.09);
@@ -110,13 +104,11 @@ body {
 
 /* ==========================================================
    ボタン（ログインボタン）
-   - 共通ボタンデザインとアクティブ・ホバー時の色
 ========================================================== */
 .btn,
 .btn.active,
 .btn:active,
-.btn-primary,
-.btn-outline-primary {
+.btn-primary {
 	border-width: 1.5px !important;
 	border-radius: 0.7rem !important;
 	font-size: 1.08rem;
@@ -127,10 +119,6 @@ body {
 }
 
 /* ログインボタンのアクティブ・ホバー時の色統一 */
-.btn-outline-primary:hover,
-.btn-outline-primary:focus,
-.btn-outline-primary.active,
-.btn-outline-primary:active,
 .btn-primary,
 .btn-primary:active,
 .btn-primary.active,
@@ -140,25 +128,10 @@ body {
 	border-color: var(--primary-hover-color) !important;
 }
 
-/* 非アクティブ時のoutline-primaryボタン */
-.btn-outline-primary {
-	background: transparent;
-	color: var(--primary-color);
-	border-color: var(--primary-color);
-}
-
 /* ==========================================================
    アラート（成功・エラー表示メッセージ）
 ========================================================== */
 .alert {
 	border-radius: 0.7rem;
 	font-size: 1rem;
-}
-
-/* ==========================================================
-   テキストカラー
-   - サブテキストなどで使用
-========================================================== */
-.text-secondary {
-	color: var(--text-secondary) !important;
 }

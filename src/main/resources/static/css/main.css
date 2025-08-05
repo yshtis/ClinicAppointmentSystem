@@ -17,7 +17,7 @@
 }
 
 /* ==========================================================
-   全体・共通レイアウト
+   ベース・共通レイアウト
 ========================================================== */
 body {
 	font-family: "Noto Sans JP", "Work Sans", sans-serif;
@@ -26,47 +26,19 @@ body {
 }
 
 /* ==========================================================
-   タイムテーブル カラム幅・行高・予約あり背景色
+   共通ユーティリティ
 ========================================================== */
-#timetable {
-	table-layout: fixed;
-	width: 100%;
+.alert {
+	border-radius: 0.7rem;
+	font-size: 1rem;
 }
 
-#timetable th:first-child, #timetable td:first-child {
-	width: 35%;
+.text-secondary {
+	color: var(--text-secondary) !important;
 }
 
-#timetable th:last-child, #timetable td:last-child {
-	width: 65%;
-}
-
-#timetable th, #timetable td {
-	vertical-align: middle;
-	height: 3.2rem;
-	min-height: 3.2rem;
-	padding-top: 0.5rem;
-	padding-bottom: 0.5rem;
-	white-space: normal !important;
-	text-align: center;
-}
-
-.reserved-row {
-	background-color: var(--reserved-bg) !important;
-}
-
-/* 予約情報セル内のテキストを中央寄せ */
-#timetable td {
-	text-align: center;
-}
-
-/* ==========================================================
-   営業日ボタン
-========================================================== */
-.business-day-btn {
-	min-width: 120px;
-	flex: 0 0 auto;
-	margin-bottom: 6px !important;
+.table td, .table th {
+	white-space: nowrap;
 }
 
 /* ==========================================================
@@ -107,6 +79,7 @@ body {
 	min-width: 70px;
 	transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
+
 .btn-outline-primary:hover, .btn-outline-primary:focus,
 	.btn-outline-primary.active, .btn-outline-primary:active, .btn-primary,
 	.btn-primary:active, .btn-primary.active, .btn-primary:focus {
@@ -114,18 +87,65 @@ body {
 	color: #fff !important;
 	border-color: var(--primary-hover-color) !important;
 }
+
 .btn-outline-primary {
 	background: transparent;
 	color: var(--primary-color);
 	border-color: var(--primary-color);
 }
+
 .button-row>*+* {
 	margin-left: 1.5rem !important;
 }
+
 .btn-sm, .btn-sm:active, .btn-sm.active, .btn-sm:focus {
 	padding: 0.25rem 0.7rem !important;
 	font-size: 0.92rem !important;
 	min-width: 0 !important;
+}
+
+/* ==========================================================
+   タイムテーブル
+========================================================== */
+#timetable {
+	table-layout: fixed;
+	width: 100%;
+}
+
+#timetable th:first-child, #timetable td:first-child {
+	width: 35%;
+}
+
+#timetable th:last-child, #timetable td:last-child {
+	width: 65%;
+}
+
+#timetable th, #timetable td {
+	vertical-align: middle;
+	height: 3.2rem;
+	min-height: 3.2rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	white-space: normal !important;
+	text-align: center;
+}
+
+.reserved-row {
+	background-color: var(--reserved-bg) !important;
+}
+
+/* 予約情報セル内のテキストを中央寄せ */
+#timetable td {
+	text-align: center;
+}
+
+/* ==========================================================
+   営業日ボタン
+========================================================== */
+.business-day-btn {
+	min-width: 120px;
+	flex: 0 0 auto;
+	margin-bottom: 6px !important;
 }
 
 /* ==========================================================
@@ -193,6 +213,9 @@ body {
 	text-decoration: underline;
 }
 
+/* ==========================================================
+   メディアクエリ
+========================================================== */
 @media ( max-width : 600px) {
 	.header-inner {
 		padding: 0 0.7rem;
@@ -204,26 +227,4 @@ body {
 	.header-nav {
 		gap: 1rem;
 	}
-}
-
-/* ==========================================================
-   アラート
-========================================================== */
-.alert {
-	border-radius: 0.7rem;
-	font-size: 1rem;
-}
-
-/* ==========================================================
-   テキストカラー
-========================================================== */
-.text-secondary {
-	color: var(--text-secondary) !important;
-}
-
-/* ==========================================================
-   テーブル内折り返し防止
-========================================================== */
-.table td, .table th {
-	white-space: nowrap;
 }

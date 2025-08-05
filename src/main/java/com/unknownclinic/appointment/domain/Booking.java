@@ -8,6 +8,7 @@ import lombok.Data;
 
 @Data
 public class Booking {
+	
 	private Long id;
 
 	@NotNull
@@ -17,7 +18,7 @@ public class Booking {
 	private Long businessDaySlotId;
 
 	@NotNull
-	private String status; // "reserved"または"canceled"を格納
+	private String status;
 
 	private LocalDateTime createdAt;
 }

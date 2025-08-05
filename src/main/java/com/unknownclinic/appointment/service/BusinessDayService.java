@@ -47,19 +47,18 @@ public class BusinessDayService {
 		LocalDate date = parseDate(dateStr);
 		if (date == null)
 			return false;
-		// 既存判定
+
 		boolean exists = businessDayMapper.findAll().stream()
 				.anyMatch(b -> b.getBusinessDate().equals(date));
 		if (exists)
 			return false;
-		// 1. 営業日insert
+
 		BusinessDay day = new BusinessDay();
 		day.setBusinessDate(date);
 		day.setCreatedAt(LocalDateTime.now());
 		businessDayMapper.insert(day);
 
-		// 2. time_slot_master取得し、type別にslotを決定
-		List<TimeSlotMaster> timeSlots = timeSlotMasterMapper.findAll(); // am/pm区分あり
+		List<TimeSlotMaster> timeSlots = timeSlotMasterMapper.findAll();
 		List<Long> slotIds = new ArrayList<>();
 		if ("allday".equals(type)) {
 			slotIds = timeSlots.stream().map(TimeSlotMaster::getId)
@@ -138,11 +137,12 @@ public class BusinessDayService {
 				Comparator.comparing(AdminBusinessDayView::getBusinessDate));
 		return result;
 	}
-	
+
 	public boolean deleteBusinessDayById(Long id) {
-	    BusinessDay day = businessDayMapper.findById(id);
-	    if (day == null) return false;
-	    businessDayMapper.deleteById(id);
-	    return true;
+		BusinessDay day = businessDayMapper.findById(id);
+		if (day == null)
+			return false;
+		businessDayMapper.deleteById(id);
+		return true;
 	}
 }

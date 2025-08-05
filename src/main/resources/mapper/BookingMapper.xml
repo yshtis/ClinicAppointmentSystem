@@ -55,7 +55,7 @@
         LIMIT 1
     </select>
     
-        <!-- 管理者タイムテーブル用：指定日付の全時間枠＋各枠ごとの予約情報 -->
+    <!-- 管理者タイムテーブル用：指定日付の全時間枠＋各枠ごとの予約情報 -->
     <select id="findAdminTimeSlotBookingsByDate" resultType="com.unknownclinic.appointment.dto.AdminBookingView">
         SELECT
             tsm.id AS timeSlotId,
