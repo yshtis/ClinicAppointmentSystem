@@ -55,7 +55,7 @@ public class SecurityConfig {
 		http
 				.securityMatcher("/**")
 				.authorizeHttpRequests(authz -> authz
-						.requestMatchers("/login", "/logout", "/css/**",
+						.requestMatchers("/login", "/logout", "/reset-password","/css/**",
 								"/js/**", "/images/**")
 						.permitAll()
 						.anyRequest().hasRole("USER"))

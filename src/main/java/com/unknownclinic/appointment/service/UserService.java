@@ -15,4 +15,13 @@ public class UserService {
 	public User findByCardNumber(String cardNumber) {
 		return userMapper.findByCardNumber(cardNumber);
 	}
+	
+	public User findByCardNumberAndBirthday(String cardNumber, String birthday) {
+        return userMapper.findByCardNumberAndBirthday(cardNumber, birthday);
+    }
+
+    public boolean resetPassword(String cardNumber, String birthday, String encodedPassword) {
+        int updated = userMapper.updatePasswordByCardNumberAndBirthday(cardNumber, birthday, encodedPassword);
+        return updated > 0;
+    }
 }

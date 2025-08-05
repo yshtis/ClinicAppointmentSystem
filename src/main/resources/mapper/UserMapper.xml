@@ -11,6 +11,23 @@
         LIMIT 1
     </select>
 
+    <!-- 診察券番号＋生年月日でユーザー取得 -->
+    <select id="findByCardNumberAndBirthday" resultType="com.unknownclinic.appointment.domain.User">
+        SELECT *
+        FROM users
+        WHERE card_number = #{cardNumber}
+          AND birthday = #{birthday}
+        LIMIT 1
+    </select>
+
+    <!-- 診察券番号＋生年月日でパスワード更新 -->
+    <update id="updatePasswordByCardNumberAndBirthday">
+        UPDATE users
+        SET password = #{encodedPassword}
+        WHERE card_number = #{cardNumber}
+          AND birthday = #{birthday}
+    </update>
+
     <!-- IDでユーザー取得 -->
     <select id="findById" resultType="com.unknownclinic.appointment.domain.User">
         SELECT *
