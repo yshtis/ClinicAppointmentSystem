@@ -1,5 +1,6 @@
 package com.unknownclinic.appointment.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,7 +37,10 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public List<BusinessDay> getBusinessDays() {
-		return businessDayMapper.findAll();
+		LocalDate today = LocalDate.now();
+		return businessDayMapper.findAll().stream()
+				.filter(day -> !day.getBusinessDate().isBefore(today))
+				.collect(Collectors.toList());
 	}
 
 	@Override
