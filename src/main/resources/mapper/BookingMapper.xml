@@ -54,7 +54,7 @@
           AND status = 'reserved'
         LIMIT 1
     </select>
-    
+
     <!-- 枠自体が予約済みかチェック -->
     <select id="findReservedBySlot" resultType="com.unknownclinic.appointment.domain.Booking">
         SELECT *
