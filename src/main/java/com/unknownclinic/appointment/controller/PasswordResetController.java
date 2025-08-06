@@ -32,13 +32,11 @@ public class PasswordResetController {
 			@RequestParam String confirmPassword,
 			Model model) {
 
-		// 入力バリデーション（例: パスワード一致チェック）
 		if (!newPassword.equals(confirmPassword)) {
 			model.addAttribute("message", "新しいパスワードが一致しません。");
 			return "reset-password";
 		}
 
-		// サービス層でユーザー確認と更新
 		boolean result = userService.resetPassword(cardNumber, birthDate,
 				passwordEncoder.encode(newPassword));
 		if (result) {

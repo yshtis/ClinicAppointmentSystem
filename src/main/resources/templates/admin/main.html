@@ -32,7 +32,7 @@
 											th:href="@{/admin/main(businessDayId=${day.id})}"
 											th:text="${day.businessDayLabel}"
 											th:classappend="${selectedBusinessDayId != null and day.id == selectedBusinessDayId} ? 'btn btn-primary business-day-btn' : 'btn btn-outline-primary business-day-btn'"
-											class="btn business-day-btn py-2" > </a>
+											class="btn business-day-btn py-2"> </a>
 									</div>
 									<div
 										th:if="${businessDays == null or #lists.isEmpty(businessDays)}">
@@ -41,9 +41,7 @@
 								</div>
 							</div>
 							<!-- タイムテーブル -->
-							<div
-								class="col-md-6 d-flex align-items-center justify-content-center"
-								style="padding: 2rem;">
+							<div class="col-md-6" style="padding: 2rem;">
 								<div class="w-100">
 									<div th:if="${selectedBusinessDayId != null}">
 										<label class="form-label mb-3"
@@ -76,8 +74,8 @@
 										</table>
 									</div>
 									<div th:unless="${selectedBusinessDayId != null}"
-										class="h-100 d-flex align-items-center justify-content-center"
-										style="min-height: 200px;">
+										class="h-100 d-flex"
+										style="min-height: 200px; vertical-align: top;">
 										<span class="text-secondary">営業日を選択してください</span>
 									</div>
 								</div>

@@ -31,9 +31,7 @@
 						</div>
 					</div>
 					<!-- 時間枠選択フォーム -->
-					<div
-						class="col-md-6 d-flex align-items-center justify-content-center"
-						style="padding: 2rem;">
+					<div class="col-md-6" style="padding: 2rem;">
 						<div th:if="${selectedBusinessDayId != null}">
 							<label class="form-label mb-3">予約時間を選択：</label>
 							<form th:action="@{/confirm}" method="get" id="timeSlotForm">
@@ -61,8 +59,7 @@
 							</script>
 						</div>
 						<div th:unless="${selectedBusinessDayId != null}"
-							class="h-100 d-flex align-items-center justify-content-center"
-							style="min-height: 200px;">
+							class="h-100 d-flex" style="min-height: 200px;">
 							<span class="text-secondary">営業日を選択してください</span>
 						</div>
 					</div>

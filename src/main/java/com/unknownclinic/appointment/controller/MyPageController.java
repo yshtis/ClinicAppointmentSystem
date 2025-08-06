@@ -33,7 +33,6 @@ public class MyPageController {
 		String cardNumber = authentication.getName();
 		User user = userService.findByCardNumber(cardNumber);
 
-		// 予約一覧取得（View用DTOで日付・ラベル付きで返す）
 		List<BookingView> allBookings = bookingService
 				.getBookingViewsByUser(user.getId());
 

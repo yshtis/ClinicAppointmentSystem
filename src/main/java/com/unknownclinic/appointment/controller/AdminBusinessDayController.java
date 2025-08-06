@@ -38,7 +38,7 @@ public class AdminBusinessDayController {
 		if (!added) {
 			ra.addFlashAttribute("error", "既に営業日です。");
 		} else {
-			ra.addFlashAttribute("message", "営業日と枠を追加しました。");
+			ra.addFlashAttribute("message", "営業日を追加しました。");
 		}
 		return "redirect:/admin/business-days";
 	}
