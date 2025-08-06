@@ -55,6 +55,15 @@
         LIMIT 1
     </select>
     
+    <!-- 枠自体が予約済みかチェック -->
+    <select id="findReservedBySlot" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT *
+        FROM bookings
+        WHERE business_day_slot_id = #{businessDaySlotId}
+          AND status = 'reserved'
+        LIMIT 1
+    </select>
+    
     <!-- 管理者タイムテーブル用：指定日付の全時間枠＋各枠ごとの予約情報 -->
     <select id="findAdminTimeSlotBookingsByDate" resultType="com.unknownclinic.appointment.dto.AdminBookingView">
         SELECT

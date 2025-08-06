@@ -96,10 +96,14 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	@Transactional
 	public void createBooking(Long userId, Long businessDaySlotId) {
+		Booking reserved = bookingMapper.findReservedBySlot(businessDaySlotId);
+		if (reserved != null) {
+			throw new IllegalStateException("この枠はすでに予約済みです。");
+		}
 		Booking existing = bookingMapper.findReservedByUserAndSlot(userId,
 				businessDaySlotId);
 		if (existing != null) {
-			throw new IllegalStateException("この枠はすでに予約済みです。");
+			throw new IllegalStateException("あなたは既にこの枠を予約済みです。");
 		}
 		Booking booking = new Booking();
 		booking.setUserId(userId);
@@ -145,5 +149,10 @@ public class BookingServiceImpl implements BookingService {
 		}
 		booking.setStatus("canceled");
 		bookingMapper.update(booking);
+	}
+
+	@Override
+	public Booking findReservedBySlot(Long businessDaySlotId) {
+		return bookingMapper.findReservedBySlot(businessDaySlotId);
 	}
 }

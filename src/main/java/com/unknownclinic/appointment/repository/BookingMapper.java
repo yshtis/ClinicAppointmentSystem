@@ -28,6 +28,9 @@ public interface BookingMapper {
 	Booking findReservedByUserAndSlot(@Param("userId") Long userId,
 			@Param("businessDaySlotId") Long businessDaySlotId);
 
+	Booking findReservedBySlot(
+			@Param("businessDaySlotId") Long businessDaySlotId);
+
 	List<AdminBookingView> findAdminBookingsByDate(
 			@Param("date") LocalDate date);
 
