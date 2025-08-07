@@ -25,7 +25,4 @@ public class User {
 
     @NotNull
     private String phoneNumber;
-
-    @NotNull
-    private boolean isTemporary;
 }
