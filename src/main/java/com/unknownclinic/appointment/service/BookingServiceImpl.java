@@ -105,6 +105,20 @@ public class BookingServiceImpl implements BookingService {
 		if (existing != null) {
 			throw new IllegalStateException("あなたは既にこの枠を予約済みです。");
 		}
+
+		// 追加：同じ営業日で既存予約がないかチェック
+		BusinessDaySlot slot = businessDaySlotMapper
+				.findById(businessDaySlotId);
+		if (slot == null) {
+			throw new IllegalStateException("予約枠が存在しません。");
+		}
+		Long businessDayId = slot.getBusinessDayId();
+		Booking already = bookingMapper.findReservedByUserAndBusinessDay(userId,
+				businessDayId);
+		if (already != null) {
+			throw new IllegalStateException("同じ日に複数予約はできません。");
+		}
+
 		Booking booking = new Booking();
 		booking.setUserId(userId);
 		booking.setBusinessDaySlotId(businessDaySlotId);

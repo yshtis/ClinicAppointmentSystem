@@ -64,6 +64,17 @@
         LIMIT 1
     </select>
     
+    <!-- ユーザーがその営業日に予約済みかチェック -->
+    <select id="findReservedByUserAndBusinessDay" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT b.*
+        FROM bookings b
+        INNER JOIN business_day_slots s ON b.business_day_slot_id = s.id
+        WHERE b.user_id = #{userId}
+          AND s.business_day_id = #{businessDayId}
+          AND b.status = 'reserved'
+        LIMIT 1
+    </select>
+    
     <!-- 管理者タイムテーブル用：指定日付の全時間枠＋各枠ごとの予約情報 -->
     <select id="findAdminTimeSlotBookingsByDate" resultType="com.unknownclinic.appointment.dto.AdminBookingView">
         SELECT
