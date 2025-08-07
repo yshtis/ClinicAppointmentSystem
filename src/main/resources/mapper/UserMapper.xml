@@ -48,5 +48,13 @@
         FROM users
         ORDER BY id
     </select>
+    
+    <!--
+    診察券番号（card_number）をID指定で更新するクエリ
+    主に新規患者登録時、5桁連番＋ランダム2桁の診察券番号を後から付与する用途で使用
+	-->
+    <update id="updateCardNumber">
+    	UPDATE users SET card_number = #{cardNumber} WHERE id = #{id}
+	</update>
 
 </mapper>

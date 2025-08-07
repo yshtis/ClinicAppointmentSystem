@@ -25,4 +25,6 @@ public interface UserMapper {
 	void insert(User user);
 
 	List<User> findAll();
+	
+	void updateCardNumber(@Param("id") Long id, @Param("cardNumber") String cardNumber);
 }

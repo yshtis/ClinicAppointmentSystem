@@ -36,7 +36,7 @@ public class AdminBusinessDayController {
 			RedirectAttributes ra) {
 		boolean added = businessDayService.addBusinessDayWithSlots(date, type);
 		if (!added) {
-			ra.addFlashAttribute("error", "既に営業日です。");
+			ra.addFlashAttribute("error", "すでに営業日として設定されています。");
 		} else {
 			ra.addFlashAttribute("message", "営業日を追加しました。");
 		}

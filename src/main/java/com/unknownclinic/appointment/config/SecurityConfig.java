@@ -55,8 +55,9 @@ public class SecurityConfig {
 		http
 				.securityMatcher("/**")
 				.authorizeHttpRequests(authz -> authz
-						.requestMatchers("/login", "/logout", "/reset-password","/css/**",
-								"/js/**", "/images/**")
+						.requestMatchers("/login", "/logout", "/reset-password",
+								"/register",
+								"/css/**", "/js/**", "/images/**")
 						.permitAll()
 						.anyRequest().hasRole("USER"))
 				.formLogin(form -> form
@@ -70,7 +71,8 @@ public class SecurityConfig {
 						.logoutUrl("/logout")
 						.logoutSuccessUrl("/login?logout"))
 				.userDetailsService(patientUserDetailsService)
-				.csrf(csrf -> csrf.ignoringRequestMatchers("/login"));
+				.csrf(csrf -> csrf.ignoringRequestMatchers("/login",
+						"/register"));
 
 		return http.build();
 	}

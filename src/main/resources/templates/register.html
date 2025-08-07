@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="parts/auth-common :: auth_head('新規登録 - さわやか医院予約システム')">
+<link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body
+	style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--background-color);">
+	<div class="auth-card">
+		<div class="text-center mb-4">
+			<h1>さわやか医院 予約システム</h1>
+			<p class="lead">新規患者登録</p>
+		</div>
+		<div th:if="${registerSuccess}"
+			class="alert alert-success mb-3 text-center">
+			登録が完了しました。<br> <span th:if="${issuedCardNumber}">
+				発行された診察券番号：<strong th:text="${issuedCardNumber}"></strong><br>
+			</span> この番号とパスワードでログインしてください。
+		</div>
+		<div th:if="${registerError}"
+			class="alert alert-danger mb-3 text-center">
+			登録に失敗しました。入力内容をご確認ください。</div>
+		<form th:action="@{/register}" class="mt-4" method="POST"
+			th:object="${registerForm}">
+			<div class="mb-3">
+				<label class="form-label" for="name">お名前</label> <input
+					class="form-control" id="name" th:field="*{name}"
+					placeholder="例：山田 太郎" required type="text" autocomplete="off"
+					maxlength="20" />
+				<div class="text-danger" th:errors="*{name}"></div>
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="birthday">生年月日</label> <input
+					class="form-control" id="birthday" th:field="*{birthday}"
+					placeholder="例：1990-01-01" required type="date" autocomplete="off" />
+				<div class="text-danger" th:errors="*{birthday}"></div>
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="phoneNumber">電話番号(ハイフンを除く)</label> <input
+					class="form-control" id="phoneNumber" th:field="*{phoneNumber}"
+					placeholder="例：09012345678" required type="tel" autocomplete="off"
+					maxlength="15" />
+				<div class="text-danger" th:errors="*{phoneNumber}"></div>
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="password">パスワード</label> <input
+					class="form-control" id="password" th:field="*{password}"
+					placeholder="パスワード" required type="password" autocomplete="off" />
+				<div class="text-danger" th:errors="*{password}"></div>
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="passwordConfirm">パスワード（確認）</label> <input
+					class="form-control" id="passwordConfirm"
+					th:field="*{passwordConfirm}" placeholder="パスワード（確認）" required
+					type="password" autocomplete="off" />
+				<div class="text-danger" th:errors="*{passwordConfirm}"></div>
+			</div>
+			<div class="mb-3">
+				<button class="btn btn-primary w-100" type="submit">登録して診察券番号を発行</button>
+			</div>
+		</form>
+		<div class="register-link text-center">
+			すでに診察券番号をお持ちの方はこちら<br> <a th:href="@{/login}">ログイン</a>
+		</div>
+	</div>
+</body>
+</html>
