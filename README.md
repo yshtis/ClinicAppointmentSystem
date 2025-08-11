@@ -78,8 +78,8 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 ## 画面イメージ
 
 <!-- スクリーンショット例を貼るとより効果的です -->
-![main画面イメージ](<img width="1365" height="768" alt="Image" src="https://github.com/user-attachments/assets/59e055cc-9e15-4693-aca0-6e259cdd6dfe" />)
-![予約確認画面イメージ](<img width="1365" height="768" alt="Image" src="https://github.com/user-attachments/assets/47ae836d-2d2b-4197-ab89-4bc999ea382c" />)
+![main画面イメージ](images/予約メイン画面（患者）サンプル.png)
+![予約確認画面イメージ](images/予約一覧確認画面（管理者） サンプル.png)
 
 ---
 
