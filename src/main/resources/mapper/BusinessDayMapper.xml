@@ -5,43 +5,66 @@
 
     <!-- すべての営業日取得 -->
     <select id="findAll" resultType="com.unknownclinic.appointment.domain.BusinessDay">
-        SELECT *
+        SELECT id, business_date, is_active, created_at
         FROM business_days
-        ORDER BY business_date
+        ORDER BY business_date DESC
     </select>
+
+    <!-- アクティブな営業日のみ取得 -->
+    <select id="findAllActive" resultType="com.unknownclinic.appointment.domain.BusinessDay">
+	    SELECT id, business_date, is_active, created_at
+	    FROM business_days
+	    WHERE is_active = TRUE
+	    ORDER BY business_date ASC
+	</select>
 
     <!-- IDで営業日取得 -->
     <select id="findById" resultType="com.unknownclinic.appointment.domain.BusinessDay">
-        SELECT *
+        SELECT id, business_date, is_active, created_at
         FROM business_days
         WHERE id = #{id}
+        LIMIT 1
+    </select>
+    
+    <!-- 日付で営業日取得 -->
+    <select id="findByDate" resultType="com.unknownclinic.appointment.domain.BusinessDay">
+        SELECT id, business_date, is_active, created_at
+        FROM business_days
+        WHERE business_date = #{businessDate}
         LIMIT 1
     </select>
 
     <!-- 新規営業日登録 -->
     <insert id="insert" parameterType="com.unknownclinic.appointment.domain.BusinessDay" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO business_days (business_date, created_at)
-        VALUES (#{businessDate}, #{createdAt})
+        INSERT INTO business_days (business_date, is_active)
+        VALUES (#{businessDate}, #{isActive})
     </insert>
 
     <!-- 更新 -->
     <update id="update" parameterType="com.unknownclinic.appointment.domain.BusinessDay">
         UPDATE business_days
         SET business_date = #{businessDate},
-            created_at = #{createdAt}
+            is_active = #{isActive}
         WHERE id = #{id}
     </update>
     
-     <!-- 日付指定で物理削除 -->
-    <delete id="deleteByBusinessDate" parameterType="java.time.LocalDate">
+    <!-- 日付指定で物理削除 -->
+    <delete id="deleteByBusinessDate">
         DELETE FROM business_days
         WHERE business_date = #{businessDate}
     </delete>
     
-     <!-- ID指定で物理削除 -->
-    <delete id="deleteById" parameterType="long">
+    <!-- ID指定で物理削除 -->
+    <delete id="deleteById">
         DELETE FROM business_days
         WHERE id = #{id}
     </delete>
+    
+    <!-- 指定日付の営業日数をカウント -->
+    <select id="countByBusinessDate" resultType="int">
+        SELECT COUNT(*)
+        FROM business_days
+        WHERE business_date = #{businessDate}
+    </select>
 
 </mapper>

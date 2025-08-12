@@ -8,7 +8,7 @@
         SELECT *
         FROM bookings
         WHERE user_id = #{userId}
-        ORDER BY id DESC
+        ORDER BY business_date DESC, created_at DESC
     </select>
 
     <!-- 予約IDで取得 -->
@@ -21,79 +21,101 @@
 
     <!-- 新規予約登録 -->
     <insert id="insert" parameterType="com.unknownclinic.appointment.domain.Booking" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO bookings (user_id, business_day_slot_id, status, created_at)
-        VALUES (#{userId}, #{businessDaySlotId}, #{status}, NOW())
+        INSERT INTO bookings (user_id, business_date, time_slot_id, status)
+        VALUES (#{userId}, #{businessDate}, #{timeSlotId}, #{status})
     </insert>
 
     <!-- 更新（キャンセル等） -->
     <update id="update" parameterType="com.unknownclinic.appointment.domain.Booking">
         UPDATE bookings
-        SET user_id = #{userId},
-            business_day_slot_id = #{businessDaySlotId},
-            status = #{status}
+        SET status = #{status}
         WHERE id = #{id}
     </update>
 
-    <!-- 指定business_day_slot_id群の予約一覧 -->
-    <select id="findByBusinessDaySlotIds" resultType="com.unknownclinic.appointment.domain.Booking">
+    <!-- 指定日付の予約一覧 -->
+    <select id="findByDate" resultType="com.unknownclinic.appointment.domain.Booking">
         SELECT *
         FROM bookings
-        WHERE business_day_slot_id IN
-        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        ORDER BY business_day_slot_id
+        WHERE business_date = #{date}
+        ORDER BY time_slot_id
     </select>
 
-    <!-- ユーザー×枠で予約済み取得 -->
+    <!-- 指定日付・時間枠リストの予約取得 -->
+    <select id="findByDateAndTimeSlots" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT *
+        FROM bookings
+        WHERE business_date = #{date}
+          AND time_slot_id IN
+        <foreach item="item" index="index" collection="timeSlotIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY time_slot_id
+    </select>
+
+    <!-- ユーザー×日付×時間枠で予約済み取得 -->
     <select id="findReservedByUserAndSlot" resultType="com.unknownclinic.appointment.domain.Booking">
         SELECT *
         FROM bookings
         WHERE user_id = #{userId}
-          AND business_day_slot_id = #{businessDaySlotId}
+          AND business_date = #{businessDate}
+          AND time_slot_id = #{timeSlotId}
           AND status = 'reserved'
         LIMIT 1
     </select>
 
-    <!-- 枠自体が予約済みかチェック -->
+    <!-- 特定日時枠が予約済みかチェック -->
     <select id="findReservedBySlot" resultType="com.unknownclinic.appointment.domain.Booking">
         SELECT *
         FROM bookings
-        WHERE business_day_slot_id = #{businessDaySlotId}
+        WHERE business_date = #{businessDate}
+          AND time_slot_id = #{timeSlotId}
           AND status = 'reserved'
         LIMIT 1
     </select>
     
     <!-- ユーザーがその営業日に予約済みかチェック -->
-    <select id="findReservedByUserAndBusinessDay" resultType="com.unknownclinic.appointment.domain.Booking">
-        SELECT b.*
-        FROM bookings b
-        INNER JOIN business_day_slots s ON b.business_day_slot_id = s.id
-        WHERE b.user_id = #{userId}
-          AND s.business_day_id = #{businessDayId}
-          AND b.status = 'reserved'
+    <select id="findReservedByUserAndBusinessDate" resultType="com.unknownclinic.appointment.domain.Booking">
+        SELECT *
+        FROM bookings
+        WHERE user_id = #{userId}
+          AND business_date = #{businessDate}
+          AND status = 'reserved'
         LIMIT 1
+    </select>
+    
+    <!-- 管理者画面用：指定日の予約一覧（予約があるもののみ） -->
+    <select id="findAdminBookingsByDate" resultType="com.unknownclinic.appointment.dto.AdminBookingView">
+        SELECT
+            u.name AS patientName,
+            u.card_number AS cardNumber,
+            u.phone_number AS phoneNumber,
+            ts.id AS timeSlotId,
+            CONCAT(TIME_FORMAT(ts.start_time, '%H:%i'), '-', TIME_FORMAT(ts.end_time, '%H:%i')) AS timeLabel
+        FROM bookings b
+        INNER JOIN users u ON b.user_id = u.id
+        INNER JOIN time_slots ts ON b.time_slot_id = ts.id
+        WHERE b.business_date = #{date}
+          AND b.status = 'reserved'
+        ORDER BY ts.start_time
     </select>
     
     <!-- 管理者タイムテーブル用：指定日付の全時間枠＋各枠ごとの予約情報 -->
     <select id="findAdminTimeSlotBookingsByDate" resultType="com.unknownclinic.appointment.dto.AdminBookingView">
         SELECT
-            tsm.id AS timeSlotId,
-            tsm.label AS timeLabel,
+            ts.id AS timeSlotId,
+            CONCAT(TIME_FORMAT(ts.start_time, '%H:%i'), '-', TIME_FORMAT(ts.end_time, '%H:%i')) AS timeLabel,
             u.name AS patientName,
             u.card_number AS cardNumber,
             u.phone_number AS phoneNumber
-        FROM business_days bd
-        INNER JOIN business_day_slots bds
-            ON bd.id = bds.business_day_id
-        INNER JOIN time_slot_master tsm
-            ON bds.time_slot_master_id = tsm.id
+        FROM time_slots ts
         LEFT JOIN bookings b
-            ON b.business_day_slot_id = bds.id AND b.status = 'reserved'
+            ON b.time_slot_id = ts.id 
+            AND b.business_date = #{date} 
+            AND b.status = 'reserved'
         LEFT JOIN users u
             ON b.user_id = u.id
-        WHERE bd.business_date = #{date}
-        ORDER BY tsm.id
+        WHERE ts.is_active = TRUE
+        ORDER BY ts.start_time
     </select>
 
 </mapper>

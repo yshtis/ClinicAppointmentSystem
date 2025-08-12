@@ -32,13 +32,16 @@ public class AdminBusinessDayController {
 	@PostMapping("/add")
 	public String addBusinessDay(
 			@RequestParam String date,
-			@RequestParam String type,
 			RedirectAttributes ra) {
-		boolean added = businessDayService.addBusinessDayWithSlots(date, type);
-		if (!added) {
-			ra.addFlashAttribute("error", "すでに営業日として設定されています。");
-		} else {
-			ra.addFlashAttribute("message", "営業日を追加しました。");
+		try {
+			boolean added = businessDayService.addBusinessDay(date);
+			if (!added) {
+				ra.addFlashAttribute("error", "すでに営業日として設定されています。");
+			} else {
+				ra.addFlashAttribute("message", "営業日を追加しました。");
+			}
+		} catch (Exception e) {
+			ra.addFlashAttribute("error", "営業日の追加に失敗しました: " + e.getMessage());
 		}
 		return "redirect:/admin/business-days";
 	}
@@ -47,11 +50,32 @@ public class AdminBusinessDayController {
 	public String deleteBusinessDay(
 			@RequestParam("id") Long id,
 			RedirectAttributes ra) {
-		boolean deleted = businessDayService.deleteBusinessDayById(id);
-		if (!deleted) {
-			ra.addFlashAttribute("error", "営業日が見つかりません。");
-		} else {
-			ra.addFlashAttribute("message", "営業日を削除しました。");
+		try {
+			boolean deleted = businessDayService.deleteBusinessDayById(id);
+			if (!deleted) {
+				ra.addFlashAttribute("error", "営業日が見つかりません。");
+			} else {
+				ra.addFlashAttribute("message", "営業日を削除しました。");
+			}
+		} catch (Exception e) {
+			ra.addFlashAttribute("error", "営業日の削除に失敗しました: " + e.getMessage());
+		}
+		return "redirect:/admin/business-days";
+	}
+
+	@PostMapping("/toggle")
+	public String toggleBusinessDayStatus(
+			@RequestParam("id") Long id,
+			RedirectAttributes ra) {
+		try {
+			boolean toggled = businessDayService.toggleBusinessDayStatus(id);
+			if (!toggled) {
+				ra.addFlashAttribute("error", "営業日が見つかりません。");
+			} else {
+				ra.addFlashAttribute("message", "営業日の状態を変更しました。");
+			}
+		} catch (Exception e) {
+			ra.addFlashAttribute("error", "営業日の状態変更に失敗しました: " + e.getMessage());
 		}
 		return "redirect:/admin/business-days";
 	}

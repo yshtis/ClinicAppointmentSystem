@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
-
 @Data
 public class BusinessDay {
 
@@ -16,6 +15,7 @@ public class BusinessDay {
 	@NotNull
 	private LocalDate businessDate;
 	
-	@NotNull
+	private Boolean isActive = true;
+	
 	private LocalDateTime createdAt;
 }

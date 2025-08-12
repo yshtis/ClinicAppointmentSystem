@@ -1,8 +1,8 @@
 package com.unknownclinic.appointment.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,34 +20,32 @@ public class AdminBookingController {
 
 	@Autowired
 	private AdminBookingService adminBookingService;
+
 	@Autowired
 	private BusinessDayService businessDayService;
 
 	@GetMapping("/admin/main")
 	public String showAdminBookingList(
-			@RequestParam(name = "businessDayId", required = false) Long selectedBusinessDayId,
+			@RequestParam(name = "businessDate", required = false) LocalDate selectedBusinessDate,
 			Model model) {
+
 		List<AdminBusinessDayView> businessDays = businessDayService
 				.getAllAdminBusinessDayViews();
 		model.addAttribute("businessDays", businessDays);
-		model.addAttribute("selectedBusinessDayId", selectedBusinessDayId);
+		model.addAttribute("selectedBusinessDate", selectedBusinessDate);
 
 		String selectedBusinessDayLabel = "";
 		List<AdminBookingView> timeTable = new ArrayList<>();
-		if (selectedBusinessDayId != null) {
-			Optional<AdminBusinessDayView> selected = businessDays.stream()
-					.filter(d -> d.getId().equals(selectedBusinessDayId))
-					.findFirst();
-			if (selected.isPresent()) {
-				selectedBusinessDayLabel = selected.get().getBusinessDate();
-				if (selectedBusinessDayLabel != null
-						&& !selectedBusinessDayLabel.isEmpty()) {
-					timeTable = adminBookingService.getTimeSlotBookingsByDate(
-							java.time.LocalDate
-									.parse(selectedBusinessDayLabel));
-				}
+
+		if (selectedBusinessDate != null) {
+			// 営業日が存在し、アクティブかチェック
+			if (businessDayService.isBusinessDay(selectedBusinessDate)) {
+				selectedBusinessDayLabel = selectedBusinessDate.toString();
+				timeTable = adminBookingService
+						.getTimeSlotBookingsByDate(selectedBusinessDate);
 			}
 		}
+
 		model.addAttribute("selectedBusinessDayLabel",
 				selectedBusinessDayLabel);
 		model.addAttribute("timeTable", timeTable);
