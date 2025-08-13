@@ -1,9 +1,12 @@
 package com.unknownclinic.appointment.controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,19 +49,25 @@ public class AdminBookingController {
 		String selectedBusinessTypeName = "";
 
 		if (selectedBusinessDate != null) {
-			// 営業日が存在し、アクティブかチェック
 			if (businessDayService.isBusinessDay(selectedBusinessDate)) {
 				BusinessDay selectedBusinessDay = businessDayService
 						.getBusinessDayByDate(selectedBusinessDate);
-				selectedBusinessDayLabel = selectedBusinessDate.toString();
+
+				DateTimeFormatter fmt = DateTimeFormatter.ofPattern("M月d日(E)",
+						Locale.JAPANESE);
+				selectedBusinessDayLabel = selectedBusinessDate.format(fmt);
+
 				selectedBusinessTypeName = selectedBusinessDay
 						.getBusinessTypeDisplayName();
 
-				// 営業形態を考慮した時間枠で予約情報を取得
 				timeTable = adminBookingService
 						.getTimeSlotBookingsByDateAndBusinessType(
 								selectedBusinessDate,
 								selectedBusinessDay.getBusinessType());
+				// nullスロット除去
+				timeTable = timeTable.stream()
+						.filter(Objects::nonNull)
+						.toList();
 			}
 		}
 
