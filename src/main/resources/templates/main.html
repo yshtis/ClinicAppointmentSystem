@@ -28,7 +28,7 @@
 									th:styleappend="${iter.last} ? 'margin-bottom:0;' : ''">
 									<div>
 										<span
-											th:text="${#temporals.format(day.businessDateAsLocalDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></span>
+											th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></span>
 									</div>
 									<div>
 										<small class="badge business-type-badge ms-1"

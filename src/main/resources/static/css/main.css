@@ -343,9 +343,9 @@ input[type="date"].form-control {
 }
 
 #timetable th, #timetable td {
-	vertical-align: top;
-	height: 3.2rem;
-	min-height: 3.2rem;
+	vertical-align: middle;
+	height: 4.2rem;
+	min-height: 4.2rem;
 	padding-top: 0.5rem;
 	padding-bottom: 0.5rem;
 	white-space: normal !important;
