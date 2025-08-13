@@ -2,6 +2,7 @@ package com.unknownclinic.appointment.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class AdminBookingController {
 
 		List<AdminBusinessDayView> businessDays = businessDayService
 				.getAllAdminBusinessDayViews();
+		// 日付昇順ソートを追加
+		businessDays = businessDays.stream()
+				.sorted(Comparator
+						.comparing(AdminBusinessDayView::getBusinessDate))
+				.toList();
 		model.addAttribute("businessDays", businessDays);
 		model.addAttribute("selectedBusinessDate", selectedBusinessDate);
 

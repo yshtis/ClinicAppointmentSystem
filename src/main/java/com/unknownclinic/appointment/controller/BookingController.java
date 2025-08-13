@@ -1,6 +1,7 @@
 package com.unknownclinic.appointment.controller;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,29 +37,29 @@ public class BookingController {
 
 	@GetMapping("/main")
 	public String showBookingForm(
-			Model model,
-			@AuthenticationPrincipal UserDetails userDetails,
-			@RequestParam(name = "businessDate", required = false) LocalDate selectedBusinessDate) {
+	        Model model,
+	        @AuthenticationPrincipal UserDetails userDetails,
+	        @RequestParam(name = "businessDate", required = false) LocalDate selectedBusinessDate) {
 
-		String cardNumber = userDetails.getUsername();
-		User user = userMapper.findByCardNumber(cardNumber);
+	    String cardNumber = userDetails.getUsername();
+	    User user = userMapper.findByCardNumber(cardNumber);
 
-		if (user == null) {
-			model.addAttribute("error", "ユーザー情報が取得できません。再ログインしてください。");
-			return "error";
-		}
+	    if (user == null) {
+	        model.addAttribute("error", "ユーザー情報が取得できません。再ログインしてください。");
+	        return "error";
+	    }
 
-		// 営業日一覧を営業形態付きで取得
-		List<AdminBusinessDayView> businessDayViews = businessDayService
-				.getAllAdminBusinessDayViews();
-		// アクティブな営業日のみフィルタリング
-		List<AdminBusinessDayView> activeBusinessDays = businessDayViews
-				.stream()
-				.filter(AdminBusinessDayView::isValidBusinessDay)
-				.toList();
+	    // 営業日一覧を営業形態付きで取得
+	    List<AdminBusinessDayView> businessDayViews = businessDayService.getAllAdminBusinessDayViews();
+	    // アクティブな営業日のみフィルタリング＆昇順ソート
+	    List<AdminBusinessDayView> sortedActiveBusinessDays = businessDayViews.stream()
+	            .filter(AdminBusinessDayView::isValidBusinessDay)
+	            .sorted(Comparator.comparing(AdminBusinessDayView::getBusinessDate))
+	            .toList();
 
-		model.addAttribute("businessDays", activeBusinessDays);
-		model.addAttribute("selectedBusinessDate", selectedBusinessDate);
+	    model.addAttribute("businessDays", sortedActiveBusinessDays);
+	    model.addAttribute("selectedBusinessDate", selectedBusinessDate);
+
 
 		// 選択された営業日の営業形態を考慮した時間枠を取得
 		List<TimeSlotView> slotViews = businessDayService
