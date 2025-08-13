@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.unknownclinic.appointment.domain.BusinessDay;
 import com.unknownclinic.appointment.dto.AdminBusinessDayView;
+import com.unknownclinic.appointment.dto.TimeSlotView;
 
 public interface BusinessDayService {
 
@@ -22,6 +23,8 @@ public interface BusinessDayService {
 
 	boolean addBusinessDay(LocalDate date);
 
+	boolean addBusinessDayWithType(String dateString, String businessType);
+
 	boolean deleteBusinessDayById(Long id);
 
 	boolean deleteBusinessDayByDate(LocalDate date);
@@ -29,4 +32,9 @@ public interface BusinessDayService {
 	boolean toggleBusinessDayStatus(Long id);
 
 	boolean isBusinessDay(LocalDate date);
+
+	boolean updateBusinessType(Long id, String businessType);
+
+	List<TimeSlotView> getAvailableTimeSlotsByBusinessType(
+			LocalDate businessDate);
 }

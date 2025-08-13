@@ -11,11 +11,48 @@ import lombok.Data;
 public class BusinessDay {
 
 	private Long id;
-	
+
 	@NotNull
 	private LocalDate businessDate;
-	
+
 	private Boolean isActive = true;
-	
+
+	// 営業形態フィールド（DB上のbusiness_typeカラムに対応）
+	private String businessType = "allday"; // デフォルト：終日営業
+
 	private LocalDateTime createdAt;
+
+	// 営業形態の表示名取得メソッド
+	public String getBusinessTypeDisplayName() {
+		if (businessType == null)
+			return "終日営業";
+
+		switch (businessType) {
+		case "allday":
+			return "終日営業";
+		case "am":
+			return "午前営業";
+		case "pm":
+			return "午後営業";
+		default:
+			return "終日営業";
+		}
+	}
+
+	// 営業形態のCSSクラス取得メソッド
+	public String getBusinessTypeCssClass() {
+		if (businessType == null)
+			return "btn-primary";
+
+		switch (businessType) {
+		case "allday":
+			return "btn-primary";
+		case "am":
+			return "btn-warning";
+		case "pm":
+			return "btn-info";
+		default:
+			return "btn-primary";
+		}
+	}
 }

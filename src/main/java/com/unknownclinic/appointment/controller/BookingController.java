@@ -16,15 +16,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.unknownclinic.appointment.domain.BusinessDay;
 import com.unknownclinic.appointment.domain.User;
+import com.unknownclinic.appointment.dto.AdminBusinessDayView;
 import com.unknownclinic.appointment.dto.TimeSlotView;
 import com.unknownclinic.appointment.repository.UserMapper;
 import com.unknownclinic.appointment.service.BookingService;
+import com.unknownclinic.appointment.service.BusinessDayService;
 
 @Controller
 public class BookingController {
 
 	@Autowired
 	private BookingService bookingService;
+
+	@Autowired
+	private BusinessDayService businessDayService;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -43,17 +48,39 @@ public class BookingController {
 			return "error";
 		}
 
-		List<BusinessDay> businessDays = bookingService.getBusinessDays();
-		model.addAttribute("businessDays", businessDays);
+		// 営業日一覧を営業形態付きで取得
+		List<AdminBusinessDayView> businessDayViews = businessDayService
+				.getAllAdminBusinessDayViews();
+		// アクティブな営業日のみフィルタリング
+		List<AdminBusinessDayView> activeBusinessDays = businessDayViews
+				.stream()
+				.filter(AdminBusinessDayView::isValidBusinessDay)
+				.toList();
+
+		model.addAttribute("businessDays", activeBusinessDays);
 		model.addAttribute("selectedBusinessDate", selectedBusinessDate);
 
-		List<TimeSlotView> slotViews = bookingService
-				.getTimeSlotsForView(selectedBusinessDate);
+		// 選択された営業日の営業形態を考慮した時間枠を取得
+		List<TimeSlotView> slotViews = businessDayService
+				.getAvailableTimeSlotsByBusinessType(selectedBusinessDate);
 		model.addAttribute("allTimeSlots", slotViews);
 
+		// 予約済みの時間枠IDを取得
 		Set<Long> bookedSlotIds = bookingService
 				.getBookedSlotIdsForBusinessDate(selectedBusinessDate);
 		model.addAttribute("bookedSlotIds", bookedSlotIds);
+
+		// 選択された営業日の営業形態情報をモデルに追加
+		if (selectedBusinessDate != null) {
+			BusinessDay selectedBusinessDay = businessDayService
+					.getBusinessDayByDate(selectedBusinessDate);
+			if (selectedBusinessDay != null) {
+				model.addAttribute("selectedBusinessType",
+						selectedBusinessDay.getBusinessType());
+				model.addAttribute("selectedBusinessTypeName",
+						selectedBusinessDay.getBusinessTypeDisplayName());
+			}
+		}
 
 		return "main";
 	}
@@ -75,13 +102,30 @@ public class BookingController {
 			return "error";
 		}
 
+		// 営業形態チェック（予約確認時点でも営業時間内かを確認）
+		BusinessDay businessDay = businessDayService
+				.getBusinessDayByDate(businessDate);
+		if (businessDay == null || !businessDay.getIsActive()) {
+			model.addAttribute("error", "選択した日付は営業日ではありません。");
+			return "error";
+		}
+
 		TimeSlotView slotView = bookingService
 				.getTimeSlotViewBySlotId(timeSlotId, businessDate);
+
+		// 選択した時間枠が営業形態に適しているかチェック
+		if (slotView != null && !slotView
+				.isAvailableForBusinessType(businessDay.getBusinessType())) {
+			model.addAttribute("error", "選択した時間は営業時間外です。");
+			return "error";
+		}
 
 		model.addAttribute("slotView", slotView);
 		model.addAttribute("cardNumber", cardNumber);
 		model.addAttribute("timeSlotId", timeSlotId);
 		model.addAttribute("businessDate", businessDate);
+		model.addAttribute("businessTypeName",
+				businessDay.getBusinessTypeDisplayName());
 
 		if (completed != null)
 			model.addAttribute("completed", true);
@@ -108,12 +152,29 @@ public class BookingController {
 		}
 
 		try {
+			// 予約作成前に営業形態の最終チェック
+			BusinessDay businessDay = businessDayService
+					.getBusinessDayByDate(businessDate);
+			if (businessDay == null || !businessDay.getIsActive()) {
+				throw new IllegalStateException("選択した日付は営業日ではありません。");
+			}
+
+			// 時間枠の営業形態適合性チェック
+			TimeSlotView slotView = bookingService
+					.getTimeSlotViewBySlotId(timeSlotId, businessDate);
+			if (slotView != null && !slotView.isAvailableForBusinessType(
+					businessDay.getBusinessType())) {
+				throw new IllegalStateException("選択した時間は営業時間外です。");
+			}
+
 			bookingService.createBooking(user.getId(), businessDate,
 					timeSlotId);
+
 			redirectAttributes.addAttribute("timeSlotId", timeSlotId);
 			redirectAttributes.addAttribute("businessDate", businessDate);
 			redirectAttributes.addAttribute("completed", "true");
 			return "redirect:/confirm";
+
 		} catch (IllegalStateException e) {
 			redirectAttributes.addAttribute("timeSlotId", timeSlotId);
 			redirectAttributes.addAttribute("businessDate", businessDate);

@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.unknownclinic.appointment.domain.BusinessDay;
 import com.unknownclinic.appointment.dto.AdminBookingView;
 import com.unknownclinic.appointment.dto.AdminBusinessDayView;
 import com.unknownclinic.appointment.service.AdminBookingService;
@@ -36,18 +37,29 @@ public class AdminBookingController {
 
 		String selectedBusinessDayLabel = "";
 		List<AdminBookingView> timeTable = new ArrayList<>();
+		String selectedBusinessTypeName = "";
 
 		if (selectedBusinessDate != null) {
 			// 営業日が存在し、アクティブかチェック
 			if (businessDayService.isBusinessDay(selectedBusinessDate)) {
+				BusinessDay selectedBusinessDay = businessDayService
+						.getBusinessDayByDate(selectedBusinessDate);
 				selectedBusinessDayLabel = selectedBusinessDate.toString();
+				selectedBusinessTypeName = selectedBusinessDay
+						.getBusinessTypeDisplayName();
+
+				// 営業形態を考慮した時間枠で予約情報を取得
 				timeTable = adminBookingService
-						.getTimeSlotBookingsByDate(selectedBusinessDate);
+						.getTimeSlotBookingsByDateAndBusinessType(
+								selectedBusinessDate,
+								selectedBusinessDay.getBusinessType());
 			}
 		}
 
 		model.addAttribute("selectedBusinessDayLabel",
 				selectedBusinessDayLabel);
+		model.addAttribute("selectedBusinessTypeName",
+				selectedBusinessTypeName);
 		model.addAttribute("timeTable", timeTable);
 
 		return "admin/main";

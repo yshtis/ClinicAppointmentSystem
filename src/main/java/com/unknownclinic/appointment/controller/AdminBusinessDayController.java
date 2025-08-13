@@ -32,9 +32,12 @@ public class AdminBusinessDayController {
 	@PostMapping("/add")
 	public String addBusinessDay(
 			@RequestParam String date,
+			@RequestParam(defaultValue = "allday") String businessType,
 			RedirectAttributes ra) {
 		try {
-			boolean added = businessDayService.addBusinessDay(date);
+			// 営業形態付きで営業日追加
+			boolean added = businessDayService.addBusinessDayWithType(date,
+					businessType);
 			if (!added) {
 				ra.addFlashAttribute("error", "すでに営業日として設定されています。");
 			} else {
@@ -42,6 +45,25 @@ public class AdminBusinessDayController {
 			}
 		} catch (Exception e) {
 			ra.addFlashAttribute("error", "営業日の追加に失敗しました: " + e.getMessage());
+		}
+		return "redirect:/admin/business-days";
+	}
+
+	@PostMapping("/update-type")
+	public String updateBusinessType(
+			@RequestParam("id") Long id,
+			@RequestParam("businessType") String businessType,
+			RedirectAttributes ra) {
+		try {
+			boolean updated = businessDayService.updateBusinessType(id,
+					businessType);
+			if (!updated) {
+				ra.addFlashAttribute("error", "営業日が見つかりません。");
+			} else {
+				ra.addFlashAttribute("message", "営業形態を変更しました。");
+			}
+		} catch (Exception e) {
+			ra.addFlashAttribute("error", "営業形態の変更に失敗しました: " + e.getMessage());
 		}
 		return "redirect:/admin/business-days";
 	}

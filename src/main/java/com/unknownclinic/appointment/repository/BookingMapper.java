@@ -40,4 +40,8 @@ public interface BookingMapper {
 
 	List<AdminBookingView> findAdminTimeSlotBookingsByDate(
 			@Param("date") LocalDate date);
+
+	List<AdminBookingView> findAdminTimeSlotBookingsByDateAndBusinessType(
+			@Param("date") LocalDate date,
+			@Param("businessType") String businessType);
 }

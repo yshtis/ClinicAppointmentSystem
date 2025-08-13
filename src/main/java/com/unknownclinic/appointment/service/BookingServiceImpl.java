@@ -56,10 +56,27 @@ public class BookingServiceImpl implements BookingService {
 			return List.of();
 		}
 
+		// 営業形態を考慮して時間枠をフィルタリング
 		List<TimeSlot> timeSlots = timeSlotMapper.findAllActive();
+		final String businessType = (businessDay.getBusinessType() != null)
+				? businessDay.getBusinessType()
+				: "allday";
+
 		return timeSlots.stream()
-				.map(slot -> new TimeSlotView(slot.getId(),
-						slot.getDisplayLabel(), businessDate))
+				.filter(slot -> {
+					// 営業形態に応じてフィルタリング
+					switch (businessType) {
+					case "am": // 午前営業
+						return slot.getStartTime().getHour() < 12;
+					case "pm": // 午後営業
+						return slot.getStartTime().getHour() >= 12;
+					case "allday": // 終日営業
+					default:
+						return true;
+					}
+				})
+				.map(slot -> new TimeSlotView(slot.getId(), slot.getStartTime(),
+						slot.getEndTime(), businessDate))
 				.collect(Collectors.toList());
 	}
 
@@ -82,8 +99,8 @@ public class BookingServiceImpl implements BookingService {
 		if (timeSlot == null)
 			return null;
 
-		return new TimeSlotView(timeSlot.getId(), timeSlot.getDisplayLabel(),
-				businessDate);
+		return new TimeSlotView(timeSlot.getId(), timeSlot.getStartTime(),
+				timeSlot.getEndTime(), businessDate);
 	}
 
 	@Override
@@ -100,6 +117,29 @@ public class BookingServiceImpl implements BookingService {
 		TimeSlot timeSlot = timeSlotMapper.findById(timeSlotId);
 		if (timeSlot == null || !timeSlot.getIsActive()) {
 			throw new IllegalStateException("指定された時間枠は利用できません。");
+		}
+
+		// 営業形態チェック（営業時間内かどうか）
+		String businessType = businessDay.getBusinessType();
+		if (businessType == null)
+			businessType = "allday";
+
+		boolean isAvailable = true;
+		switch (businessType) {
+		case "am": // 午前営業
+			isAvailable = timeSlot.getStartTime().getHour() < 12;
+			break;
+		case "pm": // 午後営業
+			isAvailable = timeSlot.getStartTime().getHour() >= 12;
+			break;
+		case "allday": // 終日営業
+		default:
+			isAvailable = true;
+			break;
+		}
+
+		if (!isAvailable) {
+			throw new IllegalStateException("指定された時間は営業時間外です。");
 		}
 
 		// 枠が予約済みかチェック

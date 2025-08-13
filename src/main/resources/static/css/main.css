@@ -20,7 +20,8 @@
 	--card-background-color: #ffffff;
 	--border-color: #e2e8f0;
 	--shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.06);
-	--shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	--shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0
+		rgba(0, 0, 0, 0.06);
 	--radius: 1.5rem;
 	--radius-sm: 0.7rem;
 	--reserved-bg: #e6f3ff;
@@ -157,6 +158,22 @@ body {
 	border: 1px solid var(--secondary-color);
 }
 
+/* 営業日ボタン内のバッジ統一スタイル */
+.business-type-badge {
+	min-width: 60px !important;
+	height: 1.5rem !important;
+	line-height: 1.2 !important;
+	font-size: 0.75rem !important;
+	font-weight: 500 !important;
+	padding: 0.2rem 0.5rem !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	white-space: nowrap !important;
+	border-radius: 0.4rem !important;
+	text-align: center !important;
+}
+
 /* ==========================================================
    入力フォーム
 ========================================================== */
@@ -184,13 +201,13 @@ body {
 }
 
 input[type="date"].form-control {
-    min-width: 180px;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    border-radius: var(--radius-sm);
-    border: 1.5px solid var(--border-color);
-    background: var(--card-background-color);
-    color: var(--text-primary);
+	min-width: 180px;
+	padding: 0.75rem 1rem;
+	font-size: 1rem;
+	border-radius: var(--radius-sm);
+	border: 1.5px solid var(--border-color);
+	background: var(--card-background-color);
+	color: var(--text-primary);
 }
 
 /* ==========================================================
@@ -203,14 +220,10 @@ input[type="date"].form-control {
 	padding: 0.7rem 1.6rem !important;
 	font-weight: 600;
 	min-width: 70px;
-	transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+	transition: background 0.15s, border-color 0.15s, color 0.15s;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-}
-
-.btn:hover {
-	transform: translateY(-1px);
 }
 
 .btn-outline-primary:hover, .btn-outline-primary:focus,
@@ -267,21 +280,21 @@ input[type="date"].form-control {
 }
 
 .btn.loading {
-    position: relative;
-    pointer-events: none;
-    opacity: 0.7;
+	position: relative;
+	pointer-events: none;
+	opacity: 0.7;
 }
 
 .btn.loading:after {
-    content: "";
-    position: absolute;
-    width: 1rem;
-    height: 1rem;
-    margin: auto;
-    border: 2px solid transparent;
-    border-top-color: currentColor;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+	content: "";
+	position: absolute;
+	width: 1rem;
+	height: 1rem;
+	margin: auto;
+	border: 2px solid transparent;
+	border-top-color: currentColor;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
 }
 
 .button-row>*+* {
@@ -409,11 +422,6 @@ input[type="date"].form-control {
 	position: relative;
 }
 
-.business-day-btn:hover {
-	transform: translateY(-1px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 .business-day-btn.today:not(.btn-primary) {
 	background-color: var(--success-color) !important;
 	border-color: var(--success-color) !important;
@@ -428,9 +436,9 @@ input[type="date"].form-control {
 }
 
 .business-day-btn.this-week:not(.btn-primary) {
-    border-color: var(--primary-color);
-    background-color: rgba(12, 127, 242, 0.05);
-    color: var(--primary-color);
+	border-color: var(--primary-color);
+	background-color: rgba(12, 127, 242, 0.05);
+	color: var(--primary-color);
 }
 
 .business-day-btn.past-soon {
@@ -542,115 +550,44 @@ input[type="date"].form-control {
 }
 
 /* ==========================================================
-   アニメーション
-========================================================== */
-.fade-in {
-	animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.slide-in {
-	animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-	from {
-		opacity: 0;
-		transform: translateX(-20px);
-	}
-	to {
-		opacity: 1;
-		transform: translateX(0);
-	}
-}
-
-.loading {
-	animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-	0%, 100% {
-		opacity: 1;
-	}
-	50% {
-		opacity: 0.5;
-	}
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.success-animation {
-    animation: successPulse 0.6s ease-in-out;
-}
-
-@keyframes successPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.error-shake {
-    animation: shake 0.5s ease-in-out;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* ==========================================================
    レスポンシブ対応
 ========================================================== */
-@media (max-width: 768px) {
+@media ( max-width : 768px) {
 	.header-inner {
 		padding: 0 1rem;
 	}
-	
 	.clinic-title {
 		font-size: 1.4rem;
 	}
-	
 	.header-nav {
 		gap: 1rem;
 	}
-	
 	.btn-group {
 		flex-direction: column;
 		width: 100%;
 	}
-	
 	.btn-group .btn {
 		border-radius: var(--radius-sm) !important;
 		margin-bottom: 0.5rem;
 	}
-	
 	.card-body {
 		padding: 1rem;
 	}
-	
 	.stats-container {
 		padding: 0.75rem;
 	}
-	
 	.empty-state {
 		padding: 1.5rem 0.5rem;
 	}
-	
 	.empty-state .empty-icon {
 		font-size: 2.5rem;
+	}
+
+	/* 営業日ボタンのバッジ（モバイル対応） */
+	.business-type-badge {
+		min-width: 50px !important;
+		height: 1.3rem !important;
+		font-size: 0.7rem !important;
+		padding: 0.1rem 0.4rem !important;
 	}
 }

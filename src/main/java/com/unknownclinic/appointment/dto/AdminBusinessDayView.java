@@ -13,6 +13,7 @@ public class AdminBusinessDayView {
 	private Long id;
 	private String businessDate;
 	private Boolean isActive;
+	private String businessType; // 営業形態（allday/am/pm）
 
 	// コンストラクタ
 	public AdminBusinessDayView() {
@@ -22,46 +23,91 @@ public class AdminBusinessDayView {
 		this.id = businessDay.getId();
 		this.businessDate = businessDay.getBusinessDate().toString();
 		this.isActive = businessDay.getIsActive();
+		this.businessType = businessDay.getBusinessType();
 	}
 
 	/**
 	 * 画面表示用の営業日ラベル生成
-	 * フォーマット: "yyyy/MM/dd (曜日) 【営業状態】"
+	 * フォーマット: "yyyy/MM/dd (曜日) 【営業形態】"
 	 */
 	public String getBusinessDayLabel() {
-		String statusLabel = isActive ? "【営業中】" : "【休業】";
 		try {
 			LocalDate date = LocalDate.parse(businessDate);
 			DateTimeFormatter fmt = DateTimeFormatter
 					.ofPattern("yyyy/MM/dd (E)", Locale.JAPANESE);
-			return date.format(fmt) + " " + statusLabel;
+			return date.format(fmt);
 		} catch (Exception e) {
-			return businessDate + " " + statusLabel;
+			return businessDate;
 		}
 	}
 
 	/**
-	 * 営業状態に応じたCSSクラス
+	 * 営業形態の表示名取得
+	 */
+	public String getBusinessTypeDisplayName() {
+		if (businessType == null)
+			return "終日";
+
+		switch (businessType) {
+		case "allday":
+			return "終日";
+		case "am":
+			return "午前";
+		case "pm":
+			return "午後";
+		default:
+			return "終日";
+		}
+	}
+
+	/**
+	 * 営業形態に応じたCSSクラス
 	 */
 	public String getStatusClass() {
-		return isActive ? "text-success" : "text-muted";
+		if (!isActive)
+			return "text-muted";
+
+		if (businessType == null)
+			return "text-success";
+
+		switch (businessType) {
+		case "allday":
+			return "text-success";
+		case "am":
+			return "text-warning";
+		case "pm":
+			return "text-info";
+		default:
+			return "text-success";
+		}
 	}
 
 	/**
-	 * 営業状態切り替えボタンのテキスト
+	 * 営業形態ボタンのテキスト
 	 */
-	public String getToggleButtonText() {
-		return isActive ? "休業にする" : "営業再開";
+	public String getBusinessTypeButtonText() {
+		return getBusinessTypeDisplayName();
 	}
 
 	/**
-	 * 営業状態切り替えボタンのCSSクラス
+	 * 営業形態ボタンのCSSクラス（統一デザイン用）
+	 * すべて同じ形状でバッジサイズも統一
 	 */
-	public String getToggleButtonClass() {
-		return isActive ? "btn-warning" : "btn-success";
-	}
+	public String getBusinessTypeButtonClass() {
+		if (businessType == null)
+			return "bg-success";
 
-	// === 日付操作・判定メソッド ===
+		switch (businessType) {
+		case "allday":
+			return "bg-success";
+		case "am":
+			return "bg-warning";
+		case "pm":
+			return "bg-info";
+		default:
+			return "bg-success";
+		}
+	}
 
 	/**
 	 * LocalDate形式での日付取得（ソート用）
@@ -188,8 +234,9 @@ public class AdminBusinessDayView {
 
 	@Override
 	public String toString() {
-		return String.format("AdminBusinessDayView[id=%d, date=%s, active=%s]",
-				id, businessDate, isActive);
+		return String.format(
+				"AdminBusinessDayView[id=%d, date=%s, active=%s, type=%s]",
+				id, businessDate, isActive, businessType);
 	}
 
 	@Override

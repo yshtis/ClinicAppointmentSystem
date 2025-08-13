@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.unknownclinic.appointment.repository.TimeSlotMapper">
 
+    <resultMap id="TimeSlotResultMap" type="com.unknownclinic.appointment.domain.TimeSlot">
+        <id column="id" property="id"/>
+        <result column="start_time" property="startTime" jdbcType="TIME" javaType="java.time.LocalTime"/>
+        <result column="end_time" property="endTime" jdbcType="TIME" javaType="java.time.LocalTime"/>
+        <result column="is_active" property="isActive"/>
+    </resultMap>
+
     <!-- 全時間枠取得 -->
-    <select id="findAll" resultType="com.unknownclinic.appointment.domain.TimeSlot">
+    <select id="findAll" resultMap="TimeSlotResultMap">
         SELECT id, start_time, end_time, is_active
         FROM time_slots
         ORDER BY start_time
     </select>
 
     <!-- アクティブな時間枠のみ取得 -->
-    <select id="findAllActive" resultType="com.unknownclinic.appointment.domain.TimeSlot">
+    <select id="findAllActive" resultMap="TimeSlotResultMap">
         SELECT id, start_time, end_time, is_active
         FROM time_slots
         WHERE is_active = TRUE
@@ -19,7 +28,7 @@
     </select>
 
     <!-- IDで時間枠取得 -->
-    <select id="findById" resultType="com.unknownclinic.appointment.domain.TimeSlot">
+    <select id="findById" resultMap="TimeSlotResultMap">
         SELECT id, start_time, end_time, is_active
         FROM time_slots
         WHERE id = #{id}
@@ -27,7 +36,7 @@
     </select>
 
     <!-- 開始時間で時間枠取得 -->
-    <select id="findByStartTime" resultType="com.unknownclinic.appointment.domain.TimeSlot">
+    <select id="findByStartTime" resultMap="TimeSlotResultMap">
         SELECT id, start_time, end_time, is_active
         FROM time_slots
         WHERE start_time = #{startTime}

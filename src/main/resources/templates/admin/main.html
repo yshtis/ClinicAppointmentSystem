@@ -30,18 +30,24 @@
 									<div class="d-flex flex-column gap-3 flex-grow-1">
 										<a th:each="day, iter : ${businessDays}"
 											th:href="@{/admin/main(businessDate=${day.businessDate})}"
-											th:text="${day.businessDayLabel}"
 											th:class="'btn business-day-btn py-2 fade-in ' + ${selectedBusinessDate != null and day.businessDate.toString() == selectedBusinessDate.toString() ? 'btn-primary' : 'btn-outline-primary'} + ' ' + ${day.getDateCssClass()}"
-											th:style="${!day.isActive} ? 'opacity: 0.6;' : ''"> 
+											th:style="${!day.isActive} ? 'opacity: 0.6;' : ''">
+											<div>
+												<span th:text="${day.businessDayLabel}"></span>
+											</div>
+											<div>
+												<small class="badge business-type-badge ms-1"
+													th:class="'badge business-type-badge ms-1 ' + ${day.getBusinessTypeButtonClass()}"
+													th:text="${day.getBusinessTypeDisplayName()}"></small>
+											</div>
 										</a>
 									</div>
 									<div
 										th:if="${businessDays == null or #lists.isEmpty(businessDays)}">
 										<div class="empty-state">
 											<p class="empty-message">営業日が登録されていません</p>
-											<a href="/admin/business-days" class="btn btn-outline-primary btn-sm">
-												営業日を追加
-											</a>
+											<a href="/admin/business-days"
+												class="btn btn-outline-primary btn-sm"> 営業日を追加 </a>
 										</div>
 									</div>
 								</div>
@@ -50,8 +56,8 @@
 							<div class="col-md-6" style="padding: 2rem;">
 								<div class="w-100">
 									<div th:if="${selectedBusinessDate != null}">
-										<label class="form-label mb-3"> 
-											<span th:text="${selectedBusinessDayLabel != null && selectedBusinessDayLabel != '' ? selectedBusinessDayLabel + 'の予約状況' : '選択した日付の予約状況'}"></span>
+										<label class="form-label mb-3"> <span
+											th:text="${selectedBusinessDayLabel != null && selectedBusinessDayLabel != '' ? selectedBusinessDayLabel + 'の予約状況' : '選択した日付の予約状況'}"></span>
 										</label>
 										<table class="table table-bordered table-hover" id="timetable">
 											<thead class="table-light">
@@ -61,15 +67,17 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr th:if="${timeTable == null or #lists.isEmpty(timeTable)}">
+												<tr
+													th:if="${timeTable == null or #lists.isEmpty(timeTable)}">
 													<td colspan="2" class="empty-state">
 														<p class="empty-message">この日の予約情報はありません</p>
 													</td>
 												</tr>
-												<tr th:each="slot : ${timeTable}" th:if="${timeTable != null}"
+												<tr th:each="slot : ${timeTable}"
+													th:if="${timeTable != null}"
 													th:class="'slide-in ' + ${slot != null and slot.hasBooking() ? 'table-primary' : ''}">
-													<td>
-														<strong th:text="${slot != null ? slot.timeLabel : ''}"></strong>
+													<td><strong
+														th:text="${slot != null ? slot.timeLabel : ''}"></strong>
 													</td>
 													<td>
 														<div th:if="${slot != null and slot.hasBooking()}">
@@ -83,9 +91,8 @@
 																電話番号: <span th:text="${slot.phoneNumber}"></span>
 															</div>
 														</div>
-														<div th:if="${slot == null or !slot.hasBooking()}" class="text-center text-muted">
-															空き
-														</div>
+														<div th:if="${slot == null or !slot.hasBooking()}"
+															class="text-center text-muted">空き</div>
 													</td>
 												</tr>
 											</tbody>
@@ -95,21 +102,22 @@
 										<div class="stats-container fade-in">
 											<div class="row text-center">
 												<div class="col-6 stats-item">
-													<span class="stats-number text-primary">
-														<span th:text="${timeTable != null ? timeTable.stream().filter(slot -> slot.hasBooking()).count() : 0}">0</span>
+													<span class="stats-number text-primary"> <span
+														th:text="${timeTable != null ? timeTable.stream().filter(slot -> slot.hasBooking()).count() : 0}">0</span>
 													</span>
 													<div class="stats-label">予約済み</div>
 												</div>
 												<div class="col-6 stats-item">
-													<span class="stats-number text-secondary">
-														<span th:text="${timeTable != null ? timeTable.stream().filter(slot -> !slot.hasBooking()).count() : 0}">0</span>
+													<span class="stats-number text-secondary"> <span
+														th:text="${timeTable != null ? timeTable.stream().filter(slot -> !slot.hasBooking()).count() : 0}">0</span>
 													</span>
 													<div class="stats-label">空き</div>
 												</div>
 											</div>
 										</div>
 									</div>
-									<div th:unless="${selectedBusinessDate != null}" class="empty-state">
+									<div th:unless="${selectedBusinessDate != null}"
+										class="empty-state">
 										<p class="empty-message">営業日を選択してください</p>
 									</div>
 								</div>

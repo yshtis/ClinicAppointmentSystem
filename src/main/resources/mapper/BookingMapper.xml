@@ -118,4 +118,29 @@
         ORDER BY ts.start_time
     </select>
 
+    <!-- 営業形態を考慮した管理者タイムテーブル用 -->
+    <select id="findAdminTimeSlotBookingsByDateAndBusinessType" resultType="com.unknownclinic.appointment.dto.AdminBookingView">
+        SELECT
+            ts.id AS timeSlotId,
+            CONCAT(TIME_FORMAT(ts.start_time, '%H:%i'), '-', TIME_FORMAT(ts.end_time, '%H:%i')) AS timeLabel,
+            u.name AS patientName,
+            u.card_number AS cardNumber,
+            u.phone_number AS phoneNumber
+        FROM time_slots ts
+        LEFT JOIN bookings b
+            ON b.time_slot_id = ts.id 
+            AND b.business_date = #{date} 
+            AND b.status = 'reserved'
+        LEFT JOIN users u
+            ON b.user_id = u.id
+        WHERE ts.is_active = TRUE
+        <if test="businessType == 'am'">
+            AND HOUR(ts.start_time) &lt; 12
+        </if>
+        <if test="businessType == 'pm'">
+            AND HOUR(ts.start_time) &gt;= 12
+        </if>
+        ORDER BY ts.start_time
+    </select>
+
 </mapper>
