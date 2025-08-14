@@ -59,11 +59,11 @@ public class AdminBusinessDayView {
 
 	public String getBusinessTypeDisplayName() {
 		if (businessType == null)
-			return "終日営業";
+			return "終日";
 		return switch (businessType) {
-		case "am" -> "午前営業";
-		case "pm" -> "午後営業";
-		default -> "終日営業";
+		case "am" -> "午前";
+		case "pm" -> "午後";
+		default -> "終日";
 		};
 	}
 

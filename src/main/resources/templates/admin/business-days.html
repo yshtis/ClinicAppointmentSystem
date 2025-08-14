@@ -6,8 +6,13 @@
 		<header th:replace="~{parts/admin-common :: header}"></header>
 
 		<main class="container flex-grow-1 py-4">
-			<div class="d-flex justify-content-between align-items-center mb-3">
-				<h1 class="h3">営業日設定</h1>
+			<div class="narrow-table-container">
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<h1 class="h2">営業日設定</h1>
+				</div>
+				<div class="mb-4 text-end">
+					<a href="/admin/main" class="btn btn-outline-primary">予約一覧へ戻る</a>
+				</div>
 			</div>
 
 			<!-- メッセージ表示 -->
@@ -16,7 +21,7 @@
 			<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
 			<!-- 営業日追加フォーム -->
-			<div class="card shadow-sm mb-4">
+			<div class="card shadow-sm mb-4 narrow-table-container">
 				<div class="card-body">
 					<form th:action="@{/admin/business-days/add}" method="post"
 						class="row g-3">
@@ -25,9 +30,9 @@
 						</div>
 						<div class="col-auto">
 							<select name="businessType" class="form-select">
-								<option value="allday">終日営業</option>
-								<option value="am">午前営業</option>
-								<option value="pm">午後営業</option>
+								<option value="allday">終日</option>
+								<option value="am">午前</option>
+								<option value="pm">午後</option>
 							</select>
 						</div>
 						<div class="col-auto">
@@ -40,7 +45,7 @@
 			</div>
 
 			<!-- 営業日一覧 -->
-			<div class="card shadow-sm">
+			<div class="card shadow-sm narrow-table-container">
 				<div class="card-body">
 					<table class="table table-hover align-middle">
 						<thead>
@@ -70,7 +75,7 @@
 														th:value="${_csrf.token}" />
 													<button type="submit"
 														th:class="${day.businessType == type ? 'dropdown-item active' : 'dropdown-item'}"
-														th:text="${type == 'allday' ? '終日営業' : (type == 'am' ? '午前営業' : '午後営業')}">
+														th:text="${type == 'allday' ? '終日' : (type == 'am' ? '午前' : '午後')}">
 													</button>
 												</form>
 											</li>
@@ -91,7 +96,8 @@
 											th:class="${day.isActive ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm'}"
 											th:text="${day.isActive ? '休業' : '再開'}"
 											onclick="return confirm('営業状態を変更しますか？');"></button>
-									</form> <!-- 削除ボタン -->
+									</form>
+									<!-- 削除ボタン -->
 									<form th:action="@{/admin/business-days/delete}" method="post"
 										style="display: inline;">
 										<input type="hidden" name="id" th:value="${day.id}" /> <input

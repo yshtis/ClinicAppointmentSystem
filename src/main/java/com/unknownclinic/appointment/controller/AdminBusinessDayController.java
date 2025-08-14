@@ -1,5 +1,6 @@
 package com.unknownclinic.appointment.controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,10 @@ public class AdminBusinessDayController {
 		model.addAttribute("_csrf", token);
 		List<AdminBusinessDayView> businessDays = businessDayService
 				.getAllAdminBusinessDayViews();
+		businessDays = businessDays.stream()
+				.sorted(Comparator
+						.comparing(AdminBusinessDayView::getBusinessDate))
+				.toList();
 		model.addAttribute("businessDays", businessDays);
 		return "admin/business-days";
 	}
@@ -37,7 +42,6 @@ public class AdminBusinessDayController {
 			@RequestParam(defaultValue = "allday") String businessType,
 			RedirectAttributes ra) {
 		try {
-			// 営業形態付きで営業日追加
 			boolean added = businessDayService.addBusinessDayWithType(date,
 					businessType);
 			if (!added) {
