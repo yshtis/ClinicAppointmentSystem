@@ -3,6 +3,7 @@ package com.unknownclinic.appointment.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,8 @@ public class AdminBusinessDayController {
 	private BusinessDayService businessDayService;
 
 	@GetMapping
-	public String businessDaysPage(Model model) {
+	public String businessDaysPage(Model model, CsrfToken token) {
+		model.addAttribute("_csrf", token);
 		List<AdminBusinessDayView> businessDays = businessDayService
 				.getAllAdminBusinessDayViews();
 		model.addAttribute("businessDays", businessDays);

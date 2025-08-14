@@ -40,8 +40,7 @@ public class AdminBusinessDayView {
 		}
 	}
 
-	/** 表示用の営業日ラベル */
-	public String getBusinessDayLabel() {
+	public String getBusinessDateLabel() {
 		if (rawBusinessDate == null)
 			return "未設定";
 		try {
@@ -53,8 +52,22 @@ public class AdminBusinessDayView {
 		}
 	}
 
-	/** 営業形態の表示名 */
+	/** ★ テンプレート互換用：main.html /admin/main.html どちらでも使えるように */
+	public String getBusinessDayLabel() {
+		return getBusinessDateLabel();
+	}
+
 	public String getBusinessTypeDisplayName() {
+		if (businessType == null)
+			return "終日営業";
+		return switch (businessType) {
+		case "am" -> "午前営業";
+		case "pm" -> "午後営業";
+		default -> "終日営業";
+		};
+	}
+
+	public String getBusinessTypeLabel() {
 		if (businessType == null)
 			return "終日";
 		return switch (businessType) {
@@ -64,7 +77,6 @@ public class AdminBusinessDayView {
 		};
 	}
 
-	/** 営業形態のCSSクラス */
 	public String getBusinessTypeButtonClass() {
 		if (businessType == null)
 			return "bg-success";
@@ -75,13 +87,11 @@ public class AdminBusinessDayView {
 		};
 	}
 
-	/** 営業状態のアイコン */
 	public String getStatusIcon() {
 		return Boolean.TRUE.equals(isActive) ? "bi-check-circle-fill"
 				: "bi-x-circle-fill";
 	}
 
-	/** 営業日として有効かどうか */
 	public boolean isValidBusinessDay() {
 		return Boolean.TRUE.equals(isActive) && !isPast();
 	}

@@ -75,7 +75,7 @@
 												</tr>
 												<tr th:each="slot : ${timeTable}"
 													th:if="${timeTable != null}"
-													th:class="'slide-in ' + (${slot != null and slot.hasBooking()} ? 'table-primary' : '')">
+													th:class="${slot != null and slot.hasBooking()} ? 'table-primary' : ''">
 													<td><strong th:text="${slot?.timeLabel ?: ''}"></strong>
 													</td>
 													<td>
@@ -99,7 +99,7 @@
 										</table>
 
 										<!-- 統計情報 -->
-										<div class="stats-container fade-in">
+										<div class="stats-container">
 											<div class="row text-center">
 												<div class="col-6 stats-item">
 													<span class="stats-number text-primary"> <span
