@@ -13,7 +13,7 @@ public class AdminBusinessDayView {
 	private Long id;
 	private String rawBusinessDate;
 	private Boolean isActive;
-	private String businessType; // 営業形態（allday/am/pm）
+	private String businessType;
 
 	public AdminBusinessDayView() {
 	}
@@ -29,7 +29,6 @@ public class AdminBusinessDayView {
 		this.businessType = businessDay.getBusinessType();
 	}
 
-	/** LocalDate形式での日付取得（nullならLocalDate.MIN） */
 	public LocalDate getBusinessDate() {
 		try {
 			return rawBusinessDate != null
@@ -52,7 +51,6 @@ public class AdminBusinessDayView {
 		}
 	}
 
-	/** ★ テンプレート互換用：main.html /admin/main.html どちらでも使えるように */
 	public String getBusinessDayLabel() {
 		return getBusinessDateLabel();
 	}

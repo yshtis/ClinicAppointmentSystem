@@ -42,14 +42,12 @@ public class MyPageController {
 		List<BookingView> allBookings = bookingService
 				.getBookingViewsByUser(user.getId());
 
-		// 未来の有効な予約
 		List<BookingView> futureBookings = allBookings.stream()
 				.filter(BookingView::isActiveFutureBooking)
 				.sorted(Comparator.comparing(BookingView::getBusinessDate)
 						.thenComparing(BookingView::getSlotLabel))
 				.collect(Collectors.toList());
 
-		// 過去の予約・キャンセル済み予約
 		List<BookingView> pastBookings = allBookings.stream()
 				.filter(b -> !b.isActiveFutureBooking())
 				.sorted(Comparator

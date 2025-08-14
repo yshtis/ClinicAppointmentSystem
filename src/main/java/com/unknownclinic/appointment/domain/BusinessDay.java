@@ -17,8 +17,7 @@ public class BusinessDay {
 
 	private Boolean isActive = true;
 
-	// 営業形態フィールド（DB上のbusiness_typeカラムに対応）
-	private String businessType = "allday"; // デフォルト：終日営業
+	private String businessType = "allday";
 
 	private LocalDateTime createdAt;
 

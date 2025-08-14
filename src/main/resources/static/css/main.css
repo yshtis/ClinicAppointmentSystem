@@ -361,7 +361,7 @@ input[type="date"].form-control {
 }
 
 .narrow-table-container {
-  max-width: 700px;
+  max-width: 768px;
   margin-left: auto;
   margin-right: auto;
 }

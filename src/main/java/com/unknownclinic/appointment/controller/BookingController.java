@@ -49,9 +49,9 @@ public class BookingController {
 	        return "error";
 	    }
 
-	    // 営業日一覧を営業形態付きで取得
+
 	    List<AdminBusinessDayView> businessDayViews = businessDayService.getAllAdminBusinessDayViews();
-	    // アクティブな営業日のみフィルタリング＆昇順ソート
+
 	    List<AdminBusinessDayView> sortedActiveBusinessDays = businessDayViews.stream()
 	            .filter(AdminBusinessDayView::isValidBusinessDay)
 	            .sorted(Comparator.comparing(AdminBusinessDayView::getBusinessDate))
@@ -60,18 +60,14 @@ public class BookingController {
 	    model.addAttribute("businessDays", sortedActiveBusinessDays);
 	    model.addAttribute("selectedBusinessDate", selectedBusinessDate);
 
-
-		// 選択された営業日の営業形態を考慮した時間枠を取得
 		List<TimeSlotView> slotViews = businessDayService
 				.getAvailableTimeSlotsByBusinessType(selectedBusinessDate);
 		model.addAttribute("allTimeSlots", slotViews);
 
-		// 予約済みの時間枠IDを取得
 		Set<Long> bookedSlotIds = bookingService
 				.getBookedSlotIdsForBusinessDate(selectedBusinessDate);
 		model.addAttribute("bookedSlotIds", bookedSlotIds);
 
-		// 選択された営業日の営業形態情報をモデルに追加
 		if (selectedBusinessDate != null) {
 			BusinessDay selectedBusinessDay = businessDayService
 					.getBusinessDayByDate(selectedBusinessDate);
@@ -103,7 +99,6 @@ public class BookingController {
 			return "error";
 		}
 
-		// 営業形態チェック（予約確認時点でも営業時間内かを確認）
 		BusinessDay businessDay = businessDayService
 				.getBusinessDayByDate(businessDate);
 		if (businessDay == null || !businessDay.getIsActive()) {
@@ -114,7 +109,6 @@ public class BookingController {
 		TimeSlotView slotView = bookingService
 				.getTimeSlotViewBySlotId(timeSlotId, businessDate);
 
-		// 選択した時間枠が営業形態に適しているかチェック
 		if (slotView != null && !slotView
 				.isAvailableForBusinessType(businessDay.getBusinessType())) {
 			model.addAttribute("error", "選択した時間は営業時間外です。");
@@ -153,14 +147,12 @@ public class BookingController {
 		}
 
 		try {
-			// 予約作成前に営業形態の最終チェック
 			BusinessDay businessDay = businessDayService
 					.getBusinessDayByDate(businessDate);
 			if (businessDay == null || !businessDay.getIsActive()) {
 				throw new IllegalStateException("選択した日付は営業日ではありません。");
 			}
 
-			// 時間枠の営業形態適合性チェック
 			TimeSlotView slotView = bookingService
 					.getTimeSlotViewBySlotId(timeSlotId, businessDate);
 			if (slotView != null && !slotView.isAvailableForBusinessType(

@@ -11,10 +11,9 @@ public class TimeSlotView {
 	private Long id;
 	private String label;
 	private LocalDate businessDate;
-	private LocalTime startTime; // 営業形態判定用に追加
-	private LocalTime endTime; // 営業形態判定用に追加
+	private LocalTime startTime;
+	private LocalTime endTime;
 
-	// 基本コンストラクタ
 	public TimeSlotView(Long id, String label) {
 		this.id = id;
 		this.label = label;
@@ -26,7 +25,6 @@ public class TimeSlotView {
 		this.businessDate = businessDate;
 	}
 
-	// TimeSlotエンティティから生成するコンストラクタ
 	public TimeSlotView(
 			com.unknownclinic.appointment.domain.TimeSlot timeSlot) {
 		this.id = timeSlot.getId();
@@ -44,14 +42,12 @@ public class TimeSlotView {
 		this.endTime = timeSlot.getEndTime();
 	}
 
-	// 営業形態対応の完全なコンストラクタ
 	public TimeSlotView(Long id, LocalTime startTime, LocalTime endTime,
 			LocalDate businessDate) {
 		this.id = id;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.businessDate = businessDate;
-		// 時間ラベルを動的生成
 		this.label = String.format("%02d:%02d-%02d:%02d",
 				startTime.getHour(), startTime.getMinute(),
 				endTime.getHour(), endTime.getMinute());
@@ -64,15 +60,15 @@ public class TimeSlotView {
 	 */
 	public boolean isAvailableForBusinessType(String businessType) {
 		if (startTime == null || businessType == null) {
-			return true; // 情報不足の場合は利用可能とする
+			return true;
 		}
 
 		switch (businessType) {
-		case "am": // 午前営業
+		case "am":
 			return startTime.getHour() < 12;
-		case "pm": // 午後営業
+		case "pm":
 			return startTime.getHour() >= 12;
-		case "allday": // 終日営業
+		case "allday":
 		default:
 			return true;
 		}
@@ -96,9 +92,9 @@ public class TimeSlotView {
 	 */
 	public String getAvailabilityCssClass(String businessType) {
 		if (!isAvailableForBusinessType(businessType)) {
-			return "time-slot-unavailable"; // 営業時間外
+			return "time-slot-unavailable";
 		}
-		return "time-slot-available"; // 利用可能
+		return "time-slot-available";
 	}
 
 	/**

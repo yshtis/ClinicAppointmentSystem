@@ -79,7 +79,7 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 		BusinessDay businessDay = new BusinessDay();
 		businessDay.setBusinessDate(date);
 		businessDay.setIsActive(true);
-		businessDay.setBusinessType("allday"); // 初期値：終日営業
+		businessDay.setBusinessType("allday");
 		businessDayMapper.insert(businessDay);
 
 		return true;
@@ -99,19 +99,16 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 
 	@Transactional
 	public boolean addBusinessDayWithType(LocalDate date, String businessType) {
-		// 過去の日付チェック
 		if (date.isBefore(LocalDate.now())) {
 			throw new IllegalArgumentException("過去の日付は営業日として追加できません。");
 		}
 
-		// 重複チェック
 		if (businessDayMapper.countByBusinessDate(date) > 0) {
 			return false;
 		}
 
-		// 営業形態の有効性チェック
 		if (!isValidBusinessType(businessType)) {
-			businessType = "allday"; // 無効な場合はデフォルトにフォールバック
+			businessType = "allday";
 		}
 
 		BusinessDay businessDay = new BusinessDay();
@@ -196,11 +193,11 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 		String businessType = businessDay.getBusinessType();
 
 		if (businessType == null) {
-			businessType = "allday"; // null の場合はデフォルト
+			businessType = "allday";
 		}
 
 		switch (businessType) {
-		case "am": // 午前のみ
+		case "am":
 			return allTimeSlots.stream()
 					.filter(slot -> slot.getStartTime().getHour() < 12)
 					.map(slot -> new TimeSlotView(slot.getId(),
@@ -208,7 +205,7 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 							slot.getEndTime(), businessDate))
 					.collect(Collectors.toList());
 
-		case "pm": // 午後のみ
+		case "pm":
 			return allTimeSlots.stream()
 					.filter(slot -> slot.getStartTime().getHour() >= 12)
 					.map(slot -> new TimeSlotView(slot.getId(),
@@ -216,7 +213,7 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 							slot.getEndTime(), businessDate))
 					.collect(Collectors.toList());
 
-		case "allday": // 終日営業
+		case "allday":
 		default:
 			return allTimeSlots.stream()
 					.map(slot -> new TimeSlotView(slot.getId(),

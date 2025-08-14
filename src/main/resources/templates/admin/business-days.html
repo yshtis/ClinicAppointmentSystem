@@ -16,9 +16,9 @@
 			</div>
 
 			<!-- メッセージ表示 -->
-			<div th:if="${message}" class="alert alert-success"
+			<div th:if="${message}" class="alert alert-success narrow-table-container"
 				th:text="${message}"></div>
-			<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+			<div th:if="${error}" class="alert alert-danger narrow-table-container" th:text="${error}"></div>
 
 			<!-- 営業日追加フォーム -->
 			<div class="card shadow-sm mb-4 narrow-table-container">
@@ -75,8 +75,8 @@
 														th:value="${_csrf.token}" />
 													<button type="submit"
 														th:class="${day.businessType == type ? 'dropdown-item active' : 'dropdown-item'}"
-														th:text="${type == 'allday' ? '終日' : (type == 'am' ? '午前' : '午後')}">
-													</button>
+														th:text="${type == 'allday' ? '終日' : (type == 'am' ? '午前' : '午後')}"
+														onclick="event.stopPropagation();"></button>
 												</form>
 											</li>
 										</ul>
@@ -86,7 +86,6 @@
 									th:class="${day.isActive ? 'badge bg-success' : 'badge bg-secondary'}">
 								</span></td>
 								<td>
-									<!-- 状態切り替えボタン -->
 									<form th:action="@{/admin/business-days/toggle}" method="post"
 										style="display: inline;">
 										<input type="hidden" name="id" th:value="${day.id}" /> <input
@@ -97,7 +96,6 @@
 											th:text="${day.isActive ? '休業' : '再開'}"
 											onclick="return confirm('営業状態を変更しますか？');"></button>
 									</form>
-									<!-- 削除ボタン -->
 									<form th:action="@{/admin/business-days/delete}" method="post"
 										style="display: inline;">
 										<input type="hidden" name="id" th:value="${day.id}" /> <input
@@ -117,8 +115,8 @@
 				</div>
 			</div>
 		</main>
-
 		<footer th:replace="~{parts/admin-common :: footer}"></footer>
 	</div>
+	<script src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

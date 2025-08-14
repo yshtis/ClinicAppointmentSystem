@@ -36,7 +36,6 @@ public class AdminBookingController {
 
 		List<AdminBusinessDayView> businessDays = businessDayService
 				.getAllAdminBusinessDayViews();
-		// 日付昇順ソートを追加
 		businessDays = businessDays.stream()
 				.sorted(Comparator
 						.comparing(AdminBusinessDayView::getBusinessDate))
@@ -64,7 +63,6 @@ public class AdminBookingController {
 						.getTimeSlotBookingsByDateAndBusinessType(
 								selectedBusinessDate,
 								selectedBusinessDay.getBusinessType());
-				// nullスロット除去
 				timeTable = timeTable.stream()
 						.filter(Objects::nonNull)
 						.toList();
