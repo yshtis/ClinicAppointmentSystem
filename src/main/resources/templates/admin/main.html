@@ -52,9 +52,26 @@
 							<div class="col-md-6" style="padding: 2rem;">
 								<div class="w-100">
 									<div th:if="${selectedBusinessDate != null}">
-										<label class="form-label mb-3"> <span
+										<label class="form-label"> <span
 											th:text="${selectedBusinessDayLabel != null and selectedBusinessDayLabel != '' ? selectedBusinessDayLabel + 'の予約状況' : '選択した日付の予約状況'}"></span>
 										</label>
+										<!-- 統計情報 -->
+										<div class="stats-container">
+											<div class="row text-center">
+												<div class="col-6 stats-item">
+													<span class="stats-number text-primary"> <span
+														th:text="${timeTable != null ? #lists.size(timeTable.?[hasBooking()]) : 0}">0</span>
+													</span>
+													<div class="stats-label">予約済み</div>
+												</div>
+												<div class="col-6 stats-item">
+													<span class="stats-number text-secondary"> <span
+														th:text="${timeTable != null ? #lists.size(timeTable.?[!hasBooking()]) : 0}">0</span>
+													</span>
+													<div class="stats-label">空き</div>
+												</div>
+											</div>
+										</div>
 										<table class="table table-bordered table-hover" id="timetable">
 											<thead class="table-light">
 												<tr>
@@ -91,24 +108,6 @@
 												</tr>
 											</tbody>
 										</table>
-
-										<!-- 統計情報 -->
-										<div class="stats-container">
-											<div class="row text-center">
-												<div class="col-6 stats-item">
-													<span class="stats-number text-primary"> <span
-														th:text="${timeTable != null ? #lists.size(timeTable.?[hasBooking()]) : 0}">0</span>
-													</span>
-													<div class="stats-label">予約済み</div>
-												</div>
-												<div class="col-6 stats-item">
-													<span class="stats-number text-secondary"> <span
-														th:text="${timeTable != null ? #lists.size(timeTable.?[!hasBooking()]) : 0}">0</span>
-													</span>
-													<div class="stats-label">空き</div>
-												</div>
-											</div>
-										</div>
 									</div>
 									<div th:unless="${selectedBusinessDate != null}" class="empty-state">
 										<p class="empty-message">営業日を選択してください</p>

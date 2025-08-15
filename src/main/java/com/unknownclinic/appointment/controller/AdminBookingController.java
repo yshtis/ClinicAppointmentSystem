@@ -48,7 +48,8 @@ public class AdminBookingController {
 		String selectedBusinessTypeName = "";
 
 		if (selectedBusinessDate != null) {
-			if (businessDayService.isBusinessDay(selectedBusinessDate)) {
+			if (businessDayService
+					.isBusinessDayForAdmin(selectedBusinessDate)) {
 				BusinessDay selectedBusinessDay = businessDayService
 						.getBusinessDayByDate(selectedBusinessDate);
 

@@ -81,7 +81,7 @@ public class AdminBusinessDayController {
 			if (!toggled) {
 				ra.addFlashAttribute("error", "営業日が見つかりません。");
 			} else {
-				ra.addFlashAttribute("message", "営業日の状態を変更しました。");
+				ra.addFlashAttribute("message", "予約受付の状態を変更しました。");
 			}
 		} catch (Exception e) {
 			ra.addFlashAttribute("error", "営業日の状態変更に失敗しました: " + e.getMessage());

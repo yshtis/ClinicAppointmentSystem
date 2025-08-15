@@ -32,6 +32,8 @@ public interface BusinessDayService {
 	boolean toggleBusinessDayStatus(Long id);
 
 	boolean isBusinessDay(LocalDate date);
+	
+	boolean isBusinessDayForAdmin(LocalDate date);
 
 	List<TimeSlotView> getAvailableTimeSlotsByBusinessType(
 			LocalDate businessDate);

@@ -25,6 +25,7 @@ public class AdminBookingService {
 
 	/**
 	 * 営業形態を考慮した指定日の時間枠別予約状況を取得
+	 * is_activeに関係なく全ての時間枠を表示
 	 */
 	public List<AdminBookingView> getTimeSlotBookingsByDateAndBusinessType(
 			LocalDate date, String businessType) {

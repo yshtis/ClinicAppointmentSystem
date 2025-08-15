@@ -157,6 +157,12 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 		BusinessDay businessDay = businessDayMapper.findByDate(date);
 		return businessDay != null && businessDay.getIsActive();
 	}
+	
+	@Override
+	public boolean isBusinessDayForAdmin(LocalDate date) {
+		BusinessDay businessDay = businessDayMapper.findByDate(date);
+		return businessDay != null;
+	}
 
 	@Override
 	public List<TimeSlotView> getAvailableTimeSlotsByBusinessType(LocalDate businessDate) {

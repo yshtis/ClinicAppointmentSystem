@@ -114,7 +114,6 @@
             AND b.status = 'reserved'
         LEFT JOIN users u
             ON b.user_id = u.id
-        WHERE ts.is_active = TRUE
         ORDER BY ts.start_time
     </select>
 
@@ -133,7 +132,7 @@
             AND b.status = 'reserved'
         LEFT JOIN users u
             ON b.user_id = u.id
-        WHERE ts.is_active = TRUE
+        WHERE 1=1
         <if test="businessType == 'am'">
             AND HOUR(ts.start_time) &lt; 12
         </if>
