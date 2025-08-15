@@ -33,8 +33,6 @@ public interface BusinessDayService {
 
 	boolean isBusinessDay(LocalDate date);
 
-	boolean updateBusinessType(Long id, String businessType);
-
 	List<TimeSlotView> getAvailableTimeSlotsByBusinessType(
 			LocalDate businessDate);
 }

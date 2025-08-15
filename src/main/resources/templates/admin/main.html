@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-<head
-	th:replace="~{parts/admin-common :: html_head('管理者トップ - さわやか医院予約システム')}"></head>
+<head th:replace="~{parts/admin-common :: html_head('管理者トップ - さわやか医院予約システム')}"></head>
 <link rel="stylesheet" th:href="@{/css/main.css}">
 <body class="bg-light text-dark">
 	<div class="d-flex flex-column min-vh-100 bg-light">
@@ -23,8 +22,7 @@
 						<div class="row g-0">
 							<!-- 営業日選択フォーム -->
 							<div class="col-md-6 border-end" style="background: #f9fbfe;">
-								<div
-									class="p-4 h-100 d-flex flex-column gap-3 flex-grow-1 text-center">
+								<div class="p-4 h-100 d-flex flex-column gap-3 flex-grow-1 text-center">
 									<label class="form-label mb-3">営業日を選択：</label>
 									<div class="d-flex flex-column gap-3 flex-grow-1">
 										<a th:each="day, iter : ${businessDays}"
@@ -42,12 +40,10 @@
 											</div>
 										</a>
 									</div>
-									<div
-										th:if="${businessDays == null or #lists.isEmpty(businessDays)}">
+									<div th:if="${businessDays == null or #lists.isEmpty(businessDays)}">
 										<div class="empty-state">
 											<p class="empty-message">営業日が登録されていません</p>
-											<a href="/admin/business-days"
-												class="btn btn-outline-primary btn-sm">営業日を追加</a>
+											<a href="/admin/business-days" class="btn btn-outline-primary btn-sm">営業日を追加</a>
 										</div>
 									</div>
 								</div>
@@ -67,17 +63,14 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr
-													th:if="${timeTable == null or #lists.isEmpty(timeTable)}">
+												<tr th:if="${timeTable == null or #lists.isEmpty(timeTable)}">
 													<td colspan="2" class="empty-state">
 														<p class="empty-message">この日の予約情報はありません</p>
 													</td>
 												</tr>
-												<tr th:each="slot : ${timeTable}"
-													th:if="${timeTable != null}"
+												<tr th:each="slot : ${timeTable}" th:if="${timeTable != null}"
 													th:class="${slot != null and slot.hasBooking()} ? 'table-primary' : ''">
-													<td><strong th:text="${slot?.timeLabel ?: ''}"></strong>
-													</td>
+													<td><strong th:text="${slot?.timeLabel ?: ''}"></strong></td>
 													<td>
 														<div th:if="${slot != null and slot.hasBooking()}">
 															<div class="d-flex align-items-center mb-1">
@@ -92,7 +85,8 @@
 														</div>
 														<div th:if="${slot == null or !slot.hasBooking()}"
 															class="text-center text-muted d-flex align-items-center
-															justify-content-center h-100" style="min-height: 4.2rem;">空き</div>
+															justify-content-center h-100"
+															style="min-height: 4.2rem;">空き</div>
 													</td>
 												</tr>
 											</tbody>
@@ -116,8 +110,7 @@
 											</div>
 										</div>
 									</div>
-									<div th:unless="${selectedBusinessDate != null}"
-										class="empty-state">
+									<div th:unless="${selectedBusinessDate != null}" class="empty-state">
 										<p class="empty-message">営業日を選択してください</p>
 									</div>
 								</div>

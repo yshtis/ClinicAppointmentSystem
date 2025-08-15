@@ -50,13 +50,11 @@ public class BookingServiceImpl implements BookingService {
 		if (businessDate == null)
 			return List.of();
 
-		// アクティブな営業日かチェック
 		BusinessDay businessDay = businessDayMapper.findByDate(businessDate);
 		if (businessDay == null || !businessDay.getIsActive()) {
 			return List.of();
 		}
 
-		// 営業形態を考慮して時間枠をフィルタリング
 		List<TimeSlot> timeSlots = timeSlotMapper.findAllActive();
 		final String businessType = (businessDay.getBusinessType() != null)
 				? businessDay.getBusinessType()
@@ -64,13 +62,12 @@ public class BookingServiceImpl implements BookingService {
 
 		return timeSlots.stream()
 				.filter(slot -> {
-					// 営業形態に応じてフィルタリング
 					switch (businessType) {
-					case "am": // 午前営業
+					case "am":
 						return slot.getStartTime().getHour() < 12;
-					case "pm": // 午後営業
+					case "pm":
 						return slot.getStartTime().getHour() >= 12;
-					case "allday": // 終日営業
+					case "allday":
 					default:
 						return true;
 					}
@@ -107,32 +104,29 @@ public class BookingServiceImpl implements BookingService {
 	@Transactional
 	public void createBooking(Long userId, LocalDate businessDate,
 			Long timeSlotId) {
-		// 営業日チェック
 		BusinessDay businessDay = businessDayMapper.findByDate(businessDate);
 		if (businessDay == null || !businessDay.getIsActive()) {
 			throw new IllegalStateException("指定された日付は営業日ではありません。");
 		}
 
-		// 時間枠チェック
 		TimeSlot timeSlot = timeSlotMapper.findById(timeSlotId);
 		if (timeSlot == null || !timeSlot.getIsActive()) {
 			throw new IllegalStateException("指定された時間枠は利用できません。");
 		}
 
-		// 営業形態チェック（営業時間内かどうか）
 		String businessType = businessDay.getBusinessType();
 		if (businessType == null)
 			businessType = "allday";
 
 		boolean isAvailable = true;
 		switch (businessType) {
-		case "am": // 午前営業
+		case "am":
 			isAvailable = timeSlot.getStartTime().getHour() < 12;
 			break;
-		case "pm": // 午後営業
+		case "pm":
 			isAvailable = timeSlot.getStartTime().getHour() >= 12;
 			break;
-		case "allday": // 終日営業
+		case "allday":
 		default:
 			isAvailable = true;
 			break;
@@ -142,14 +136,12 @@ public class BookingServiceImpl implements BookingService {
 			throw new IllegalStateException("指定された時間は営業時間外です。");
 		}
 
-		// 枠が予約済みかチェック
 		Booking reserved = bookingMapper.findReservedBySlot(businessDate,
 				timeSlotId);
 		if (reserved != null) {
 			throw new IllegalStateException("この枠はすでに予約済みです。");
 		}
 
-		// 同じユーザーの同一日重複チェック
 		Booking userBooking = bookingMapper
 				.findReservedByUserAndBusinessDate(userId, businessDate);
 		if (userBooking != null) {
@@ -188,7 +180,6 @@ public class BookingServiceImpl implements BookingService {
 			throw new IllegalArgumentException("予約が存在しないか、権限がありません");
 		}
 
-		// 過去の予約はキャンセルできない
 		if (booking.getBusinessDate().isBefore(LocalDate.now())) {
 			throw new IllegalStateException("過去の予約はキャンセルできません。");
 		}

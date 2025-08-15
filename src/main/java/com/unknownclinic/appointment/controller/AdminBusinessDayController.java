@@ -55,25 +55,6 @@ public class AdminBusinessDayController {
 		return "redirect:/admin/business-days";
 	}
 
-	@PostMapping("/update-type")
-	public String updateBusinessType(
-			@RequestParam("id") Long id,
-			@RequestParam("businessType") String businessType,
-			RedirectAttributes ra) {
-		try {
-			boolean updated = businessDayService.updateBusinessType(id,
-					businessType);
-			if (!updated) {
-				ra.addFlashAttribute("error", "営業日が見つかりません。");
-			} else {
-				ra.addFlashAttribute("message", "営業形態を変更しました。");
-			}
-		} catch (Exception e) {
-			ra.addFlashAttribute("error", "営業形態の変更に失敗しました: " + e.getMessage());
-		}
-		return "redirect:/admin/business-days";
-	}
-
 	@PostMapping("/delete")
 	public String deleteBusinessDay(
 			@RequestParam("id") Long id,

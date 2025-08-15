@@ -457,7 +457,7 @@ input[type="date"].form-control {
 }
 
 .business-day-btn[style*="opacity"]:before {
-	content: "休業";
+	content: "停止中";
 	position: absolute;
 	top: -0.5rem;
 	right: -0.5rem;

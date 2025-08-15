@@ -66,12 +66,10 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 	@Override
 	@Transactional
 	public boolean addBusinessDay(LocalDate date) {
-		// 過去の日付チェック
 		if (date.isBefore(LocalDate.now())) {
 			throw new IllegalArgumentException("過去の日付は営業日として追加できません。");
 		}
 
-		// 重複チェック
 		if (businessDayMapper.countByBusinessDate(date) > 0) {
 			return false;
 		}
@@ -87,8 +85,7 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 
 	@Override
 	@Transactional
-	public boolean addBusinessDayWithType(String dateString,
-			String businessType) {
+	public boolean addBusinessDayWithType(String dateString, String businessType) {
 		try {
 			LocalDate date = LocalDate.parse(dateString);
 			return addBusinessDayWithType(date, businessType);
@@ -161,29 +158,8 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 		return businessDay != null && businessDay.getIsActive();
 	}
 
-	// 営業形態更新メソッド
 	@Override
-	@Transactional
-	public boolean updateBusinessType(Long id, String businessType) {
-		// 有効な営業形態チェック
-		if (!isValidBusinessType(businessType)) {
-			return false;
-		}
-
-		BusinessDay businessDay = businessDayMapper.findById(id);
-		if (businessDay == null) {
-			return false;
-		}
-
-		businessDay.setBusinessType(businessType);
-		businessDayMapper.update(businessDay);
-		return true;
-	}
-
-	// 営業形態に応じた利用可能時間帯を取得
-	@Override
-	public List<TimeSlotView> getAvailableTimeSlotsByBusinessType(
-			LocalDate businessDate) {
+	public List<TimeSlotView> getAvailableTimeSlotsByBusinessType(LocalDate businessDate) {
 		BusinessDay businessDay = businessDayMapper.findByDate(businessDate);
 		if (businessDay == null || !businessDay.getIsActive()) {
 			return List.of();
@@ -223,7 +199,6 @@ public class BusinessDayServiceImpl implements BusinessDayService {
 		}
 	}
 
-	// 営業形態の有効性チェック
 	private boolean isValidBusinessType(String businessType) {
 		return "allday".equals(businessType) || "am".equals(businessType)
 				|| "pm".equals(businessType);

@@ -29,7 +29,7 @@ public class AdminBookingService {
 	public List<AdminBookingView> getTimeSlotBookingsByDateAndBusinessType(
 			LocalDate date, String businessType) {
 		if (businessType == null) {
-			businessType = "allday"; // デフォルト値
+			businessType = "allday";
 		}
 		return bookingMapper.findAdminTimeSlotBookingsByDateAndBusinessType(
 				date, businessType);
