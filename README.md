@@ -42,7 +42,7 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 
 - **目的**  
   患者が24時間オンラインで予約・キャンセルでき、職員がリアルタイムで状況管理できるWebシステムを目指しました。  
-  **「シンプルで直感的なUI」**も重視しています。
+  **「シンプルで直感的なUI」**を重視しています。
 
 ---
 
@@ -64,13 +64,13 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 
 | 区分   | 機能                      | 説明                                               |
 | ------ | ------------------------- | -------------------------------------------------- |
-| 患者   | ログイン                   | 診察券番号＋パスワードで認証                         |
+| 患者   | ログイン                   | 診察券番号＋パスワードで認証                       |
 | 患者   | 予約作成                   | 営業日と時間枠を選択し予約登録                     |
-| 患者   | 予約確認                   | 内容確認後に確定                                   |
-| 患者   | 予約一覧/キャンセル        | 自分の予約を一覧表示・キャンセル可能               |
+| 患者   | 予約確認                   | 内容確認後に確定                                  |
+| 患者   | 予約一覧/キャンセル        | 自分の予約を一覧表示・キャンセル可能      　         |
 | 管理者 | 管理者ログイン             | ID・パスワード認証                                 |
 | 管理者 | 予約状況一覧               | 日別の予約を一覧表示                               |
-| 管理者 | 営業日設定                 | 予約可能日の登録・削除                             |
+| 管理者 | 営業日設定                 | 予約可能日の登録・削除。予約受付停止・再開           |
 | 共通   | ヘッダー/フッター共通化    | Thymeleafの`th:fragment`で管理                     |
 
 ---
@@ -78,8 +78,8 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 ## 画面イメージ
 
 <!-- スクリーンショット例を貼るとより効果的です -->
-![main画面イメージ](https://private-user-images.githubusercontent.com/207013790/476431842-59e055cc-9e15-4693-aca0-6e259cdd6dfe.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTQ4OTAwMzAsIm5iZiI6MTc1NDg4OTczMCwicGF0aCI6Ii8yMDcwMTM3OTAvNDc2NDMxODQyLTU5ZTA1NWNjLTllMTUtNDY5My1hY2EwLTZlMjU5Y2RkNmRmZS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwODExJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDgxMVQwNTIyMTBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT00ZGQ4YTQzNDVkNDRkNjJjMTIzOGIzZWI1YjQyYzc3M2VlNzc2NGI1MDY2ZDc5MGQ2OWU2Nzg3MjBlMTFjZGUyJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.IsM-R0UTQeWShhj2oh5nlDCF3PCEQYWjjX4rxB1aU9k)
-![予約確認画面イメージ](https://private-user-images.githubusercontent.com/207013790/476431851-47ae836d-2d2b-4197-ab89-4bc999ea382c.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTQ4OTAwMzAsIm5iZiI6MTc1NDg4OTczMCwicGF0aCI6Ii8yMDcwMTM3OTAvNDc2NDMxODUxLTQ3YWU4MzZkLTJkMmItNDE5Ny1hYjg5LTRiYzk5OWVhMzgyYy5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwODExJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDgxMVQwNTIyMTBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01ZGU4YjliZjk5ZmRkNTFhYzE2OTUxZjAyZTkyZTBkNDcwZGIyZWE1NmVhOTY0NGM0YzMzNDk0MzBiZTNmZDE1JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.bUum82S-U7uuZMByUc7JYZZAT8KuQcxHrHLR2iEZZO4)
+![main画面イメージ](https://github.com/yshtis/ClinicAppointmentSystem/blob/develop/images/%E4%BA%88%E7%B4%84%E3%83%A1%E3%82%A4%E3%83%B3%E7%94%BB%E9%9D%A2%EF%BC%88%E6%82%A3%E8%80%85%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8%EF%BC%89%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB.png?raw=true)
+![予約確認画面イメージ](https://github.com/yshtis/ClinicAppointmentSystem/blob/develop/images/%E4%BA%88%E7%B4%84%E4%B8%80%E8%A6%A7%E7%94%BB%E9%9D%A2%EF%BC%88%E7%AE%A1%E7%90%86%E8%80%85%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8%EF%BC%89%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB.png?raw=true)
 
 ---
 
@@ -89,17 +89,18 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 erDiagram
     ADMINS ||--o{ BOOKINGS : manages
     USERS ||--o{ BOOKINGS : makes
-    BUSINESS_DAYS ||--o{ BUSINESS_DAY_SLOT : has
-    BUSINESS_DAY_SLOT ||--o{ BOOKING : for
-    TIME_SLOT_MASTER ||--o{ BUSINESS_DAY_SLOT : pattern
+    BUSINESS_DAYS ||--o{ BOOKINGS : allows
+    TIME_SLOTS ||--o{ BOOKINGS : provides
+
 ```
 - **主なテーブル**
   - `admins`（管理者）
   - `users`（患者/利用者）
-  - `business_days`（営業日マスタ）
-  - `time_slot_master`（時間枠マスタ）
-  - `business_day_slots`（営業日ごとの有効枠）
-  - `bookings`（予約）
+  - `business_days`（営業日：営業形態あり）
+  - `time_slots`（時間枠マスタ）
+  - `bookings`（予約：user_id＋business_date＋time_slot_id）
+    
+  備考：bookings.business_date は business_days.business_date と日付で論理的に関連します（FKは張っていません）。
 
 ---
 
@@ -127,7 +128,8 @@ erDiagram
   - 予約前に枠・同日重複・ユーザー重複を明示的にチェック
   - 予約競合時は例外としてControllerでキャッチ＆表示
 - **DB層（今後導入予定）**  
-  - `bookings`テーブルに`(business_day_slot_id, status)`のユニーク制約を追加し、レースコンディションでも二重予約を根本防止
+  - `bookings`テーブルに`(business_day_slot_id, status)`のユニーク制約を追加
+  - レースコンディションでも二重予約を根本防止
 
 ---
 
@@ -147,8 +149,8 @@ erDiagram
 1. リポジトリをクローン  
    `git clone https://github.com/yshtis/ClinicAppointmentSystem.git`
 2. DB作成（MySQLにて）  
-   `CREATE DATABASE appointment_system_db;`
-3. `src/main/resources/application.yml`を編集（DBパスワード等を調整）
+   `CREATE DATABASE clinic_booking_db;`
+3. `src/main/resources/application.properties`を編集（DBパスワード等を調整）
 4. ビルド＆起動  
    `mvn spring-boot:run`
 5. ブラウザでアクセス  
