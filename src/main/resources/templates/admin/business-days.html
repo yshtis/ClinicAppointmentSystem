@@ -1,106 +1,103 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="parts/admin-common.html :: html_head('営業日設定 - さわやか医院予約システム')"></head>
+<head th:replace="~{parts/admin-common :: html_head('営業日設定 - 管理者画面')}"></head>
 <body class="bg-light text-dark">
 	<div class="d-flex flex-column min-vh-100 bg-light">
-		<div th:replace="parts/admin-common.html :: header()"></div>
+		<header th:replace="~{parts/admin-common :: header}"></header>
+
 		<main class="container flex-grow-1 py-4">
-			<div class="row justify-content-center">
-				<div class="col-12 col-md-10 col-lg-8">
-					<!-- パネル枠 -->
-					<div class="shadow-sm" style="border-radius: 1.5rem; overflow: hidden; background: #fff;">
-						<!-- タイトル行 -->
-						<div class="row g-0">
-							<div class="col-12">
-								<h2 class="mb-0 py-3 text-center" style="font-weight: bold;">営業日設定</h2>
-								<hr class="my-0">
-							</div>
+			<div class="narrow-table-container">
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<h1 class="h2">営業日設定</h1>
+				</div>
+				<div class="mb-4 text-end">
+					<a href="/admin/main" class="btn btn-outline-primary">予約一覧へ戻る</a>
+				</div>
+			</div>
+
+			<!-- メッセージ表示 -->
+			<div th:if="${message}"
+				class="alert alert-success narrow-table-container"
+				th:text="${message}"></div>
+			<div th:if="${error}"
+				class="alert alert-danger narrow-table-container" th:text="${error}"></div>
+
+			<!-- 営業日追加フォーム -->
+			<div class="card shadow-sm mb-4 narrow-table-container">
+				<div class="card-body">
+					<form th:action="@{/admin/business-days/add}" method="post"
+						class="row g-3">
+						<div class="col-auto">
+							<input type="date" name="date" class="form-control" required />
 						</div>
-						<!-- パネル中身 -->
-						<div class="row g-0">
-							<div class="col-12">
-								<div class="p-4">
-									<div class="mb-4 text-end">
-										<a href="/admin/main" class="btn btn-outline-primary">
-											<i class="bi bi-arrow-left"></i>メイン画面に戻る
-										</a>
-									</div>
-									<!-- メッセージ表示 -->
-									<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-									<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-									<!-- 営業日追加フォーム -->
-									<form th:action="@{/admin/business-days/add}" method="post" class="mb-4">
-										<div class="row g-2 align-items-end">
-											<div class="col-auto">
-												<label for="date" class="form-label">日付</label>
-											</div>
-											<div class="col-auto">
-												<input type="date" id="date" name="date" class="form-control" required>
-											</div>
-											<div class="col-auto">
-												<label class="form-label">種別</label>
-											</div>
-											<div class="col-auto">
-												<select name="type" class="form-select">
-													<option value="allday">終日</option>
-													<option value="am">午前のみ</option>
-													<option value="pm">午後のみ</option>
-												</select>
-											</div>
-											<div class="col-auto">
-												<button type="submit" class="btn btn-primary">追加</button>
-											</div>
-										</div>
-										<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+						<div class="col-auto">
+							<select name="businessType" class="form-select">
+								<option value="allday">終日</option>
+								<option value="am">午前</option>
+								<option value="pm">午後</option>
+							</select>
+						</div>
+						<div class="col-auto">
+							<button type="submit" class="btn btn-primary">追加</button>
+						</div>
+						<input type="hidden" th:name="${_csrf.parameterName}"
+							th:value="${_csrf.token}" />
+					</form>
+				</div>
+			</div>
+
+			<!-- 営業日一覧 -->
+			<div class="card shadow-sm narrow-table-container">
+				<div class="card-body">
+					<table class="table table-hover align-middle">
+						<thead>
+							<tr>
+								<th>日付</th>
+								<th>営業形態</th>
+								<th>状態</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="day : ${businessDays}">
+								<td th:text="${day.businessDateLabel}"></td>
+								<td><span class="badge business-type-badge"
+									th:class="'badge business-type-badge ' + (${day.getBusinessTypeButtonClass() ?: ''})"
+									th:text="${day.businessTypeDisplayName}"> </span></td>
+								<td><span th:text="${day.isActive ? '予約受付中' : '予約停止中'}"
+									th:class="${day.isActive ? 'badge bg-success' : 'badge bg-secondary'}">
+								</span></td>
+								<td>
+									<form th:action="@{/admin/business-days/toggle}" method="post"
+										style="display: inline;">
+										<input type="hidden" name="id" th:value="${day.id}" /> <input
+											type="hidden" th:name="${_csrf.parameterName}"
+											th:value="${_csrf.token}" />
+										<button type="submit"
+											th:class="${day.isActive ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm'}"
+											th:text="${day.isActive ? '停止' : '再開'}"
+											onclick="return confirm('予約受付状態を変更しますか？');"></button>
 									</form>
-									<!-- 営業日一覧 -->
-									<h5 class="mb-3">営業日一覧</h5>
-									<div class="table-responsive">
-										<table class="table table-bordered">
-											<thead>
-												<tr>
-													<th>日付</th>
-													<th>種別</th>
-													<th>操作</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr th:each="day : ${businessDays}">
-													<td th:text="${day.businessDate}"></td>
-													<td>
-														<span th:switch="${day.type}">
-															<span th:case="'allday'">終日</span>
-															<span th:case="'am'">午前のみ</span>
-															<span th:case="'pm'">午後のみ</span>
-															<span th:case="*">不明</span>
-														</span>
-													</td>
-													<td>
-														<form th:action="@{/admin/business-days/delete}" method="post" style="display: inline;">
-															<input type="hidden" name="id" th:value="${day.id}" />
-															<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-															<button type="submit" class="btn btn-danger btn-sm"
-																onclick="return confirm('本当に削除しますか？');">削除</button>
-														</form>
-													</td>
-												</tr>
-												<tr th:if="${#lists.isEmpty(businessDays)}">
-													<td colspan="3" class="text-center text-secondary">営業日が登録されていません</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-								<!-- /p-4 -->
-							</div>
-						</div>
-						<!-- /row g-0 -->
-					</div>
-					<!-- /パネル枠 -->
+									<form th:action="@{/admin/business-days/delete}" method="post"
+										style="display: inline;">
+										<input type="hidden" name="id" th:value="${day.id}" /> <input
+											type="hidden" th:name="${_csrf.parameterName}"
+											th:value="${_csrf.token}" />
+										<button type="submit" class="btn btn-danger btn-sm ms-1"
+											onclick="return confirm('本当に削除しますか？この操作は取り消せません。');">
+											削除</button>
+									</form>
+								</td>
+							</tr>
+							<tr th:if="${#lists.isEmpty(businessDays)}">
+								<td colspan="4" class="text-center text-muted">営業日が登録されていません。</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</main>
-		<div th:replace="parts/admin-common.html :: footer()"></div>
+		<footer th:replace="~{parts/admin-common :: footer}"></footer>
 	</div>
 </body>
 </html>

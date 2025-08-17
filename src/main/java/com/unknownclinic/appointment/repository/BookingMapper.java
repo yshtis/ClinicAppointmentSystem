@@ -22,21 +22,26 @@ public interface BookingMapper {
 
 	List<Booking> findByDate(@Param("date") LocalDate date);
 
-	List<Booking> findByBusinessDaySlotIds(
-			@Param("list") List<Long> businessDaySlotIds);
+	List<Booking> findByDateAndTimeSlots(@Param("date") LocalDate date,
+			@Param("timeSlotIds") List<Long> timeSlotIds);
 
 	Booking findReservedByUserAndSlot(@Param("userId") Long userId,
-			@Param("businessDaySlotId") Long businessDaySlotId);
+			@Param("businessDate") LocalDate businessDate,
+			@Param("timeSlotId") Long timeSlotId);
 
-	Booking findReservedBySlot(
-			@Param("businessDaySlotId") Long businessDaySlotId);
+	Booking findReservedBySlot(@Param("businessDate") LocalDate businessDate,
+			@Param("timeSlotId") Long timeSlotId);
 
-	Booking findReservedByUserAndBusinessDay(@Param("userId") Long userId,
-			@Param("businessDayId") Long businessDayId);
+	Booking findReservedByUserAndBusinessDate(@Param("userId") Long userId,
+			@Param("businessDate") LocalDate businessDate);
 
 	List<AdminBookingView> findAdminBookingsByDate(
 			@Param("date") LocalDate date);
 
 	List<AdminBookingView> findAdminTimeSlotBookingsByDate(
 			@Param("date") LocalDate date);
+
+	List<AdminBookingView> findAdminTimeSlotBookingsByDateAndBusinessType(
+			@Param("date") LocalDate date,
+			@Param("businessType") String businessType);
 }

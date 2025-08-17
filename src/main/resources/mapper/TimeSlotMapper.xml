@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.unknownclinic.appointment.repository.TimeSlotMapper">
+
+    <resultMap id="TimeSlotResultMap" type="com.unknownclinic.appointment.domain.TimeSlot">
+        <id column="id" property="id"/>
+        <result column="start_time" property="startTime" jdbcType="TIME" javaType="java.time.LocalTime"/>
+        <result column="end_time" property="endTime" jdbcType="TIME" javaType="java.time.LocalTime"/>
+        <result column="is_active" property="isActive"/>
+    </resultMap>
+
+    <!-- 全時間枠取得 -->
+    <select id="findAll" resultMap="TimeSlotResultMap">
+        SELECT id, start_time, end_time, is_active
+        FROM time_slots
+        ORDER BY start_time
+    </select>
+
+    <!-- アクティブな時間枠のみ取得 -->
+    <select id="findAllActive" resultMap="TimeSlotResultMap">
+        SELECT id, start_time, end_time, is_active
+        FROM time_slots
+        WHERE is_active = TRUE
+        ORDER BY start_time
+    </select>
+
+    <!-- IDで時間枠取得 -->
+    <select id="findById" resultMap="TimeSlotResultMap">
+        SELECT id, start_time, end_time, is_active
+        FROM time_slots
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
+    <!-- 開始時間で時間枠取得 -->
+    <select id="findByStartTime" resultMap="TimeSlotResultMap">
+        SELECT id, start_time, end_time, is_active
+        FROM time_slots
+        WHERE start_time = #{startTime}
+        LIMIT 1
+    </select>
+    
+    <!-- 時間枠新規登録 -->
+    <insert id="insert" parameterType="com.unknownclinic.appointment.domain.TimeSlot" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO time_slots (start_time, end_time, is_active)
+        VALUES (#{startTime}, #{endTime}, #{isActive})
+    </insert>
+    
+    <!-- 時間枠更新 -->
+    <update id="update" parameterType="com.unknownclinic.appointment.domain.TimeSlot">
+        UPDATE time_slots
+        SET start_time = #{startTime},
+            end_time = #{endTime},
+            is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 時間枠削除 -->
+    <delete id="delete">
+        DELETE FROM time_slots
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

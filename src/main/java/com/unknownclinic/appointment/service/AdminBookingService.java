@@ -15,10 +15,30 @@ public class AdminBookingService {
 	@Autowired
 	private BookingMapper bookingMapper;
 
+	/**
+	 * 指定日の時間枠別予約状況を取得
+	 * 全時間枠を表示し、予約がない枠は空きとして表示
+	 */
 	public List<AdminBookingView> getTimeSlotBookingsByDate(LocalDate date) {
 		return bookingMapper.findAdminTimeSlotBookingsByDate(date);
 	}
 
+	/**
+	 * 営業形態を考慮した指定日の時間枠別予約状況を取得
+	 * is_activeに関係なく全ての時間枠を表示
+	 */
+	public List<AdminBookingView> getTimeSlotBookingsByDateAndBusinessType(
+			LocalDate date, String businessType) {
+		if (businessType == null) {
+			businessType = "allday";
+		}
+		return bookingMapper.findAdminTimeSlotBookingsByDateAndBusinessType(
+				date, businessType);
+	}
+
+	/**
+	 * 指定日の予約一覧を取得（予約がある分のみ）
+	 */
 	public List<AdminBookingView> getBookingsByDate(LocalDate date) {
 		return bookingMapper.findAdminBookingsByDate(date);
 	}

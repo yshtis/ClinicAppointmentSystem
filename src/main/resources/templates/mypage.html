@@ -8,27 +8,43 @@
 
 		<!-- 予約画面（main）へのリンク -->
 		<div class="mb-4 text-end">
-			<a href="/main" class="btn btn-outline-primary"> <i
-				class="bi bi-arrow-left"></i> 予約画面に戻る
-			</a>
+			<a href="/main" class="btn btn-outline-primary">予約画面へ戻る</a>
+		</div>
+
+		<!-- メッセージ表示 -->
+		<div th:if="${message}"
+			class="alert alert-success alert-dismissible fade show" role="alert">
+			<strong>成功:</strong> <span th:text="${message}"></span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		</div>
+		<div th:if="${error}"
+			class="alert alert-danger alert-dismissible fade show" role="alert">
+			<strong>エラー:</strong> <span th:text="${error}"></span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 		</div>
 
 		<div class="row g-4">
 			<!-- 未来の予約 -->
 			<div class="col-12 col-lg-6">
 				<div class="card shadow-sm">
-					<div class="card-header bg-primary text-white">現在の予約</div>
+					<div class="card-header bg-primary text-white">
+						<strong>現在の予約</strong>
+					</div>
 					<div class="card-body">
 						<div th:if="${#lists.isEmpty(futureBookings)}">
-							<p class="text-secondary">現在の予約はありません。</p>
+							<div class="empty-state">
+								<p class="empty-message">現在の予約はありません</p>
+								<a href="/main" class="btn btn-primary">予約する</a>
+							</div>
 						</div>
-						<table class="table" th:if="${!#lists.isEmpty(futureBookings)}">
-							<thead>
+						<table class="table table-hover"
+							th:if="${!#lists.isEmpty(futureBookings)}">
+							<thead class="table-light">
 								<tr>
 									<th>日付</th>
 									<th>時間</th>
 									<th>状態</th>
-									<th></th>
+									<th class="text-center">操作</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -36,15 +52,22 @@
 									<td
 										th:text="${#temporals.format(booking.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
 									<td th:text="${booking.slotLabel}"></td>
-									<td
-										th:text="${booking.status == null or booking.status == 'reserved' ? '予約済み' : (booking.status == 'canceled' ? 'キャンセル済み' : booking.status)}"></td>
 									<td>
+										<span th:if="${booking.status == null or booking.status == 'reserved'}"
+											class="badge bg-success">予約済み</span> 
+										<span th:if="${booking.status == 'cancelled'}"
+											class="badge bg-secondary">キャンセル済み</span>
+									</td>
+									<td class="text-center">
 										<form th:action="@{/mypage/cancel}" method="post"
-											th:if="${booking.status == null or booking.status == 'reserved'}">
+											th:if="${booking.status == null or booking.status == 'reserved'}"
+											style="display: inline;">
 											<input type="hidden" name="bookingId"
 												th:value="${booking.id}" />
 											<button type="submit" class="btn btn-danger btn-sm"
-												onclick="return confirm('本当にキャンセルしますか？');">キャンセル</button>
+												onclick="return confirm('本当にキャンセルしますか？');">
+												キャンセル
+											</button>
 										</form>
 									</td>
 								</tr>
@@ -53,32 +76,45 @@
 					</div>
 				</div>
 			</div>
+
 			<!-- 過去の予約 -->
 			<div class="col-12 col-lg-6">
 				<div class="card shadow-sm">
-					<div class="card-header bg-secondary text-white">予約履歴</div>
+					<div class="card-header bg-secondary text-white">
+						<strong>予約履歴</strong>
+					</div>
 					<div class="card-body">
 						<div th:if="${#lists.isEmpty(pastBookings)}">
-							<p class="text-secondary">過去の予約履歴はありません。</p>
+							<div class="empty-state">
+								<p class="empty-message">過去の予約履歴はありません</p>
+							</div>
 						</div>
-						<table class="table" th:if="${!#lists.isEmpty(pastBookings)}">
-							<thead>
-								<tr>
-									<th>日付</th>
-									<th>時間</th>
-									<th>状態</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="booking : ${pastBookings}">
-									<td
-										th:text="${#temporals.format(booking.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
-									<td th:text="${booking.slotLabel}"></td>
-									<td
-										th:text="${booking.status == null or booking.status == 'reserved' ? '予約済み' : (booking.status == 'canceled' ? 'キャンセル済み' : booking.status)}"></td>
-								</tr>
-							</tbody>
-						</table>
+						<div th:if="${!#lists.isEmpty(pastBookings)}"
+							style="max-height: 400px; overflow-y: auto;">
+							<table class="table table-sm">
+								<thead class="table-light sticky-top">
+									<tr>
+										<th>日付</th>
+										<th>時間</th>
+										<th>状態</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="booking : ${pastBookings}">
+										<td
+											th:text="${#temporals.format(booking.businessDate, 'MM/dd (E)', 'Asia/Tokyo')}"
+											style="font-size: 0.9em;"></td>
+										<td style="font-size: 0.9em;" th:text="${booking.slotLabel}"></td>
+										<td><span
+											th:if="${booking.status == null or booking.status == 'reserved'}"
+											class="badge bg-outline-success" style="font-size: 0.75em;">受診済み</span>
+											<span th:if="${booking.status == 'cancelled'}"
+											class="badge bg-outline-secondary" style="font-size: 0.75em;">キャンセル済み</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

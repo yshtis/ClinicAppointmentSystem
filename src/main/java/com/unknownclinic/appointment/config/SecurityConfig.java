@@ -3,7 +3,9 @@ package com.unknownclinic.appointment.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -12,6 +14,7 @@ import com.unknownclinic.appointment.service.AdminUserDetailsService;
 import com.unknownclinic.appointment.service.PatientUserDetailsService;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
 	@Autowired
@@ -21,17 +24,24 @@ public class SecurityConfig {
 	private PatientUserDetailsService patientUserDetailsService;
 
 	@Bean
+	@Order(1)
 	public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http)
 			throws Exception {
 		http
 				.securityMatcher("/admin/**")
 				.authorizeHttpRequests(authz -> authz
-						.requestMatchers("/admin/login", "/admin/logout",
-								"/css/**", "/js/**", "/images/**",
-								"/admin/css/**", "/admin/js/**",
+						.requestMatchers(
+								"/admin/login",
+								"/admin/logout",
+								"/css/**",
+								"/js/**",
+								"/images/**",
+								"/admin/css/**",
+								"/admin/js/**",
 								"/admin/images/**")
 						.permitAll()
-						.anyRequest().hasRole("ADMIN"))
+						.requestMatchers("/admin/**").hasRole("ADMIN")
+						.anyRequest().denyAll())
 				.formLogin(form -> form
 						.loginPage("/admin/login")
 						.loginProcessingUrl("/admin/login")
@@ -50,15 +60,23 @@ public class SecurityConfig {
 	}
 
 	@Bean
+	@Order(2)
 	public SecurityFilterChain userSecurityFilterChain(HttpSecurity http)
 			throws Exception {
 		http
 				.securityMatcher("/**")
 				.authorizeHttpRequests(authz -> authz
-						.requestMatchers("/login", "/logout", "/reset-password",
+						.requestMatchers("/admin/**").denyAll()
+						.requestMatchers(
+								"/login",
+								"/logout",
+								"/reset-password",
 								"/register",
-								"/css/**", "/js/**", "/images/**")
-						.permitAll()
+								"/css/**",
+								"/js/**",
+								"/images/**",
+								"/error"
+						).permitAll()
 						.anyRequest().hasRole("USER"))
 				.formLogin(form -> form
 						.loginPage("/login")

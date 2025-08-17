@@ -1,5 +1,6 @@
 package com.unknownclinic.appointment.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -14,17 +15,18 @@ public interface BookingService {
 
 	BusinessDay getBusinessDayById(Long businessDayId);
 
-	List<TimeSlotView> getTimeSlotsForView(Long businessDayId);
+	List<TimeSlotView> getTimeSlotsForView(LocalDate businessDate);
 
-	Set<Long> getBookedSlotIdsForBusinessDay(Long businessDayId);
+	Set<Long> getBookedSlotIdsForBusinessDate(LocalDate businessDate);
 
-	TimeSlotView getTimeSlotViewByBusinessDaySlotId(Long businessDaySlotId);
+	TimeSlotView getTimeSlotViewBySlotId(Long timeSlotId,
+			LocalDate businessDate);
 
-	void createBooking(Long userId, Long businessDaySlotId);
+	void createBooking(Long userId, LocalDate businessDate, Long timeSlotId);
 
 	List<BookingView> getBookingViewsByUser(Long userId);
 
 	void cancelBooking(Long bookingId, Long userId);
-	
-	Booking findReservedBySlot(Long businessDaySlotId);
+
+	Booking findReservedBySlot(LocalDate businessDate, Long timeSlotId);
 }

@@ -1,6 +1,7 @@
 package com.unknownclinic.appointment.service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,14 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unknownclinic.appointment.domain.Booking;
 import com.unknownclinic.appointment.domain.BusinessDay;
-import com.unknownclinic.appointment.domain.BusinessDaySlot;
-import com.unknownclinic.appointment.domain.TimeSlotMaster;
+import com.unknownclinic.appointment.domain.TimeSlot;
 import com.unknownclinic.appointment.dto.BookingView;
 import com.unknownclinic.appointment.dto.TimeSlotView;
 import com.unknownclinic.appointment.repository.BookingMapper;
 import com.unknownclinic.appointment.repository.BusinessDayMapper;
-import com.unknownclinic.appointment.repository.BusinessDaySlotMapper;
-import com.unknownclinic.appointment.repository.TimeSlotMasterMapper;
+import com.unknownclinic.appointment.repository.TimeSlotMapper;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -27,10 +26,7 @@ public class BookingServiceImpl implements BookingService {
 	private BusinessDayMapper businessDayMapper;
 
 	@Autowired
-	private TimeSlotMasterMapper timeSlotMasterMapper;
-
-	@Autowired
-	private BusinessDaySlotMapper businessDaySlotMapper;
+	private TimeSlotMapper timeSlotMapper;
 
 	@Autowired
 	private BookingMapper bookingMapper;
@@ -38,8 +34,9 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public List<BusinessDay> getBusinessDays() {
 		LocalDate today = LocalDate.now();
-		return businessDayMapper.findAll().stream()
+		return businessDayMapper.findAllActive().stream()
 				.filter(day -> !day.getBusinessDate().isBefore(today))
+				.sorted(Comparator.comparing(BusinessDay::getBusinessDate))
 				.collect(Collectors.toList());
 	}
 
@@ -48,80 +45,113 @@ public class BookingServiceImpl implements BookingService {
 		return businessDayMapper.findById(businessDayId);
 	}
 
-	public List<TimeSlotView> getTimeSlotsForView(Long businessDayId) {
-		if (businessDayId == null)
+	@Override
+	public List<TimeSlotView> getTimeSlotsForView(LocalDate businessDate) {
+		if (businessDate == null)
 			return List.of();
-		List<BusinessDaySlot> slots = businessDaySlotMapper
-				.findAvailableByBusinessDayId(businessDayId);
-		List<TimeSlotMaster> masters = timeSlotMasterMapper.findAll();
-		return slots.stream()
-				.map(slot -> {
-					TimeSlotMaster master = masters.stream()
-							.filter(m -> m.getId()
-									.equals(slot.getTimeSlotMasterId()))
-							.findFirst().orElse(null);
-					return new TimeSlotView(slot.getId(), master.getLabel());
+
+		BusinessDay businessDay = businessDayMapper.findByDate(businessDate);
+		if (businessDay == null || !businessDay.getIsActive()) {
+			return List.of();
+		}
+
+		List<TimeSlot> timeSlots = timeSlotMapper.findAllActive();
+		final String businessType = (businessDay.getBusinessType() != null)
+				? businessDay.getBusinessType()
+				: "allday";
+
+		return timeSlots.stream()
+				.filter(slot -> {
+					switch (businessType) {
+					case "am":
+						return slot.getStartTime().getHour() < 12;
+					case "pm":
+						return slot.getStartTime().getHour() >= 12;
+					case "allday":
+					default:
+						return true;
+					}
 				})
+				.map(slot -> new TimeSlotView(slot.getId(), slot.getStartTime(),
+						slot.getEndTime(), businessDate))
 				.collect(Collectors.toList());
 	}
 
-	public Set<Long> getBookedSlotIdsForBusinessDay(Long businessDayId) {
-		if (businessDayId == null)
+	@Override
+	public Set<Long> getBookedSlotIdsForBusinessDate(LocalDate businessDate) {
+		if (businessDate == null)
 			return Set.of();
-		List<BusinessDaySlot> slots = businessDaySlotMapper
-				.findAvailableByBusinessDayId(businessDayId);
-		List<Long> slotIds = slots.stream().map(BusinessDaySlot::getId)
-				.collect(Collectors.toList());
-		List<Booking> bookings = bookingMapper
-				.findByBusinessDaySlotIds(slotIds);
+
+		List<Booking> bookings = bookingMapper.findByDate(businessDate);
 		return bookings.stream()
 				.filter(b -> "reserved".equalsIgnoreCase(b.getStatus()))
-				.map(Booking::getBusinessDaySlotId)
+				.map(Booking::getTimeSlotId)
 				.collect(Collectors.toSet());
 	}
 
-	public TimeSlotView getTimeSlotViewByBusinessDaySlotId(
-			Long businessDaySlotId) {
-		BusinessDaySlot slot = businessDaySlotMapper
-				.findById(businessDaySlotId);
-		if (slot == null)
+	@Override
+	public TimeSlotView getTimeSlotViewBySlotId(Long timeSlotId,
+			LocalDate businessDate) {
+		TimeSlot timeSlot = timeSlotMapper.findById(timeSlotId);
+		if (timeSlot == null)
 			return null;
-		TimeSlotMaster master = timeSlotMasterMapper
-				.findById(slot.getTimeSlotMasterId());
-		BusinessDay day = businessDayMapper.findById(slot.getBusinessDayId());
-		return new TimeSlotView(slot.getId(), master.getLabel(),
-				day.getBusinessDate());
+
+		return new TimeSlotView(timeSlot.getId(), timeSlot.getStartTime(),
+				timeSlot.getEndTime(), businessDate);
 	}
 
 	@Override
 	@Transactional
-	public void createBooking(Long userId, Long businessDaySlotId) {
-		Booking reserved = bookingMapper.findReservedBySlot(businessDaySlotId);
+	public void createBooking(Long userId, LocalDate businessDate,
+			Long timeSlotId) {
+		BusinessDay businessDay = businessDayMapper.findByDate(businessDate);
+		if (businessDay == null || !businessDay.getIsActive()) {
+			throw new IllegalStateException("指定された日付は営業日ではありません。");
+		}
+
+		TimeSlot timeSlot = timeSlotMapper.findById(timeSlotId);
+		if (timeSlot == null || !timeSlot.getIsActive()) {
+			throw new IllegalStateException("指定された時間枠は利用できません。");
+		}
+
+		String businessType = businessDay.getBusinessType();
+		if (businessType == null)
+			businessType = "allday";
+
+		boolean isAvailable = true;
+		switch (businessType) {
+		case "am":
+			isAvailable = timeSlot.getStartTime().getHour() < 12;
+			break;
+		case "pm":
+			isAvailable = timeSlot.getStartTime().getHour() >= 12;
+			break;
+		case "allday":
+		default:
+			isAvailable = true;
+			break;
+		}
+
+		if (!isAvailable) {
+			throw new IllegalStateException("指定された時間は営業時間外です。");
+		}
+
+		Booking reserved = bookingMapper.findReservedBySlot(businessDate,
+				timeSlotId);
 		if (reserved != null) {
 			throw new IllegalStateException("この枠はすでに予約済みです。");
 		}
-		Booking existing = bookingMapper.findReservedByUserAndSlot(userId,
-				businessDaySlotId);
-		if (existing != null) {
-			throw new IllegalStateException("あなたは既にこの枠を予約済みです。");
-		}
 
-		// 追加：同じ営業日で既存予約がないかチェック
-		BusinessDaySlot slot = businessDaySlotMapper
-				.findById(businessDaySlotId);
-		if (slot == null) {
-			throw new IllegalStateException("予約枠が存在しません。");
-		}
-		Long businessDayId = slot.getBusinessDayId();
-		Booking already = bookingMapper.findReservedByUserAndBusinessDay(userId,
-				businessDayId);
-		if (already != null) {
+		Booking userBooking = bookingMapper
+				.findReservedByUserAndBusinessDate(userId, businessDate);
+		if (userBooking != null) {
 			throw new IllegalStateException("同じ日に複数予約はできません。");
 		}
 
 		Booking booking = new Booking();
 		booking.setUserId(userId);
-		booking.setBusinessDaySlotId(businessDaySlotId);
+		booking.setBusinessDate(businessDate);
+		booking.setTimeSlotId(timeSlotId);
 		booking.setStatus("reserved");
 		bookingMapper.insert(booking);
 	}
@@ -129,28 +159,16 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public List<BookingView> getBookingViewsByUser(Long userId) {
 		List<Booking> bookings = bookingMapper.findByUserId(userId);
-		List<BusinessDaySlot> slots = businessDaySlotMapper.findByIds(
-				bookings.stream().map(Booking::getBusinessDaySlotId)
-						.collect(Collectors.toList()));
-		List<TimeSlotMaster> masters = timeSlotMasterMapper.findAll();
-		List<BusinessDay> days = businessDayMapper.findAll();
-		return bookings.stream().map(b -> {
-			BusinessDaySlot slot = slots.stream()
-					.filter(s -> s.getId().equals(b.getBusinessDaySlotId()))
+		List<TimeSlot> timeSlots = timeSlotMapper.findAll();
+
+		return bookings.stream().map(booking -> {
+			TimeSlot timeSlot = timeSlots.stream()
+					.filter(ts -> ts.getId().equals(booking.getTimeSlotId()))
 					.findFirst().orElse(null);
-			TimeSlotMaster master = slot != null
-					? masters.stream().filter(
-							m -> m.getId().equals(slot.getTimeSlotMasterId()))
-							.findFirst().orElse(null)
-					: null;
-			BusinessDay day = slot != null
-					? days.stream().filter(
-							d -> d.getId().equals(slot.getBusinessDayId()))
-							.findFirst().orElse(null)
-					: null;
-			return new BookingView(b,
-					day != null ? day.getBusinessDate() : null,
-					master != null ? master.getLabel() : null);
+			String timeLabel = timeSlot != null ? timeSlot.getDisplayLabel()
+					: "不明";
+			return new BookingView(booking, booking.getBusinessDate(),
+					timeLabel);
 		}).collect(Collectors.toList());
 	}
 
@@ -161,12 +179,17 @@ public class BookingServiceImpl implements BookingService {
 		if (booking == null || !booking.getUserId().equals(userId)) {
 			throw new IllegalArgumentException("予約が存在しないか、権限がありません");
 		}
-		booking.setStatus("canceled");
+
+		if (booking.getBusinessDate().isBefore(LocalDate.now())) {
+			throw new IllegalStateException("過去の予約はキャンセルできません。");
+		}
+
+		booking.setStatus("cancelled");
 		bookingMapper.update(booking);
 	}
 
 	@Override
-	public Booking findReservedBySlot(Long businessDaySlotId) {
-		return bookingMapper.findReservedBySlot(businessDaySlotId);
+	public Booking findReservedBySlot(LocalDate businessDate, Long timeSlotId) {
+		return bookingMapper.findReservedBySlot(businessDate, timeSlotId);
 	}
 }

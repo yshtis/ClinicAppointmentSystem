@@ -22,27 +22,37 @@
 							<label class="form-label mb-3">営業日を選択：</label>
 							<div class="d-flex flex-column gap-3 flex-grow-1">
 								<a th:each="day, iter : ${businessDays}"
-									th:href="@{/main(businessDayId=${day.id})}"
-									th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"
-									th:classappend="${day.id == selectedBusinessDayId} ? 'btn btn-primary' : 'btn btn-outline-primary'"
+									th:href="@{/main(businessDate=${day.businessDate})}"
+									th:classappend="${day.businessDate == selectedBusinessDate} ? 'btn btn-primary' : 'btn btn-outline-primary'"
 									class="btn business-day-btn py-2" style="margin-bottom: 6px;"
-									th:styleappend="${iter.last} ? 'margin-bottom:0;' : ''"> </a>
+									th:styleappend="${iter.last} ? 'margin-bottom:0;' : ''">
+									<div>
+										<span
+											th:text="${#temporals.format(day.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></span>
+									</div>
+									<div>
+										<small class="badge business-type-badge ms-1"
+											th:class="'badge business-type-badge ms-1 ' + ${day.getBusinessTypeButtonClass()}"
+											th:text="${day.getBusinessTypeDisplayName()}"></small>
+									</div>
+								</a>
 							</div>
 						</div>
 					</div>
 					<!-- 時間枠選択フォーム -->
 					<div class="col-md-6" style="padding: 2rem;">
-						<div th:if="${selectedBusinessDayId != null}">
+						<div th:if="${selectedBusinessDate != null}">
 							<label class="form-label mb-3">予約時間を選択：</label>
 							<form th:action="@{/confirm}" method="get" id="timeSlotForm">
-								<input type="hidden" name="businessDayId"
-									th:value="${selectedBusinessDayId}" />
+								<input type="hidden" name="businessDate"
+									th:value="${selectedBusinessDate}" />
 								<div th:each="slot : ${allTimeSlots}" class="mb-2">
 									<label th:for="'slot_' + ${slot.id}" class="me-2"> <input
-										type="radio" name="businessDaySlotId"
-										th:id="'slot_' + ${slot.id}" th:value="${slot.id}"
+										type="radio" name="timeSlotId" th:id="'slot_' + ${slot.id}"
+										th:value="${slot.id}"
 										th:disabled="${bookedSlotIds.contains(slot.id)}"
 										onclick="onSlotSelect()" /> <span th:text="${slot.label}"></span>
+
 									</label> <span th:if="${bookedSlotIds.contains(slot.id)}"
 										class="badge bg-secondary">予約済</span>
 								</div>
@@ -58,7 +68,7 @@
 								}
 							</script>
 						</div>
-						<div th:unless="${selectedBusinessDayId != null}"
+						<div th:unless="${selectedBusinessDate != null}"
 							class="h-100 d-flex" style="min-height: 200px;">
 							<span class="text-secondary">営業日を選択してください</span>
 						</div>
