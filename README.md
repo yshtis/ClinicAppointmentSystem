@@ -93,6 +93,38 @@ erDiagram
         VARCHAR password
         DATETIME created_at
     }
+    USERS {
+        BIGINT id
+        VARCHAR card_number
+        DATE birthday
+        VARCHAR name
+        VARCHAR password
+        VARCHAR phone_number
+        DATETIME created_at
+    }
+    BUSINESS_DAYS {
+        BIGINT id
+        DATE business_date
+        BOOLEAN is_active
+        VARCHAR business_type
+        DATETIME created_at
+    }
+    TIME_SLOTS {
+        BIGINT id
+        TIME start_time
+        TIME end_time
+        BOOLEAN is_active
+    }
+    BOOKINGS {
+        BIGINT id
+        BIGINT user_id
+        DATE business_date
+        BIGINT time_slot_id
+        ENUM status
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
     USERS ||--o{ BOOKINGS : "患者の予約"
     BUSINESS_DAYS ||--o{ BOOKINGS : "営業日の予約"
     TIME_SLOTS ||--o{ BOOKINGS : "時間枠の予約"
