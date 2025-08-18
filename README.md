@@ -125,9 +125,9 @@ erDiagram
         DATETIME updated_at
     }
 
-    USERS ||--o{ BOOKINGS : "患者の予約"
-    BUSINESS_DAYS ||--o{ BOOKINGS : "営業日の予約"
-    TIME_SLOTS ||--o{ BOOKINGS : "時間枠の予約"
+    USERS ||--o{ BOOKINGS : "予約する"
+    BUSINESS_DAYS ||--o{ BOOKINGS : "対象営業日"
+    TIME_SLOTS ||--o{ BOOKINGS : "対象時間枠"
 ```
 
 ### テーブル概要
