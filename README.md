@@ -201,12 +201,12 @@ erDiagram
 
 ## テスト・品質
 
-- **単体テスト（JUnit）**  
-  BookingServiceの正常/異常系ユースケースをテスト
+- **単体テスト（JUnit + Mockito）**  
+  BookingServiceの正常・異常系ユースケースを網羅したユニットテスト（`src/test/java/com/unknownclinic/appointment/service/BookingServiceTest.java`）を実装し、全テストケースがパス済みです。依存コンポーネント（MyBatis Mapper等）はMockitoでモック化し、ビジネスロジック単体の品質を担保しています。
 - **MyBatis Mapperテスト**  
-  H2テストDBでSQL/マッピング確認
-- **今後**  
-  CI/CD（GitHub Actions）、カバレッジ計測、E2Eテストも導入予定
+  H2インメモリDBを用いたSQL・マッピングの単体テスト設計を今後予定しています。
+- **今後の計画**  
+  CI/CD（GitHub Actionsによる自動テスト）、テストカバレッジ計測（JaCoCo等）、E2Eテストの導入も計画中です。
 
 ---
 
