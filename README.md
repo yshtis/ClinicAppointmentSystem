@@ -83,24 +83,35 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 
 ---
 
-## データベース構成（ER図）
+## データベース構成（ER図・主要テーブル）
 
 ```mermaid
 erDiagram
-    ADMINS ||--o{ BOOKINGS : manages
-    USERS ||--o{ BOOKINGS : makes
-    BUSINESS_DAYS ||--o{ BOOKINGS : allows
-    TIME_SLOTS ||--o{ BOOKINGS : provides
-
+    ADMINS {
+        BIGINT id
+        VARCHAR login_id
+        VARCHAR password
+        DATETIME created_at
+    }
+    USERS ||--o{ BOOKINGS : "患者の予約"
+    BUSINESS_DAYS ||--o{ BOOKINGS : "営業日の予約"
+    TIME_SLOTS ||--o{ BOOKINGS : "時間枠の予約"
 ```
-- **主なテーブル**
-  - `admins`（管理者）
-  - `users`（患者/利用者）
-  - `business_days`（営業日：営業形態あり）
-  - `time_slots`（時間枠マスタ）
-  - `bookings`（予約：user_id＋business_date＋time_slot_id）
-    
-  備考：bookings.business_date は business_days.business_date と日付で論理的に関連します（FKは張っていません）。
+
+### テーブル概要
+- **admins（管理者）**  
+  システム管理者情報。独立テーブル（他と直接リレーションなし）。
+- **users（患者）**  
+  予約を行うユーザー。
+- **business_days（営業日）**  
+  予約可能な日を管理。
+- **time_slots（時間枠）**  
+  1日の中の予約枠。
+- **bookings（予約）**  
+  患者・営業日・時間枠を組み合わせて予約管理。
+
+> ※ `bookings.business_date` と `business_days.business_date` は日付で論理的に関連します（外部キー制約無し）。
+
 
 ---
 
