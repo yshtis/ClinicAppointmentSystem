@@ -53,7 +53,7 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 - MyBatis（DBアクセス）  
 - Thymeleaf（テンプレートエンジン）  
 - Spring Security（認証・認可）  
-- MySQL（スキーマ名: `appointment_system_db`）  
+- MySQL（スキーマ名: `clinic_booking_db`）  
 - Bootstrap 5（UI）  
 - Maven（ビルド管理）  
 - Eclipse 2025-06（Pleiades日本語化）  
@@ -100,7 +100,6 @@ ClinicAppointmentSystemは、病院の診療予約をWeb化し、患者と医療
 
 ## 画面イメージ
 
-<!-- スクリーンショット例を貼るとより効果的です -->
 ![main画面イメージ](https://github.com/yshtis/ClinicAppointmentSystem/blob/develop/images/%E4%BA%88%E7%B4%84%E3%83%A1%E3%82%A4%E3%83%B3%E7%94%BB%E9%9D%A2%EF%BC%88%E6%82%A3%E8%80%85%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8%EF%BC%89%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB.png?raw=true)
 ![予約確認画面イメージ](https://github.com/yshtis/ClinicAppointmentSystem/blob/develop/images/%E4%BA%88%E7%B4%84%E4%B8%80%E8%A6%A7%E7%94%BB%E9%9D%A2%EF%BC%88%E7%AE%A1%E7%90%86%E8%80%85%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8%EF%BC%89%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB.png?raw=true)
 
@@ -191,11 +190,11 @@ erDiagram
 ## 二重予約防止・バリデーション
 
 - **アプリ層**  
-  - 予約前に枠・同日重複・ユーザー重複を明示的にチェック
-  - 予約競合時は例外としてControllerでキャッチ＆表示
+  - 予約前に枠・同日重複・ユーザー重複を明示的にチェック。
+  - 予約競合時は例外としてControllerでキャッチし適切なエラーメッセージを表示。
 - **DB層（今後導入予定）**  
-  - `bookings`テーブルに`(business_day_slot_id, status)`のユニーク制約を追加
-  - レースコンディションでも二重予約を根本防止
+  - `bookings`テーブルに`(business_day_slot_id, status)`のユニーク制約を追加予定。
+  - 同時に複数のリクエストが処理されるレースコンディションのような状況でも、DBレベルで整合性が保たれる設計。
 
 ---
 
