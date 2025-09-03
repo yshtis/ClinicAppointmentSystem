@@ -163,7 +163,7 @@ class BookingServiceTest {
 		// Given
 		Long bookingId = 1L;
 		Long userId = 1L;
-		testBooking.setBusinessDate(LocalDate.now().plusDays(1)); // 未来の日付
+		testBooking.setBusinessDate(LocalDate.now().plusDays(1));
 
 		when(bookingMapper.findById(bookingId)).thenReturn(testBooking);
 
@@ -199,7 +199,7 @@ class BookingServiceTest {
 		// Given
 		Long bookingId = 1L;
 		Long userId = 1L;
-		testBooking.setBusinessDate(LocalDate.now().minusDays(1)); // 過去の日付
+		testBooking.setBusinessDate(LocalDate.now().minusDays(1));
 
 		when(bookingMapper.findById(bookingId)).thenReturn(testBooking);
 
@@ -239,8 +239,8 @@ class BookingServiceTest {
 
 		// Then
 		assertEquals(2, result.size());
-		assertEquals(1L, result.get(0).getId()); // 修正: getTimeSlotId() → getId()
-		assertEquals(2L, result.get(1).getId()); // 修正: getTimeSlotId() → getId()
+		assertEquals(1L, result.get(0).getId());
+		assertEquals(2L, result.get(1).getId());
 	}
 
 	@Test
@@ -271,7 +271,7 @@ class BookingServiceTest {
 
 		// Then
 		assertEquals(1, result.size());
-		assertEquals(1L, result.get(0).getId()); // 修正: getTimeSlotId() → getId()
+		assertEquals(1L, result.get(0).getId());
 		assertEquals(LocalTime.of(9, 0), result.get(0).getStartTime());
 	}
 
@@ -315,7 +315,7 @@ class BookingServiceTest {
 		assertEquals(2, result.size());
 		assertTrue(result.contains(1L));
 		assertTrue(result.contains(3L));
-		assertFalse(result.contains(2L)); // cancelled status should be excluded
+		assertFalse(result.contains(2L));
 	}
 
 	@Test
