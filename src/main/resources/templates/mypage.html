@@ -17,8 +17,8 @@
 			<strong>成功:</strong> <span th:text="${message}"></span>
 			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 		</div>
-		<div th:if="${error}"
-			class="alert alert-danger alert-dismissible fade show" role="alert">
+		<div th:if="${error}" class="alert alert-danger alert-dismissible fade show"
+			role="alert">
 			<strong>エラー:</strong> <span th:text="${error}"></span>
 			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 		</div>
@@ -37,42 +37,40 @@
 								<a href="/main" class="btn btn-primary">予約する</a>
 							</div>
 						</div>
-						<table class="table table-hover"
-							th:if="${!#lists.isEmpty(futureBookings)}">
-							<thead class="table-light">
-								<tr>
-									<th>日付</th>
-									<th>時間</th>
-									<th>状態</th>
-									<th class="text-center">操作</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="booking : ${futureBookings}">
-									<td
-										th:text="${#temporals.format(booking.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
-									<td th:text="${booking.slotLabel}"></td>
-									<td>
-										<span th:if="${booking.status == null or booking.status == 'reserved'}"
-											class="badge bg-success">予約済み</span> 
-										<span th:if="${booking.status == 'cancelled'}"
-											class="badge bg-secondary">キャンセル済み</span>
-									</td>
-									<td class="text-center">
-										<form th:action="@{/mypage/cancel}" method="post"
+						<div class="table-responsive">
+							<table class="table table-hover"
+								th:if="${!#lists.isEmpty(futureBookings)}">
+								<thead class="table-light">
+									<tr>
+										<th>日付</th>
+										<th>時間</th>
+										<th>状態</th>
+										<th class="text-center">操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="booking : ${futureBookings}">
+										<td
+											th:text="${#temporals.format(booking.businessDate, 'yyyy/MM/dd (E)', 'Asia/Tokyo')}"></td>
+										<td th:text="${booking.slotLabel}"></td>
+										<td><span
 											th:if="${booking.status == null or booking.status == 'reserved'}"
-											style="display: inline;">
-											<input type="hidden" name="bookingId"
-												th:value="${booking.id}" />
-											<button type="submit" class="btn btn-danger btn-sm"
-												onclick="return confirm('本当にキャンセルしますか？');">
-												キャンセル
-											</button>
-										</form>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+											class="badge bg-success">予約済み</span> <span
+											th:if="${booking.status == 'cancelled'}" class="badge bg-secondary">キャンセル済み</span>
+										</td>
+										<td class="text-center">
+											<form th:action="@{/mypage/cancel}" method="post"
+												th:if="${booking.status == null or booking.status == 'reserved'}"
+												style="display: inline;">
+												<input type="hidden" name="bookingId" th:value="${booking.id}" />
+												<button type="submit" class="btn btn-danger btn-sm"
+													onclick="return confirm('本当にキャンセルしますか？');">キャンセル</button>
+											</form>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
