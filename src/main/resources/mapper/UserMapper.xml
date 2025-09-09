@@ -38,9 +38,9 @@
 
     <!-- 新規登録 -->
     <insert id="insert" parameterType="com.unknownclinic.appointment.domain.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO users (card_number, birthday, name, password, phone_number, is_temporary)
-        VALUES (#{cardNumber}, #{birthday}, #{name}, #{password}, #{phoneNumber}, #{isTemporary})
-    </insert>
+    INSERT INTO users (card_number, birthday, name, password, phone_number)
+    VALUES (#{cardNumber}, #{birthday}, #{name}, #{password}, #{phoneNumber})
+	</insert>
 
     <!-- 管理用：全ユーザー一覧 -->
     <select id="findAll" resultType="com.unknownclinic.appointment.domain.User">

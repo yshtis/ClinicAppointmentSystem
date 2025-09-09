@@ -44,7 +44,6 @@ public class UserService {
 		user.setBirthday(LocalDate.parse(birthday));
 		user.setPhoneNumber(phoneNumber);
 		user.setPassword(passwordEncoder.encode(rawPassword));
-
 		user.setCardNumber("DUMMY");
 		userMapper.insert(user);
 
