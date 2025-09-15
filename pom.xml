@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.unknown</groupId>
 	<artifactId>ClinicAppointmentSystem</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>ClinicAppointmentSystem</name>
 	<description>クリニック予約システム</description>
 	<properties>
