@@ -48,7 +48,6 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 	@Override
 	@Transactional
 	public void createTimeSlot(LocalTime startTime, LocalTime endTime) {
-		// 重複チェック
 		TimeSlot existing = timeSlotMapper.findByStartTime(startTime);
 		if (existing != null) {
 			throw new IllegalStateException("同じ開始時間の時間枠が既に存在します。");
