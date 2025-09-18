@@ -158,7 +158,6 @@ body {
 	border: 1px solid var(--secondary-color);
 }
 
-/* 営業日ボタン内のバッジ統一スタイル */
 .business-type-badge {
 	min-width: 60px !important;
 	height: 1.5rem !important;
@@ -590,7 +589,6 @@ input[type="date"].form-control {
 		font-size: 2.5rem;
 	}
 
-	/* 営業日ボタンのバッジ（モバイル対応） */
 	.business-type-badge {
 		min-width: 50px !important;
 		height: 1.3rem !important;
